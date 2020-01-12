@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+
+        <ui:define name="pageContent">
+
+            
+
+            <h:panelGroup id="messagePanel" layout="block">
+                <p:messages closable="true" globalOnly="true" showDetail="true"><p:autoUpdate />
+                </p:messages>
+            </h:panelGroup>
+
+            <div class="layout-content">
+
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="shadow-box ui-shadow-5">
+                            <div class="card">
+
+
+                                <h:form id="f1">
+
+                                    <div class="x_title">
+                                        <h2 style="color: #607D8B">#{bundle.GParametrageTaxe}</h2>
+                                        <ul class="nav navbar-right panel_toolbox">                          
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('parametrageTaxe').creation}" title="Nouveau" action="#{parametrageTaxeController.prepareCreate()}" id="addButton"  type="push" ajax="false"  icon="fa fa-plus" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                            </li>
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('parametrageTaxe').supression}" title="#{bundle.Supprimer}"  id="deleteButton" oncomplete="PF('confirmation').show()" icon="fa fa-fw fa-trash-o" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                            </li>
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('parametrageTaxe').lecture}" title="Refresh" action="#{parametrageTaxeController.prepareList()}" id="updateButton"  immediate="true" icon="fa fa-refresh"  style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                            </li>
+
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>         
+
+
+                                    <div class="x_content" >
+
+                                        <p:dataTable emptyMessage="vide" 
+                                                     rows="10"
+                                                     paginator="true"
+                                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                     rowsPerPageTemplate="5,10,15"
+                                                     value="#{parametrageTaxeController.items}" var="item"
+                                                     rowKey="#{item}" selection="#{parametrageTaxeController.selectedSingle}"
+                                                     paginatorPosition="bottom"
+                                                     >
+
+                                            <p:column selectionMode="single" style="width:35px;text-align:center;">
+                                            </p:column>         
+
+                            <p:column filterBy="#{item.libelle}" filterMatchMode="contains" filterStyle="width:98%" sortBy="#{item.libelle}">
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundle.Libelle}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.libelle}"/>
+                            </p:column>
+
+                        
+                            <p:column filterBy="#{item.valeur}" filterMatchMode="contains" filterStyle="width:98%" sortBy="#{item.valeur}" >
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundle.Valeur}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.valeur}"/>
+                            </p:column>
+
+                            <p:column filterMatchMode="contains" filterStyle="width:98%"  >
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundle.Type}"/>
+                                </f:facet>
+                                <h:outputText  rendered="#{item.typeTaxe == '0'}" value="#{bundle.Pourcentage}" />
+                                <h:outputText  rendered="#{item.typeTaxe == '1'}" value="#{bundle.ValeurFixe}" />
+                            </p:column>
+
+                            <p:column  filterMatchMode="contains" filterStyle="width:98%"  >
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundle.Operation}"/>
+                                </f:facet>
+                                <h:outputText rendered="#{item.operation == '+'}" value="#{bundle.Addition}" />
+                                <h:outputText rendered="#{item.operation == '-'}" value="#{bundle.Soustraction}"/>
+                            </p:column>
+
+                            <p:column  filterMatchMode="contains" filterStyle="width:98%"  >
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundle.Application}"/>
+                                </f:facet>
+                                <h:outputText rendered="#{item.apresTva == false}" value="#{bundle.AvantTva}" />
+                                <h:outputText rendered="#{item.apresTva == true}" value="#{bundle.ApresTVA}"/>
+                            </p:column>
+
+                                            <p:column toggleable="false" style="width:50px" >
+                                                <p:commandButton id="selectButton" icon="fa fa-search" style="font-size: 3em" title="Detail"  action="#{parametrageTaxeController.prepareView()}" type="push"  immediate="true" ajax="false">
+                                                    <f:setPropertyActionListener value="#{item}" target="#{parametrageTaxeController.selected}" />
+                                                </p:commandButton>
+                                            </p:column>
+
+                                        </p:dataTable>
+
+                                    </div>
+
+                                    <p:confirmDialog id="confirmDialogSupp" message="Etes-vous sur de supprimer cet objet" header="Confirmation supression" severity="alert"  widgetVar="confirmation" responsive="true">
+                                        <p:commandButton id="confirm" value="Valider" style="float: right" oncomplete="PF('confirmation').hide()" icon="ui-icon-check"  update="f1" action="#{parametrageTaxeController.destroy}"/>
+                                        <p:commandButton id="decline" value="Annuler" style="float: right" onclick="PF('confirmation').hide()" icon="ui-icon-close"  type="button" />
+                                    </p:confirmDialog>
+
+                                </h:form>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+
+        </ui:define>
+    </ui:composition>
+
+</html>

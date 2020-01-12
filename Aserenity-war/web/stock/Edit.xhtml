@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+
+        <ui:define name="pageContent">
+
+            <h:panelGroup id="messagePanel" layout="block">
+                <p:messages closable="true" globalOnly="true" showDetail="true"><p:autoUpdate />
+                </p:messages>
+            </h:panelGroup>  
+
+            <div class="layout-content">
+
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="shadow-box ui-shadow-5">
+                            <div class="card">
+
+                                <h:form id="f1">
+
+                                    <div class="x_title">
+                                        <h2 style="color: #607D8B">#{bundle.GStockArticle}</h2>
+                                        <ul class="nav navbar-right panel_toolbox">                          
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('stock').modification}" title="Enregistrer" id="addButton" action="#{stockArticleController.update()}"  type="push" ajax="false"  icon="fa fa-save" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                            </li>
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('stock').lecture}" title="Annuler"  ajax="false" id="updateButton" action="#{stockArticleController.prepareView()}"  immediate="true" icon="fa fa-reply"  style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                            </li>
+
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>         
+
+
+                                    <div class="x_content" >  
+
+                                    </div>
+
+                                    <div class="x_content" >
+                                        <p:dataTable  value="#{stockArticleController.items}"  var="item" liveResize="true"  editable="true" editMode="cell" id="table" sortBy="#{item.categorie.categorieRootParent}" emptyMessage="#{bundle.TableauVide}" sortOrder="ascending" >
+
+                                            <p:ajax event="cellEdit" listener="#{stockArticleController.onStockEdit(item)}" />
+
+                                                    <p:column style="width: 8%" groupRow="true">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{bundle.Categorie}" />
+                                                        </f:facet>
+                                                        <h:outputText value="#{item.categorie.categorieRootParent}" />
+                                                    </p:column>
+                                            
+                                            <p:column style="width: 8%" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Code}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.code}" />
+                                            </p:column>
+
+                                            <p:column style="width: 20%" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Article}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.libelle}" />
+                                            </p:column>                      
+
+                                            <p:column style="width: 7%" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.QuantiteMinimal}" />
+                                                </f:facet>
+
+                                                <p:cellEditor>
+                                                    <f:facet name="output"><h:outputText value="#{item.quantiteMinimal}" /></f:facet>
+                                                    <f:facet name="input">
+                                                        <p:inputText value="#{item.quantiteMinimal}" style="width:96%;color:black" >
+                                                            <f:validateDoubleRange minimum="0"/>
+                                                            <p:keyFilter mask="num" ></p:keyFilter>
+                                                        </p:inputText>
+                                                    </f:facet>
+                                                </p:cellEditor>
+
+                                            </p:column>
+
+                                            <p:column style="width: 7%" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.QuantiteStock}" />
+                                                </f:facet>
+                                                <p:cellEditor>
+                                                    <f:facet name="output"><h:outputText value="#{item.quantiteStock}" /></f:facet>
+                                                    <f:facet name="input">
+                                                        <p:inputText value="#{item.quantiteStock}" style="width:96%;color:black" >
+                                                            <f:validateDoubleRange minimum="0"/>
+                                                            <p:keyFilter mask="num" ></p:keyFilter>
+                                                        </p:inputText>
+                                                    </f:facet>
+                                                </p:cellEditor>
+                                            </p:column>
+
+                                            <p:column style="width: 7%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.PrixRevendeur}" />
+                                                </f:facet>
+                                                <p:cellEditor>
+                                                    <f:facet name="output"><h:outputText value="#{item.prixRevendeur}" /></f:facet>
+                                                    <f:facet name="input">
+                                                        <p:inputText value="#{item.prixRevendeur}" style="width:96%;color:black" >
+                                                            <f:validateDoubleRange minimum="0"  />
+                                                            <p:keyFilter mask="num" ></p:keyFilter>
+                                                        </p:inputText>
+                                                    </f:facet>
+                                                </p:cellEditor>
+                                            </p:column>
+
+
+                                            <p:column style="width: 7%" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.PrixRetour}" />
+                                                </f:facet>
+
+                                                <p:cellEditor>
+                                                    <f:facet name="output"><h:outputText value="#{item.prixRetour}" /></f:facet>
+                                                    <f:facet name="input">
+                                                        <p:inputText value="#{item.prixRetour}" style="width:96%;color:black" >
+                                                            <f:validateDoubleRange minimum="0"/>
+                                                            <p:keyFilter mask="num" ></p:keyFilter>
+                                                        </p:inputText>
+                                                    </f:facet>
+                                                </p:cellEditor>
+
+                                            </p:column>
+
+
+                                        </p:dataTable>
+
+                                    </div>
+                                </h:form>     
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+
+        </ui:define>
+    </ui:composition>
+
+</html>

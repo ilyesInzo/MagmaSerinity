@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      >
+    <ui:composition template="/template.xhtml">
+
+        <ui:define name="pageContent">
+
+            <h:panelGroup id="messagePanel" layout="block">
+                <p:messages closable="true" globalOnly="true" /> <!--layout="table" -->
+            </h:panelGroup>  
+
+            <div class="layout-content">
+
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="shadow-box ui-shadow-5">
+                            <div class="card">
+
+                                <h:form id="f1">
+
+                                    <div class="x_title">
+                                        <h2 style="color: #607D8B">Gestion des clients</h2>
+                                        <ul class="nav navbar-right panel_toolbox">                          
+                                            <li>
+                                                <p:commandButton title="Enregistrer" id="addButton"  type="push" ajax="false"  icon="fa fa-floppy-o" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" action="#{messagesView.error()}"/>
+                                            </li>
+                                            <li>
+                                                <p:commandButton title="Annuler"  id="updateButton"  immediate="true" icon="fa fa-mail-reply"  style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                            </li>
+
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>         
+
+
+                                    <div class="x_content" >   
+
+
+                                        <div class="col-md-4 col-sm-4 col-xs-12" align="center" >
+                                            <p:graphicImage cache="false" id="Photo" library="default" name="images/avatar.png"  style="padding: 0px; width: 60%; margin-bottom: 10px" />
+
+                                            <p:fileUpload id="Photo5" skinSimple="true" update="Photo"  allowTypes="/(\.|\/)(gif|jpe?g|png)$/" sizeLimit="10000000" 
+                                                          invalidFileMessage="erreur!" invalidSizeMessage="bundle.MsgSizeFichier" auto="true" multiple="false"  style=" padding: 0px;  width: 60% "
+                                                          required="false" requiredMessage=""  label="selectionner" />
+
+
+                                        </div>              
+
+                                        <div class="col-md-8 col-sm-8 col-xs-12">      
+
+                                            <div class="form-group" >
+                                                <h:outputLabel value=" Nom: *" for="code"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:inputText id="code" required="true" style="width: 100%; min-width: 180px" styleClass="form-control"/>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="form-group" >
+                                                <h:outputLabel value="Prenom : *" for="code2"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:inputText id="code2" required="true" style="width: 100%; min-width: 180px" styleClass="form-control"/>
+                                                </div>
+                                            </div> 
+
+
+                                            <div class="form-group" >
+                                                <h:outputLabel value="Nombre enfants : *" for="code3"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:inputText id="code3" required="true" style="width: 100%; min-width: 180px" styleClass="form-control"/>
+                                                </div>
+                                            </div> 
+                                            
+                                            <div class="form-group" >
+                                                <h:outputLabel value="Date naissance : *" for="code4"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:calendar id="code4" required="true"  showOn="button"/>
+                                                </div>
+                                            </div>  
+                         
+                                            <div class="form-group" >
+                                                <h:outputLabel value="Civilite : *" for="code6"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:selectOneMenu id="code6"  style="width: 100%; min-width: 180px; " required="true" styleClass="form-control">
+                                                        <f:selectItem itemLabel="---" itemValue="" />
+                                                        <f:selectItem itemLabel="Mme" itemValue="Mme" />
+                                                        <f:selectItem itemLabel="Mr" itemValue="Mr" />
+                                                        <f:selectItem itemLabel="Autre" itemValue="Autre" />
+                                                    </p:selectOneMenu>
+                                                </div>
+                                            </div> 
+
+
+                                            
+                                            <div class="form-group" >
+                                                <h:outputLabel value="Description : *" for="code5"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:inputTextarea id="code5" required="true" style="width: 100%; min-width: 180px" styleClass="form-control"/>
+                                                </div>
+                                            </div> 
+                                            
+ 
+
+                                        </div>
+                                    </div> 
+
+                                </h:form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>   
+
+
+
+        </ui:define>
+    </ui:composition>
+
+
+
+
+
+
+</html>

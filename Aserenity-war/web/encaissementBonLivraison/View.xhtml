@@ -1,0 +1,252 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      >
+    <ui:composition template="/template.xhtml">
+
+        <ui:define name="pageContent">
+
+            <h:panelGroup id="messagePanel" layout="block">
+                <p:messages closable="true" globalOnly="true" showDetail="true"><p:autoUpdate />
+                </p:messages>
+            </h:panelGroup> 
+
+            <div class="layout-content">
+
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="shadow-box ui-shadow-5">
+                            <div class="card">
+                                
+                                <h:form id="f1">
+
+                                    <div class="x_title">
+                                        <h2 style="color: #607D8B">#{bundle.GEncaissementBonLivraison}</h2>
+                                        <ul class="nav navbar-right panel_toolbox"> 
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('encaissementBonLivraison').journalisation}" title="Info" id="metaInfo" oncomplete="PF('dlgInfo').show()" icon="fa fa-book" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                            </li>
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('encaissementBonLivraison').lecture}" title="Annuler"  id="updateButton" action="#{encaissementBonLivraisonController.prepareList()}" ajax="false" immediate="true" icon="fa fa-reply"  style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                            </li>
+
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>         
+
+
+                                    <div class="x_content" >   
+
+                                        
+                                        
+                                <div class="form-group" >
+                                    <h:outputLabel value="#{bundle.Client} : *" for="client" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                        <p:outputLabel id="client" value="#{encaissementBonLivraisonController.selected.libelleClient}" title="#{bundle.Client}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                    </div>
+                                </div>
+
+                        <div class="form-group" >
+                            <h:outputLabel value="#{bundle.BonLivraison} : *" for="facture" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                <p:outputLabel id="facture" value="#{encaissementBonLivraisonController.selected.bonLivraison.numero}" title="#{bundle.BonLivraison}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group" >
+                            <h:outputLabel value="#{bundle.MontantHT} : *" for="MontantHT" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                <p:outputLabel id="MontantHT" value="#{encaissementBonLivraisonController.selected.bonLivraison.montantHT}" title="#{bundle.MontantTTC}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group" >
+                            <h:outputLabel value="#{bundle.DateEncaissement} : *" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                <p:outputLabel  value="#{encaissementBonLivraisonController.selected.dateEncaissementStringFr}" title="#{bundle.DateEncaissement}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group" >
+                            <h:outputLabel value="#{bundle.TypeEncaissement} : *" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                <p:outputLabel  value="#{encaissementBonLivraisonController.selected.typeEncaissementVente.libelle}" title="#{bundle.TypeEncaissement}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                            </div>
+                        </div>
+                                        
+                        <h:panelGroup id="pgLibelleTicket" >
+                            <h:panelGroup rendered="#{encaissementBonLivraisonController.selected.typeEncaissementVente.libelleTicket}">
+
+                                <div class="form-group" >
+                                    <h:outputLabel value="#{bundle.LibelleTicket} :*" for="libTicket" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                        <p:outputLabel id="libTicket" value="#{encaissementBonLivraisonController.selected.libelleTicket}" title="#{bundle.LibelleTicket}" style="width: 90%; min-width: 180px" styleClass="form-control">
+                                        </p:outputLabel>
+                                    </div>
+                                </div>
+
+                            </h:panelGroup>
+                        </h:panelGroup>
+
+                        <h:panelGroup id="pgMontantTicket" >
+                            <h:panelGroup rendered="#{encaissementBonLivraisonController.selected.typeEncaissementVente.valeurUnitaireTicket}">
+
+                                <div class="form-group" >
+                                    <h:outputLabel value="#{bundle.MontantTicket} :*" for="montTicket" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                        <p:outputLabel id="montTicket" value="#{encaissementBonLivraisonController.selected.valeurUnitaireTicket}" title="#{bundle.MontantTicket}" style="width: 90%; min-width: 180px" styleClass="form-control">
+                                        </p:outputLabel>
+                                    </div>
+                                </div>
+
+                            </h:panelGroup>
+                        </h:panelGroup>
+
+                        <h:panelGroup id="pgDeductionPourcentageTicket" >
+                            <h:panelGroup rendered="#{encaissementBonLivraisonController.selected.typeEncaissementVente.deductionPourcentageTicket}">
+
+                                <div class="form-group" >
+                                    <h:outputLabel value="#{bundle.DeductionPourcentageTicket} :*" for="deductionTicket" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                        <p:outputLabel id="deductionTicket" value="#{encaissementBonLivraisonController.selected.deductionPourcentageTicket}" title="#{bundle.DeductionPourcentageTicket}" style="width: 90%; min-width: 180px" styleClass="form-control">                                       
+                                        </p:outputLabel>
+                                    </div>
+                                </div>
+
+                            </h:panelGroup>
+                        </h:panelGroup>
+
+                        <h:panelGroup id="pgNbrTicket" >
+                            <h:panelGroup rendered="#{encaissementBonLivraisonController.selected.typeEncaissementVente.nbrTicket}">
+
+                                <div class="form-group" >
+                                    <h:outputLabel value="#{bundle.Nombre} :*" for="nbrTicket" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                        <p:outputLabel id="nbrTicket" value="#{encaissementBonLivraisonController.selected.nbrTicket}" title="#{bundle.Nombre}" style="width: 90%; min-width: 180px" styleClass="form-control">                                       
+                                        </p:outputLabel>
+
+                                    </div>
+                                </div>
+
+                            </h:panelGroup>
+                        </h:panelGroup>
+
+                        <h:panelGroup id="pgMontant" >
+                            <h:panelGroup rendered="#{encaissementBonLivraisonController.selected.typeEncaissementVente.montant}">
+
+                                <div class="form-group" >
+                                    <h:outputLabel value="#{bundle.Montant} :*" for="montant" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                        <p:outputLabel id="montant" value="#{encaissementBonLivraisonController.selected.montant}" title="#{bundle.Montant}" style="width: 90%; min-width: 180px" styleClass="form-control">
+                                        </p:outputLabel>
+                                    </div>
+                                </div>
+
+                            </h:panelGroup>
+                        </h:panelGroup>
+
+                        <h:panelGroup id="pgNumCheque" >
+                            <h:panelGroup rendered="#{encaissementBonLivraisonController.selected.typeEncaissementVente.numCheque}">
+
+                                <div class="form-group" >
+                                    <h:outputLabel value="#{bundle.NumCheque} :*" for="numCheque" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                        <p:outputLabel id="numCheque" value="#{encaissementBonLivraisonController.selected.numCheque}" title="#{bundle.NumCheque}" style="width: 90%; min-width: 180px" styleClass="form-control">
+
+                                        </p:outputLabel>
+                                    </div>
+                                </div>
+
+                            </h:panelGroup>
+                        </h:panelGroup>
+
+                        <h:panelGroup id="pgDateCheque" >
+                            <h:panelGroup rendered="#{encaissementBonLivraisonController.selected.typeEncaissementVente.dateCheque}">
+
+                                <div class="form-group" >
+                                    <h:outputLabel value="#{bundle.DateCheque}: " styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                        <p:outputLabel id="DateCheque" value="#{encaissementBonLivraisonController.selected.dateChequeStringFr}" title="#{bundle.DateCheque}" style="width: 90%; min-width: 180px" styleClass="form-control">
+                                        </p:outputLabel>
+                                    </div>
+                                </div>
+
+                            </h:panelGroup>
+                        </h:panelGroup>
+
+                        <h:panelGroup id="pgBanque" >
+                            <h:panelGroup rendered="#{encaissementBonLivraisonController.selected.typeEncaissementVente.banque}">
+
+                                <div class="form-group" >
+                                    <h:outputLabel value="#{bundle.Banque} : *" for="banque" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                    <div class="col-md-9 col-sm-9 col-xs-12">
+
+                                        <p:outputLabel id="banque" value="#{encaissementBonLivraisonController.selected.libelleBanque}" title="#{bundle.Banque}" style="width: 90%; min-width: 180px" styleClass="form-control">
+                                        </p:outputLabel>
+
+                                    </div>
+                                </div>
+
+                            </h:panelGroup>
+                        </h:panelGroup>
+
+                        <h:panelGroup id="pgVille" >
+                            <h:panelGroup rendered="#{encaissementBonLivraisonController.selected.typeEncaissementVente.ville}">
+
+                                <div class="form-group" >
+                                    <h:outputLabel value="#{bundle.Ville} :*" for="villeCheque" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                        <p:outputLabel id="villeCheque" value="#{encaissementBonLivraisonController.selected.ville}" title="#{bundle.Ville}" style="width: 90%; min-width: 180px" styleClass="form-control">
+                                        </p:outputLabel>
+                                    </div>
+                                </div>
+
+                            </h:panelGroup>
+                        </h:panelGroup>
+
+                        <h:panelGroup id="pgTauxRetenu" >
+                            <h:panelGroup rendered="#{encaissementBonLivraisonController.selected.typeEncaissementVente.tauxRetenu}">
+
+                                <div class="form-group" >
+                                    <h:outputLabel value="#{bundle.TauxRetenuSource} :*" for="TauxRetenuSource" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                        <p:outputLabel id="TauxRetenuSource" value="#{encaissementBonLivraisonController.selected.tauxRetenu}" title="#{bundle.MontantTicket}" style="width: 90%; min-width: 180px" styleClass="form-control">
+                                        </p:outputLabel>
+                                    </div>
+                                </div>
+
+                            </h:panelGroup>
+                        </h:panelGroup>     
+                                        
+                                        
+                                    </div> 
+
+
+                                </h:form>       
+                                <p:dialog id="Info"  header="Info"   widgetVar="dlgInfo" height="50%" width="35%" modal="true" resizable="false">
+
+
+                                    <h:panelGrid columns="2" cellpadding="200" cellspacing="200">
+                                        <h:outputText value="#{bundle.Creation} : " />
+                                        <h:outputText value="Creer le #{articleController.selected.dateCreationStringFr} par #{articleController.selected.libelleUserCreate}" style="margin-left: 20px; font: bold"/>
+                                        <h:outputText value="#{bundle.Modification} : " rendered="#{articleController.selected.idUserModif ne null}"/>
+                                        <h:outputText value="Modif le #{articleController.selected.dateSyncStringFr} par #{articleController.selected.libelleUserModif}" style="margin-left: 20px; font: bold" rendered="#{articleController.selected.idUserModif ne null}"/>
+                                    </h:panelGrid>
+
+
+                                </p:dialog>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+
+        </ui:define>
+    </ui:composition>
+
+</html>

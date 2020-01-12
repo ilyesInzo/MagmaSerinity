@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+
+        <ui:define name="pageContent">
+
+
+            <p:growl for="growlShow" showSummary="true" showDetail="true"/>
+            <h:panelGroup id="messagePanel" layout="block">
+                <p:messages closable="true" globalOnly="true" showDetail="true"><p:autoUpdate />
+                </p:messages>
+            </h:panelGroup>
+
+            <div class="layout-content">
+
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="shadow-box ui-shadow-5">
+                            <div class="card">
+
+                                <h:form id="f1">
+
+                                    <div class="x_title">
+                                        <h2 style="color: #607D8B">#{bundle.Parametrage}</h2>
+                                        <ul class="nav navbar-right panel_toolbox">                          
+                                            <li>
+                                                <p:commandButton title="Enregistrer" id="addButton" action="#{utilisateurController.updatePwd()}"  type="push" ajax="false"  icon="fa fa-save" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                            </li>
+                                            <!--li>
+                                                <p:commandButton title="Annuler" rendered="false"  ajax="false" id="test" action="{utilisateurController.testEmail()}"  immediate="true" icon="fa fa-circle-thin"  style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                            </li-->
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>   
+
+                                    <div class="x_content" >   
+
+                                        <p:dataTable styleClass="borderless" style="width: 100%" value="#{utilisateurController.selected}" reflow="true"  >
+
+
+                                            <p:column style="width: 50%">
+
+
+                                                <div class="form-group" >                   
+                                                    <h:outputLabel value="#{bundle.AncienPwd} : *" for="AncienPwd" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <p:password id="AncienPwd" value="#{utilisateurController.oldPwd}" title="#{bundle.AncienPwd}" required="true"  styleClass="form-control">
+                                                            <f:validateLength minimum="8" maximum="16"/>
+                                                        </p:password>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="form-group" >
+                                                    <h:outputLabel value="#{bundle.NouveauPwd}: *" for="NouveauPwd" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <p:password id="NouveauPwd" value="#{utilisateurController.newPwd}" title="#{bundle.NouveauPwd}" required="true"  styleClass="form-control">
+                                                            <f:validateLength minimum="8" maximum="16"/>
+                                                        </p:password>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group" >
+                                                    <h:outputLabel value="#{bundle.ConfirmPwd}: *" for="ConfirmPwd" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <p:password id="ConfirmPwd" value="#{utilisateurController.confirmeNewPwd}" title="#{bundle.ConfirmPwd}" required="true"  styleClass="form-control">
+                                                            <f:validateLength minimum="8" maximum="16"/>
+                                                        </p:password>
+                                                    </div>
+                                                </div>
+
+
+
+
+
+
+                                            </p:column>
+                                            <p:column style="width: 35%">
+
+                                            </p:column>
+
+                                        </p:dataTable>
+
+                                    </div> 
+                                </h:form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+
+        </ui:define>
+    </ui:composition>
+
+</html>

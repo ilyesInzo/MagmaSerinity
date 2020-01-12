@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      >
+    <h:head>
+ <title>TODO supply a title</title>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <!-- Meta, title, CSS, favicons, etc. -->
+            <meta charset="utf-8" />
+            <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1"/>
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+            <h:outputStylesheet library="default" name="css/custom.css"/> 
+            <h:outputStylesheet library="default" name="css/bootstrap.css"/>
+
+            <h:outputStylesheet library="default" name="css/components.css"/> 
+            <h:outputStylesheet library="default" name="css/theme.css"/>  
+            <h:outputStylesheet library="default" name="css/font-awesome.css"/>   
+
+
+            <h:outputStylesheet library="default" name="css/nanoscroller.css"/>  
+            <link type="text/css" rel="stylesheet" href="resources/default/css/layout-moody.css" />    
+            <h:outputStylesheet library="default" name="css/ripple.css"/>  
+
+            <h:outputStylesheet library="default" name="css/inputswitch.css"/>  
+            <h:outputStylesheet library="default" name="css/keyboard.css"/>   
+            <h:outputStylesheet library="default" name="css/galleria.css"/>
+
+            <h:outputStylesheet library="default" name="css/clock.css"/>  
+            <h:outputStylesheet library="default" name="css/scrollpanel.css"/>   
+            <h:outputStylesheet library="default" name="css/schedule.css"/>
+            <h:outputStylesheet library="default" name="css/fileupload.css"/>
+
+            <h:outputScript library="default" name="js/jquery.js" />
+            <h:outputScript library="default" name="js/core.js" />
+            <h:outputScript library="default" name="js/components.js" />
+            <h:outputScript library="default" name="js/jquery-plugins.js" />
+
+            <h:outputScript library="default" name="js/keyboard.js" />
+            <h:outputScript library="default" name="js/inputswitch.js" />
+
+            <h:outputScript library="default" name="js/schedule.js" />
+            <h:outputScript library="default" name="js/moment.js" />
+            <h:outputScript library="default" name="js/ripple.js" />
+            
+            <h:outputScript library="default" name="js/nanoscroller.js" />
+            <h:outputScript library="default" name="js/layout.js" />
+
+    </h:head>
+    <body class="exception-body error">
+
+        <div class="exception-panel">
+            <div class="exception-code"><h:graphicImage id="image" library="default" name="images/404.svg" alt=""/>
+            </div>
+
+            <div class="exception-detail">
+
+                <div class="exception-icon">
+                    <i class="material-icons"></i>
+                </div>
+                <h1>#{bundle.EchecOperation}</h1>
+                <p>#{bundle.ErreurSystem}</p><button id="j_idt9" name="j_idt9" type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" onclick="window.open('dashboard.html','_self')"><span class="ui-button-text ui-c">#{bundle.PageAcceuil}</span></button><script id="j_idt9_s" type="text/javascript">PrimeFaces.cw("Button","widget_j_idt9",{id:"j_idt9"});</script>
+            </div>
+        </div>
+        
+    </body>
+</html>

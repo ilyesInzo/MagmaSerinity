@@ -1,0 +1,677 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+
+        <ui:define name="pageContent">
+
+            
+
+            <h:panelGroup id="messagePanel" layout="block">
+                <p:messages closable="true" globalOnly="true" showDetail="true"><p:autoUpdate />
+                </p:messages>
+            </h:panelGroup>  
+
+            <div class="layout-content">
+
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="shadow-box ui-shadow-5">
+                            <div class="card">
+
+                                <h:form id="f1">
+
+                                    <div class="x_title">
+                                        <h2 style="color: #607D8B">#{bundle.GFacture}</h2>
+                                        <ul class="nav navbar-right panel_toolbox">                          
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('facture').creation}" title="Enregistrer" id="addButton" action="#{factureController.update()}"  type="push" ajax="false"  icon="fa fa-save" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                            </li>
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('facture').lecture}" title="Annuler"  id="updateButton" action="#{factureController.prepareList()}" ajax="false" immediate="true" icon="fa fa-reply"  style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                            </li>
+
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>         
+
+
+                                    <div class="x_content" >  
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Numero}: " for="numero"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="numero" value="#{factureController.selected.numero}" title="#{bundle.Numero}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Origine}: " for="Origine" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="Origine" value="#{factureController.selected.origineFactureString}" title="#{bundle.Origine}"   styleClass="form-control" style="width: 90%; min-width: 180px"/>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Client}: " for="categorie"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="categorie" value="#{factureController.selected.libelleClient}" title="#{bundle.Client}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.TotaleHT} :" for="montantHT" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="montantHT" value="#{factureController.selected.montantHT}" title="#{bundle.TotaleHT}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.TotaleTTC} : "  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="montantTTC" value="#{factureController.selected.totalTTC}" title="#{bundle.MontantTTC}" styleClass="form-control" style="width: 90%; min-width: 180px"/>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="x_title">
+                                        <h2 style="color: #1a8ea5">#{bundle.Details}</h2>                        
+                                        <div class="clearfix"></div>
+                                    </div>
+
+                                    <div class="x_content" >
+
+                                        <p:dataTable id="idTable"  value="#{factureController.selected.listeLigneFactures}" emptyMessage="#{bundle.TableauVide}" var="item"  rowKey="#{item.id}-#{item.libelleArticle}" selection="#{factureController.selectedLigneFactureSingle}" liveResize="true"   >
+
+                                            <f:facet  name="header">
+                                                <div style="height: 35px" align="right">
+                                                    <p:commandButton  title="#{bundle.Nouveau}"  id="addButton2" icon="fa fa-fw fa-plus" style="width: 30px; height: 30px; margin: 3px;" styleClass="btn secondary-btn"  oncomplete="PF('dlg2').show()"/>
+
+                                                    <p:commandButton  title="#{bundle.Supprimer}" id="deleteButton" icon="fa fa-fw fa-trash-o" style="width: 30px; height: 30px; margin: 3px;"   styleClass="btn secondary-btn" oncomplete="PF('confirmation').show()" />
+
+                                                </div>
+                                            </f:facet>
+
+                                            <p:column selectionMode="single" style="width:3%;text-align:center;">
+
+                                            </p:column>
+
+                                            <p:column style="width: 8%" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Code}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.codeArticle}" />
+                                            </p:column>
+
+                                            <p:column style="width: 25%" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Article}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.libelleArticle}" />
+                                            </p:column>
+
+                                            <p:column style="width: 7%" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Quantite}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.quantite}" />
+                                            </p:column>
+
+                                            <p:column style="width: 7%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.PrixUnitaire}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.prixUnitaireHT}" />
+                                            </p:column>
+
+                                            <p:column style="width: 7%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Remise}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.remise}" />
+                                            </p:column>
+
+                                            <p:column style="width: 7%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.PrixUnitaireApresRemise}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.prixUnitaireApresRemise}" />
+                                            </p:column>
+
+                                            <p:column style="width: 7%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.TVA}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.tvaArticle}" />
+                                            </p:column>
+
+                                            <p:column  style="width: 7%" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.MontantHT}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.totalHT}"/>
+                                            </p:column>
+
+
+                                            <p:column id="idColonumEdit" style="width:60px" >
+                                                <p:commandButton  id="editButton"  update="formEdit:editDialog" oncomplete="PF('dlg').show()" title="#{bundle.Modifier}" icon="ui-icon-pencil" styleClass="btn btn-primary" >
+                                                    <f:setPropertyActionListener value="#{item}" target="#{factureController.selectedLigneFacture}" />
+                                                    <f:setPropertyActionListener value="#{factureController.selectedLigneFacture.quantite}" target="#{factureController.oldQuantity}" />
+                                                    <f:setPropertyActionListener value="#{factureController.selectedLigneFacture.prixUnitaireHT}" target="#{factureController.oldPrix}" />
+                                                    <f:setPropertyActionListener value="#{factureController.selectedLigneFacture.remise}" target="#{factureController.oldRemise}" />
+                                                </p:commandButton>
+                                            </p:column>
+
+
+                                        </p:dataTable>
+
+                                    </div>
+
+
+                                    <div class="x_content" >
+
+                                    </div>
+
+
+                                    <h:panelGroup id="PanelBonLivraison">
+                                        <h:panelGroup rendered="#{factureController.selected.origineFacture eq 2}">
+
+                                            <div class="x_title">
+                                                <h2 style="color: #1a8ea5">#{bundle.BonLivraisons}</h2>                        
+                                                <div class="clearfix"></div>
+                                            </div>
+
+                                            <div class="x_content" >
+
+                                                <p:dataTable id="idTableBonLivraison"  value="#{factureController.listSelectedBonLivraison}" emptyMessage="#{bundle.TableauVide}" var="itemBL"  rowKey="#{item.id}" liveResize="true"   >
+
+                                                    <p:column filterBy="#{itemBL.etat}" filterMatchMode="contains" filterStyle="width:98%" sortBy="#{itemBL.etat}" style="width: 12%">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{bundle.Etat}"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{bundle.EnCours}"  rendered="#{itemBL.etat == 0}" style="margin-left: 10px;  color: #BC7A00"/>
+                                                        <h:outputText value="#{bundle.Cloture}"  rendered="#{itemBL.etat == 1}" style="margin-left: 10px;  color: #1a8ea5"/>
+                                                        <h:outputText value="#{bundle.Annuler}"  rendered="#{itemBL.etat == 2}" style="margin-left: 10px;  color: #990000"/>
+                                                        <h:outputText value="#{bundle.Paiement}"  rendered="#{itemBL.etat == 3}" style="margin-left: 10px;  color: #00ff00"/>
+                                                    </p:column>        
+
+                                                    <p:column filterBy="#{itemBL.numero}" filterMatchMode="contains" filterStyle="width:98%" sortBy="#{itemBL.numero}" style="width: 8%">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{bundle.Numero}"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{itemBL.numero}"/>
+                                                    </p:column>
+
+                                                    <p:column filterBy="#{itemBL.dateCreationStringFr}" filterMatchMode="contains" filterStyle="width:98%" sortBy="#{itemBL.dateCreationStringFr}" style="width: 8%">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{bundle.Date}"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{itemBL.dateCreationStringFr}"/>
+                                                    </p:column>
+
+
+                                                    <p:column filterBy="#{itemBL.libelleClient}" filterMatchMode="contains" filterStyle="width:98%" sortBy="#{itemBL.libelleClient}" style="width: 17%">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{bundle.Client}"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{itemBL.libelleClient}"/>
+                                                    </p:column>
+
+                                                    <p:column filterBy="#{itemBL.montantHT}" filterMatchMode="contains" filterStyle="width:98%" sortBy="#{itemBL.montantTTC}" style="width: 8%; text-align:right">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{bundle.TotaleHT}"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{itemBL.montantHT}"/>
+                                                    </p:column>
+
+                                                    <p:column filterBy="#{itemBL.reste}" filterMatchMode="contains" filterStyle="width:98%" sortBy="#{itemBL.reste}" style="width: 13%; text-align:center">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{bundle.ResteAPayer}"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{itemBL.reste}"/>
+                                                    </p:column>
+
+
+                                                    <p:column style="width:4%" toggleable="false"  headerText="">
+                                                        <p:rowToggler  />
+                                                    </p:column>
+
+
+
+                                                    <p:rowExpansion>
+                                                        <p:dataTable     liveResize="true"       var="itemLFBL" paginatorPosition="bottom" value="#{itemBL.listeLigneBonLivraisons}" rows="15" id="tblCalculateur" 
+                                                                         emptyMessage="#{bundle.TableauVide}" >
+
+                                                            <p:column style="width: 8%" >
+                                                                <f:facet name="header">
+                                                                    <h:outputText value="#{bundle.Code}" />
+                                                                </f:facet>
+                                                                <h:outputText value="#{itemLFBL.codeArticle}" />
+                                                            </p:column>
+
+                                                            <p:column style="width: 25%" >
+                                                                <f:facet name="header">
+                                                                    <h:outputText value="#{bundle.Article}" />
+                                                                </f:facet>
+                                                                <h:outputText value="#{itemLFBL.libelleArticle}" />
+                                                            </p:column>
+
+                                                            <p:column style="width: 7%" >
+                                                                <f:facet name="header">
+                                                                    <h:outputText value="#{bundle.Quantite}" />
+                                                                </f:facet>
+                                                                <h:outputText value="#{itemLFBL.quantite}" />
+                                                            </p:column>
+
+                                                            <p:column style="width: 7%">
+                                                                <f:facet name="header">
+                                                                    <h:outputText value="#{bundle.PrixUnitaire}" />
+                                                                </f:facet>
+                                                                <h:outputText value="#{itemLFBL.prixUnitaireHT}" />
+                                                            </p:column>
+
+                                                            <p:column style="width: 7%">
+                                                                <f:facet name="header">
+                                                                    <h:outputText value="#{bundle.Remise}" />
+                                                                </f:facet>
+                                                                <h:outputText value="#{itemLFBL.remise}" />
+                                                            </p:column>
+
+                                                            <p:column style="width: 7%">
+                                                                <f:facet name="header">
+                                                                    <h:outputText value="#{bundle.PrixUnitaireApresRemise}" />
+                                                                </f:facet>
+                                                                <h:outputText value="#{itemLFBL.prixUnitaireApresRemise}" />
+                                                            </p:column>
+
+                                                            <p:column style="width: 7%">
+                                                                <f:facet name="header">
+                                                                    <h:outputText value="#{bundle.TVA}" />
+                                                                </f:facet>
+                                                                <h:outputText value="#{itemLFBL.tvaArticle}" />
+                                                            </p:column>
+
+                                                            <p:column  style="width: 7%" >
+                                                                <f:facet name="header">
+                                                                    <h:outputText value="#{bundle.MontantHT}"/>
+                                                                </f:facet>
+                                                                <h:outputText value="#{itemLFBL.totalHT}"/>
+                                                            </p:column>
+
+                                                        </p:dataTable>
+                                                    </p:rowExpansion>
+
+
+                                                </p:dataTable>
+
+                                            </div>
+
+                                        </h:panelGroup>
+                                    </h:panelGroup>
+
+                                    <div class="x_content" >
+
+                                    </div>
+
+                                    <div class="x_title">
+                                        <h2 style="color: #1a8ea5">#{bundle.Taxes}</h2>                      
+                                        <div class="clearfix"></div>
+                                    </div>
+
+                                    <div class="x_content" >
+
+                                        <p:dataTable id="idTableTaxe"  value="#{factureController.listTaxeFacture}" emptyMessage="#{bundle.TableauVide}" var="item"   rowKey="#{item.id}-#{item.parametrageTaxe.libelle}" selection="#{factureController.selectedSingleTaxe}" liveResize="true">
+
+                                            <f:facet  name="header">
+                                                <div style="height: 35px" align="right">
+                                                    <p:commandButton  title="#{bundle.Nouveau}"  id="addButton2" icon="fa fa-fw fa-plus" style="width: 30px; height: 30px; margin: 3px;" styleClass="btn secondary-btn" oncomplete="PF('dlgEditTaxe').show()" />
+
+                                                    <p:commandButton  title="#{bundle.Supprimer}" id="deleteButton" icon="fa fa-fw fa-trash-o" style="width: 30px; height: 30px; margin: 3px;" styleClass="btn secondary-btn" oncomplete="PF('confirmationTaxe').show()"   />
+
+                                                </div>
+                                            </f:facet>
+
+
+
+                                            <p:column selectionMode="single" style="width:3%;text-align:center;" />
+                                            <p:column  >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Libelle}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.parametrageTaxe.libelle}"/>
+                                            </p:column>
+
+
+                                            <p:column  >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Valeur}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.valeur}"  />                              
+                                            </p:column>
+
+                                            <p:column  >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Type}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.typeTaxeString}"  />                              
+                                            </p:column>
+
+
+                                            <p:column  >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Montant}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.montant}"  />                              
+                                            </p:column>
+
+                                            <p:columnGroup type="footer">
+                                                <p:row>
+                                                    <p:column colspan="4" style="text-align:right" footerText="#{bundle.Total}" />
+                                                    <p:column  colspan="1" footerText="#{factureController.selected.totalTaxe}" />
+                                                </p:row>
+                                            </p:columnGroup>
+
+                                        </p:dataTable>
+
+                                    </div>
+
+
+
+
+
+                                    <p:confirmDialog id="confirmDialogSuppTax" message="#{bundle.ConfirmationSupression}" header="#{bundle.TitreDialogSupression}" severity="alert"  widgetVar="confirmationTaxe">
+                                        <p:commandButton id="confirmTax" value="#{bundle.Valider}" style="float: right" oncomplete="PF('confirmationTaxe').hide()" icon="ui-icon-check" action="#{factureController.deleteTaxeEdit()}"  update="f1, f1:montantTTC" />
+                                        <p:commandButton id="declineTax" value="#{bundle.Annuler}" style="float: right" onclick="PF('confirmationTaxe').hide()" icon="ui-icon-close" type="button" />
+                                    </p:confirmDialog>
+
+                                    <p:confirmDialog id="confirmDialogSupp" message="#{bundle.ConfirmationSupression}" header="#{bundle.TitreDialogSupression}" severity="alert"  widgetVar="confirmation">
+                                        <p:commandButton id="confirm" value="#{bundle.Valider}" style="float: right" oncomplete="PF('confirmation').hide()" icon="ui-icon-check" action="#{factureController.deleteFromListLigneFacture()}"  update="f1" />
+                                        <p:commandButton id="decline" value="#{bundle.Annuler}" style="float: right" onclick="PF('confirmation').hide()" icon="ui-icon-close" type="button" />
+                                    </p:confirmDialog>
+
+                                </h:form>
+
+
+                                <h:form id="form">
+                                    <p:dialog header="#{bundle.Nouveau}" widgetVar="dlg2" modal="true" height="40%" width="40%">
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Categorie} : *" for="Categorie" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectOneMenu id="Categorie" value="#{factureController.categorie}"  title="#{bundle.Categorie}" style="width: 90%; min-width: 180px"  styleClass="form-control" required="true" filter="true" filterMatchMode="contains" effect="fade" var="l">
+                                                    <f:selectItems value="#{categorieController.itemsAvailableSelectOneProduits}" var="cl" itemLabel="#{cl.libelle}" itemValue="#{cl}"  />
+                                                    <p:ajax update="article" listener="#{factureController.changedArticle()}"/>
+                                                    <p:column>
+                                                        <h:outputText value="#{l.libelleSuiteParentString}" />
+                                                    </p:column>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group" id="idDivArticle">
+                                            <h:outputLabel value="#{bundle.Article}: *" for="article" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectOneMenu id="article" value="#{factureController.selectedLigneFacture.article}"  title="#{bundle.Article}" style="width: 90%; min-width: 180px" styleClass="form-control" required="true" filter="true" filterMatchMode="contains" effect="fade" var="l">
+                                                    <f:selectItems value="#{factureController.itemsAvailableSelectOneArticle}" var="cl" itemLabel="#{cl}" itemValue="#{cl}"  />
+                                                    <p:ajax update="tva, prixUnitaire, Remise, quantite, NouveauPrixUnitaire12" listener="#{factureController.listnerPrixUnitaire()}"/>
+                                                    <p:column>
+                                                        <h:outputText value="#{l.libelle}" />
+                                                    </p:column>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.PrixUnitaire}: *" for="prixUnitaire" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:inputText id="prixUnitaire" value="#{factureController.selectedLigneFacture.prixUnitaireHT}" title="#{bundle.PrixUnitaire}" style="width: 90%; min-width: 180px" styleClass="form-control" required="true">
+                                                    <f:validateDoubleRange minimum="0.001"/>
+                                                    <p:keyFilter for="prixUnitaire" mask="num"/>
+                                                    <p:ajax update="totaleHT,totaleTTC, NouveauPrixUnitaire12" listener="#{factureController.changedTotalHtTotalTtc()}" />
+
+                                                </p:inputText>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.TVA}: " for="tva" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="tva"  value="#{factureController.selectedLigneFacture.tvaArticle}" title="#{bundle.TVA}" style="width: 90%; min-width: 180px" styleClass="form-control">
+                                                </p:outputLabel>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Remise}: " for="Remise" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:inputText id="Remise" value="#{factureController.selectedLigneFacture.remise}"  title="#{bundle.Remise}" required="true" style="width: 90%; min-width: 180px" styleClass="form-control">
+                                                    <f:validateLongRange minimum="0"  maximum="90" />
+                                                    <p:ajax update="totaleHT,totaleTTC, NouveauPrixUnitaire12" listener="#{factureController.changedTotalHtTotalTtc()}" />
+                                                </p:inputText>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.PrixUnitaireApresRemise}: " id="NouveauPrixUnitaire1" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel value="#{factureController.selectedLigneFacture.prixUnitaireApresRemise} " id="NouveauPrixUnitaire12" style="width: 90%; min-width: 180px" styleClass="form-control">
+                                                </p:outputLabel>
+
+                                            </div>
+                                        </div>
+
+
+
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Quantite}: *" for="quantite" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:inputText id="quantite" value="#{factureController.selectedLigneFacture.quantite}" title="#{bundle.Quantite}" required="true" style="width: 90%; min-width: 180px" styleClass="form-control">
+                                                    <f:convertNumber integerOnly="true"/>
+                                                    <f:validateLongRange minimum="1"/>
+                                                    <p:keyFilter for="quantite" mask="num"/>
+                                                    <p:ajax update="totaleHT,totaleTTC" listener="#{factureController.changedTotalHtTotalTtc()}" />
+                                                </p:inputText>
+
+
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.MontantHT}: " for="totaleHT" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="totaleHT"  value="#{factureController.selectedLigneFacture.totalHT}" title="#{bundle.MontantHT}" style="width: 90%; min-width: 180px" styleClass="form-control">
+
+                                                </p:outputLabel>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.MontantTTC}: " for="totaleTTC" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="totaleTTC"  value="#{factureController.selectedLigneFacture.totalTTC}" title="#{bundle.MontantTTC}" style="width: 90%; min-width: 180px" styleClass="form-control">
+
+                                                </p:outputLabel>
+
+                                            </div>
+                                        </div>
+
+                                        <p:commandButton title="#{bundle.Valider}" update=":idTable, :montantTTC, :montantHT " id="addButton3" action="#{factureController.validerDetailArticle()}" type="push" icon="fa fa-save" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" ajax="false" />
+
+                                    </p:dialog>
+                                </h:form>
+
+                                <h:form id="formTaxe">
+                                    <p:dialog header="#{bundle.Taxes}" widgetVar="dlgEditTaxe" modal="true" height="50%" width="30%">
+                                        <p:commandButton title="#{bundle.Valider}" update=":idTableTaxe, f1:totalTTC " id="addButton3" action="#{factureController.validerTaxeFactureEdit() }" type="push"  icon="fa fa-save" style="float: right; width: 40px; height: 40px; margin: 3px;" styleClass="btn btn-primary" ajax="false" />
+
+                                        <div class="x_content">
+                                            <p:dataTable id="checkboxDT" var="itemTaxe" value="#{factureController.listParametrageTaxeEntreprise}" selection="#{factureController.selectedListParametrageTaxe}" rowKey="#{itemTaxe.id}" style="margin-bottom:0" emptyMessage="#{bundle.TableauVide}">
+
+                                                <p:column selectionMode="multiple" style="width:40px;text-align:center"/>
+
+
+                                                <p:column  >
+                                                    <f:facet name="header">
+                                                        <h:outputText value="#{bundle.Taxe}"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{itemTaxe.libelle}"  />                              
+                                                </p:column>
+
+                                                <p:column  >
+                                                    <f:facet name="header">
+                                                        <h:outputText value="#{bundle.Valeur}"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{itemTaxe.valeur}"  />                              
+                                                </p:column>
+
+
+                                                <p:column  >
+                                                    <f:facet name="header">
+                                                        <h:outputText value="#{bundle.Type}"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{itemTaxe.typeTaxeString}"  />                              
+                                                </p:column>
+
+
+                                                <p:column  >
+                                                    <f:facet name="header">
+                                                        <h:outputText value="#{bundle.Calcul}"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{bundle.AvantTva}"  rendered="#{itemTaxe.apresTva == false}" />    
+                                                    <h:outputText value="#{bundle.ApresTVA}"  rendered="#{itemTaxe.apresTva == true}" />    
+                                                </p:column>
+
+                                                <p:column  >
+                                                    <f:facet name="header">
+                                                        <h:outputText value="#{bundle.Operation}"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{itemTaxe.operation}"  />                              
+                                                </p:column>        
+                                            </p:dataTable>
+                                        </div>
+                                    </p:dialog>
+                                </h:form>
+
+
+                                <h:form id="formEdit">
+
+                                    <p:dialog header="#{bundle.ModifierDetail}" widgetVar="dlg" id="editDialog" modal="true" height="40%" width="40%">
+
+
+
+
+                                        <div class="form-group">
+                                            <h:outputLabel value="#{bundle.Article} :" for="Article" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="Article" value="#{factureController.selectedLigneFacture.libelleArticle}"  title="#{bundle.Article}" style="width: 90%; min-width: 180px" styleClass="form-control" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.PrixUnitaire}: *" for="prixUnitaire" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:inputText id="prixUnitaire" value="#{factureController.selectedLigneFacture.prixUnitaireHT}" title="#{bundle.PrixUnitaire}" style="width: 90%; min-width: 180px" styleClass="form-control" rendered="true">
+                                                    <f:validateDoubleRange minimum="0.001"/>
+                                                    <p:keyFilter for="prixUnitaire" mask="num"/>
+                                                    <p:ajax update="totaleHT,totaleTTC, NouveauPrixUnitaire122" listener="#{factureController.changedTotalHtTotalTtc()}" />
+
+                                                </p:inputText>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <h:outputLabel value="#{bundle.TVA} :" for="TVA" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="TVA" value="#{factureController.selectedLigneFacture.tvaArticle}"  title="#{bundle.TVA}" style="width: 90%; min-width: 180px" styleClass="form-control" />
+                                            </div>
+                                        </div>     
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Remise}: *" for="Remise" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:inputText id="Remise" value="#{factureController.selectedLigneFacture.remise}"  title="#{bundle.Remise}" style="width: 90%; min-width: 180px" styleClass="form-control">
+                                                    <f:validateLongRange minimum="0"  maximum="90" />
+                                                    <p:ajax update="totaleHT,totaleTTC, NouveauPrixUnitaire122" listener="#{factureController.changedTotalHtTotalTtc()}" />
+                                                </p:inputText>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.PrixUnitaireApresRemise}: " id="NouveauPrixUnitaire11" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel value="#{factureController.selectedLigneFacture.prixUnitaireApresRemise} " id="NouveauPrixUnitaire122" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+
+                                            </div>
+                                        </div>
+
+                                        <!--div class="form-group" >
+                                            <h:outputLabel value="{bundle.QuantiteMaximale}: *" for="QuantiteMaximale" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="QuantiteMaximale" value="{factureController.selectedLigneFacture.quantiteMax}" title="{bundle.QuantiteMaximale}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+
+                                            </div>
+                                        </div-->
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Quantite}: *" for="quantite" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:inputText id="quantite" value="#{factureController.selectedLigneFacture.quantite}" title="#{bundle.Quantite}" required="true" style="width: 90%; min-width: 180px" styleClass="form-control">
+                                                    <f:convertNumber integerOnly="true"/>
+                                                    <f:validateLongRange minimum="1"/>
+                                                    <p:keyFilter for="quantite" mask="num"/>
+                                                    <p:ajax update="totaleHT,totaleTTC" listener="#{factureController.changedTotalHtTotalTtc()}" />
+                                                </p:inputText>
+
+
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.MontantHT}: " for="totaleHT" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="totaleHT"  value="#{factureController.selectedLigneFacture.totalHT}" title="#{bundle.MontantHT}" style="width: 90%; min-width: 180px" styleClass="form-control">
+
+                                                </p:outputLabel>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.MontantTTC}: " for="totaleTTC" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="totaleTTC"  value="#{factureController.selectedLigneFacture.totalTTC}" title="#{bundle.MontantTTC}" style="width: 90%; min-width: 180px" styleClass="form-control">
+
+                                                </p:outputLabel>
+
+                                            </div>
+                                        </div>
+
+
+                                        <p:commandButton title="#{bundle.Valider}"  id="addButton3" action="#{factureController.validerDetailArticle()}" icon="fa fa-save" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" type="push" ajax="false"/>
+
+                                    </p:dialog>
+                                </h:form>     
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+
+        </ui:define>
+    </ui:composition>
+
+</html>

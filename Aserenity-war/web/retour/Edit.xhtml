@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+
+        <ui:define name="pageContent">
+
+            
+
+            <h:panelGroup id="messagePanel" layout="block">
+                <p:messages closable="true" globalOnly="true" showDetail="true"><p:autoUpdate />
+                </p:messages>
+            </h:panelGroup>  
+
+            <div class="layout-content">
+
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="shadow-box ui-shadow-5">
+                            <div class="card">
+
+                                <h:form id="f1">
+
+                                    <div class="x_title">
+                                        <h2 style="color: #607D8B">#{bundle.GRetour}</h2>
+                                        <ul class="nav navbar-right panel_toolbox">                          
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('retour').modification}" title="Enregistrer" id="addButton" action="#{retourController.update()}"  type="push" ajax="false"  icon="fa fa-save" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                            </li>
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('retour').lecture}" title="Annuler" ajax="false"  id="updateButton" action="#{retourController.prepareList()}"  immediate="true" icon="fa fa-reply"  style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                            </li>
+
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>         
+
+
+                                    <div class="x_content" >  
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Origine}: " for="origine"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="origine" value="#{retourController.selected.origineRetourtring}" title="#{bundle.Origine}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Numero}: " for="numero"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="numero" value="#{retourController.selected.numeroFactureBL}" title="#{bundle.Numero}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Client}: " for="categorie"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="categorie" value="#{retourController.selected.libelleClient}" title="#{bundle.Client}" styleClass="form-control" style="width: 90%; min-width: 180px"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Total} : "  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:inputText id="montantTTC" value="#{retourController.selected.totalTTC}" title="#{bundle.Totale}" disabled="true"  styleClass="form-control" style="width: 90%; min-width: 180px"/>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="x_title">
+                                        <h2 style="color: #1a8ea5">#{bundle.Details}</h2>
+                                        <div class="clearfix"></div>
+                                    </div>
+
+                                    <div class="x_content" >
+                                        <p:dataTable  value="#{retourController.selected.listeLigneRetours}"  var="item" liveResize="true"  editable="true" editMode="cell" id="table"    >
+
+                                                   <p:ajax event="cellEdit" listener="#{retourController.onCellEdit}" update ="f1:montantTTC" />
+                                            
+                                                   <p:column style="width: 8%" >
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{bundle.Code}" />
+                                                        </f:facet>
+                                                        <h:outputText value="#{item.codeArticle}" />
+                                                    </p:column>
+
+                                                    <p:column style="width: 25%" >
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{bundle.Article}" />
+                                                        </f:facet>
+                                                        <h:outputText value="#{item.libelleArticle}" />
+                                                    </p:column>
+
+                                            <p:column style="width: 7%" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Quantite}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.quantite}" />
+                                            </p:column>
+
+                                            <p:column style="width: 7%" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.QuantiteCasse}" />
+                                                </f:facet>
+
+                                                <p:cellEditor>
+                                                    <f:facet name="output"><h:outputText value="#{item.quantiteCasse}" /></f:facet>
+                                                    <f:facet name="input">
+                                                        <p:inputText value="#{item.quantiteCasse}" style="width:96%;color:black" >
+                                                            <f:validateDoubleRange minimum="0"/>
+                                                            <p:keyFilter mask="num" ></p:keyFilter>
+                                                            <p:ajax  update="table" />
+                                                        </p:inputText>
+                                                    </f:facet>
+                                                </p:cellEditor>
+
+                                            </p:column>
+
+                                            <p:column style="width: 7%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.PrixRetour}" />
+                                                </f:facet>
+
+                                                <p:cellEditor>
+                                                    <f:facet name="output"><h:outputText value="#{item.prixUnitaireHT}" /></f:facet>
+                                                    <f:facet name="input">
+                                                        <p:inputText value="#{item.prixUnitaireHT}" style="width:96%;color:black" >
+                                                            <f:validateDoubleRange minimum="0"  />
+                                                            <p:keyFilter mask="num" ></p:keyFilter>
+                                                            <p:ajax  update="table" />
+                                                        </p:inputText>
+                                                    </f:facet>
+                                                </p:cellEditor>
+
+                                            </p:column>
+
+                                            <p:column style="width: 7%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Total}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.totalTTC} " /> 
+                                            </p:column>
+
+                                        </p:dataTable>
+
+                                    </div>
+                                </h:form>     
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+
+        </ui:define>
+    </ui:composition>
+
+</html>

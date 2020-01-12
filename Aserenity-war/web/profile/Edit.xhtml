@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+
+        <ui:define name="pageContent">
+
+            
+
+            <h:panelGroup id="messagePanel" layout="block">
+                <p:messages closable="true" globalOnly="true" showDetail="true"><p:autoUpdate />
+                </p:messages>
+            </h:panelGroup>
+
+            <div class="layout-content">
+
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="shadow-box ui-shadow-5">
+                            <div class="card">
+
+                                <h:form id="f1">
+
+                                    <div class="x_title">
+                                        <h2 style="color: #607D8B">#{bundle.GProfile}</h2>
+                                        <ul class="nav navbar-right panel_toolbox">                          
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('profile').modification}" title="Enregistrer" id="addButton" action="#{profileController.update()}"  type="push" ajax="false"  icon="fa fa-save" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                            </li>
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('profile').lecture}" title="Annuler"  ajax="false" id="updateButton" action="#{profileController.prepareList()}"  immediate="true" icon="fa fa-reply"  style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                            </li>
+
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>         
+
+
+                                    <div class="x_content" >   
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Libelle}: *" for="libelle"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:inputText id="libelle" required="true" value="#{profileController.selected.libelle}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Description} : " for="Description"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:inputTextarea id="Description" value="#{profileController.selected.description}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div> 
+
+                                    </div> 
+
+                                    <div class="x_content" >
+
+                                        <p:dataTable var="item" value="#{profileController.selected.listPrivileges}" paginator="false" rows="500" id="tbl"
+                                                     widgetVar="objectTable" rowIndexVar="index"  emptyMessage="#{bundle.TableauVide}"
+                                                     editable="true" editMode="cell" expandableRowGroups="true"  sortBy="#{item.orderModule}" >
+
+
+                                            <p:headerRow>
+                                                <p:column colspan="8" rendered="#{item.moduleActiver == true}">
+                                                    <h:outputText style="padding-left: 10px" value="#{bundle.MCommande}" rendered="#{item.orderModule == 1}"/>
+
+                                                    <h:outputText style="padding-left: 10px" value="#{bundle.MVente}" rendered="#{item.orderModule == 2}"/> 
+
+                                                    <h:outputText style="padding-left: 10px" value="#{bundle.MAchats}" rendered="#{item.orderModule == 3}"/>
+                                                    <h:outputText style="padding-left: 10px" value="#{bundle.MActualites}" rendered="#{item.orderModule == 4}"/>
+                                                    <h:outputText style="padding-left: 10px" value="#{bundle.MReclamations}" rendered="#{item.orderModule == 5}"/>
+                                                    <h:outputText style="padding-left: 10px" value="#{bundle.MCommerciale}" rendered="#{item.orderModule == 6}"/>
+                                                    <h:outputText style="padding-left: 10px" value="#{bundle.MVeilles}" rendered="#{item.orderModule == 7}"/>
+                                                    <h:outputText style="padding-left: 10px" value="#{bundle.MSuggestions}" rendered="#{item.orderModule == 8}"/>
+                                                    <h:outputText style="padding-left: 10px" value="#{bundle.MMerchandising}" rendered="#{item.orderModule == 9}"/>         
+                                                    <h:outputText style="padding-left: 10px" value="#{bundle.MProjet}" rendered="#{item.orderModule == 10}"/>       
+                                                    <h:outputText style="padding-left: 10px" value="#{bundle.MConges}" rendered="#{item.orderModule == 11}"/> 
+                                                    <h:outputText style="padding-left: 10px" value="#{bundle.MProduction}" rendered="#{item.orderModule == 12}"/>
+
+                                                    <h:outputText style="padding-left: 10px" value="#{bundle.MStock}" rendered="#{item.orderModule == 13}"/>
+                                                    <h:outputText style="padding-left: 10px" value="#{bundle.MProduit}" rendered="#{item.orderModule == 60}"/>
+
+                                                    <h:outputText style="padding-left: 10px" value="#{bundle.MPromotion}" rendered="#{item.orderModule == 61}"/>
+
+                                                    <h:outputText style="padding-left: 10px" value="#{bundle.MClient}" rendered="#{item.orderModule == 62}"/>
+
+                                                    <h:outputText style="padding-left: 10px" value="#{bundle.MLivreur}" rendered="#{item.orderModule == 63}"/>
+                                                    <h:outputText style="padding-left: 10px" value="#{bundle.MRessourcesHumaine}" rendered="#{item.orderModule == 70}"/>
+
+                                                    <h:outputText style="padding-left: 10px" value="#{bundle.MParametrage}" rendered="#{item.orderModule == 90}"/>
+
+                                                    <h:outputText style="padding-left: 10px" value="#{bundle.MJourneaux}" rendered="#{item.orderModule == 91}"/>
+                                                </p:column>
+
+                                            </p:headerRow>
+
+
+                                            <p:columnGroup type="header">
+                                                <p:row>
+                                                    <p:column style="width: 25%" headerText="#{bundle.Modules}" >
+
+                                                    </p:column>
+
+                                                    <p:column style="width: 10%" headerText="#{bundle.Lecture}"  >
+                                                        <f:facet name="header">
+                                                            <p:selectBooleanCheckbox value="#{profileController.lectureTous}" >
+                                                                <p:ajax event="valueChange"  listener="#{profileController.onSelectLecture}"   update="tbl"/>
+                                                            </p:selectBooleanCheckbox><br/>
+                                                            <p:outputLabel value="#{bundle.Lecture}"  style="padding-bottom:  10px"/>
+                                                        </f:facet>
+
+                                                    </p:column>
+
+                                                    <p:column style="width: 10%" headerText="#{bundle.Creation}" >
+                                                        <f:facet name="header">
+                                                            <p:selectBooleanCheckbox value="#{profileController.creationTous}" >
+                                                                <p:ajax event="valueChange"  listener="#{profileController.onSelectCreation}"   update="tbl"/>
+                                                            </p:selectBooleanCheckbox><br/>
+                                                            <p:outputLabel value="#{bundle.Creation}"  style="padding-bottom:  10px"/>
+                                                        </f:facet>
+
+                                                    </p:column>
+
+                                                    <p:column style="width: 10%" headerText="#{bundle.Modification}" >
+                                                        <f:facet name="header">
+                                                            <p:selectBooleanCheckbox value="#{profileController.modificationTous}" >
+                                                                <p:ajax event="valueChange"  listener="#{profileController.onSelectModification}"   update="tbl"/>
+                                                            </p:selectBooleanCheckbox><br/>
+                                                            <p:outputLabel value="#{bundle.Modification}"  style="padding-bottom:  10px"/>
+                                                        </f:facet>
+
+                                                    </p:column>
+
+                                                    <p:column style="width: 10%" headerText="#{bundle.Supression}" >
+                                                        <f:facet name="header">
+                                                            <p:selectBooleanCheckbox value="#{profileController.supressionTous}" >
+                                                                <p:ajax event="valueChange"  listener="#{profileController.onSelectSupression}"   update="tbl"/>
+                                                            </p:selectBooleanCheckbox><br/>
+                                                            <p:outputLabel value="#{bundle.Supression}"  style="padding-bottom:  10px"/>
+                                                        </f:facet>
+
+                                                    </p:column>
+
+                                                    <p:column style="width: 10%" headerText="#{bundle.Activation}" >
+                                                        <f:facet name="header">
+                                                            <p:selectBooleanCheckbox value="#{profileController.activationTous}" >
+                                                                <p:ajax event="valueChange"  listener="#{profileController.onSelectActivation()}"   update="tbl"/>
+                                                            </p:selectBooleanCheckbox><br/>
+                                                            <p:outputLabel value="#{bundle.Activation}"  style="padding-bottom:  10px"/>
+                                                        </f:facet>
+
+                                                    </p:column>
+
+                                                    <p:column style="width: 10%" headerText="#{bundle.Reinitialisation}" >
+                                                        <f:facet name="header">
+                                                            <p:selectBooleanCheckbox value="#{profileController.reinitialisationTous}" >
+                                                                <p:ajax event="valueChange"  listener="#{profileController.onSelectReinitialisation()}"   update="tbl"/>
+                                                            </p:selectBooleanCheckbox><br/>
+                                                            <p:outputLabel value="#{bundle.Reinitialisation}"  style="padding-bottom:  10px"/>
+                                                        </f:facet>
+
+                                                    </p:column> 
+                                                    
+                                                   <p:column style="width: 10%" headerText="#{bundle.Journalisation}" >
+                                                        <f:facet name="header">
+                                                            <p:selectBooleanCheckbox value="#{profileController.journalisationTous}" >
+                                                                <p:ajax event="valueChange"  listener="#{profileController.onSelectJournalisation()}"   update="tbl"/>
+                                                            </p:selectBooleanCheckbox><br/>
+                                                            <p:outputLabel value="#{bundle.Journalisation}"  style="padding-bottom:  10px"/>
+                                                        </f:facet>
+
+                                                    </p:column> 
+
+
+
+                                                </p:row>
+                                            </p:columnGroup>
+
+
+                                            <p:column rendered="#{item.moduleActiver == true}">
+                                                <!--   Commande  -->
+                                                <h:outputText value="#{bundle.DashboardCommandes}" rendered="#{item.libelle == 'GCmdDashboard' }" />
+                                                <h:outputText value="#{bundle.GCommande}" rendered="#{item.libelle == 'GCommande'}" />
+                                                <h:outputText value="#{bundle.GEtatCommande}" rendered="#{item.libelle == 'GEtatCommande'}" />
+                                                <h:outputText value="#{bundle.TDashboardCommendeVente}" rendered="#{item.libelle == 'GDaschboardCommandeVente'}" />
+                                                <!--   Vente  -->
+                                                <h:outputText value="#{bundle.DashboardVente}" rendered="#{item.libelle == 'GDashboard'}" />
+                                                <h:outputText value="#{bundle.GDevis}" rendered="#{item.libelle == 'GDevis'}" />
+                                                <h:outputText value="#{bundle.GBonCommandeVente}" rendered="#{item.libelle == 'GBonCommandeVente'}" />
+                                                <h:outputText value="#{bundle.GBonLivraison}" rendered="#{item.libelle == 'GBonLivraison'}" />
+                                                <h:outputText value="#{bundle.GFacture}" rendered="#{item.libelle == 'GFacture'}" />
+                                                <h:outputText value="#{bundle.GEncaissement}" rendered="#{item.libelle == 'GEncaissement'}" />
+                                                <h:outputText value="#{bundle.GBonSortie}" rendered="#{item.libelle == 'GBonSortie'}" />
+                                                <h:outputText value="#{bundle.GPaquet}" rendered="#{item.libelle == 'GPaquet'}" />
+                                                <h:outputText value="#{bundle.GStock}" rendered="#{item.libelle == 'GStock'}" />
+                                                <h:outputText value="#{bundle.GStockBS}" rendered="#{item.libelle == 'GStockBS'}" />
+                                                <h:outputText value="#{bundle.GStockPaquet}" rendered="#{item.libelle == 'GStockPaquet'}" />
+                                                <h:outputText value="#{bundle.GPaquetAnnules}" rendered="#{item.libelle == 'GPaquetAnnules'}" />
+                                                <h:outputText value="#{bundle.GEncaissementBonLivraison}" rendered="#{item.libelle == 'GEncaissementBonLivraison'}" />
+                                                <h:outputText value="#{bundle.GRapportVente}" rendered="#{item.libelle == 'GRapportVente'}" />
+                                                <h:outputText value="#{bundle.GTypeVente}" rendered="#{item.libelle == 'GTypeVente'}" />
+                                                <h:outputText value="#{bundle.GNatureVente}" rendered="#{item.libelle == 'GNatureVente'}" />
+                                                <h:outputText value="#{bundle.GTypeEncaissementVente}" rendered="#{item.libelle == 'GTypeEncaissementVente'}" />
+                                                <h:outputText value="#{bundle.TRetenuSource}" rendered="#{item.libelle == 'GRetenuSourceVente'}" />   
+                                                <h:outputText value="#{bundle.GParametrageTaxe}" rendered="#{item.libelle == 'GParametrageTaxe'}" />
+                                                <h:outputText value="#{bundle.GPrefixDevis}" rendered="#{item.libelle == 'GPrefixDevis'}" />
+                                                <h:outputText value="#{bundle.GPrefixFacture}" rendered="#{item.libelle == 'GPrefixFacture'}" />
+                                                <h:outputText value="#{bundle.GPrefixBonLivraison}" rendered="#{item.libelle == 'GPrefixBonLivraison'}" />
+                                                <h:outputText value="#{bundle.GMotifRejetDevisVente}" rendered="#{item.libelle == 'GMotifRejetDevisVente'}" />
+                                                <h:outputText value="#{bundle.GMotifsAnnulationBC}" rendered="#{item.libelle == 'GMotifsAnnulationBCVente'}" />
+                                                <h:outputText value="#{bundle.GMotifRejetBonLivraisonVente}" rendered="#{item.libelle == 'GMotifRejetBonLivraisonVente'}" />
+                                                <h:outputText value="#{bundle.GPrefixAvoirVente}" rendered="#{item.libelle == 'GPrefixAvoirVente'}" />
+                                                <h:outputText value="#{bundle.GAvoirVente}" rendered="#{item.libelle == 'GAvoirVente'}" />
+                                                <h:outputText value="#{bundle.GRetour}" rendered="#{item.libelle == 'GRetour'}" />
+                                                <h:outputText value="#{bundle.GMotifAvoir}" rendered="#{item.libelle == 'GMotifAvoir'}" />
+                                                <!--   Achat  -->
+                                                <h:outputText value="#{bundle.DashboardAchat}" rendered="#{item.libelle == 'GDashboardAchat'}" />
+                                                <h:outputText value="#{bundle.GDevis}" rendered="#{item.libelle == 'GDevisAchat'}" />
+                                                <h:outputText value="#{bundle.GBonCommandeAchat}" rendered="#{item.libelle == 'GBonCommandeAchat'}" />
+                                                <h:outputText value="#{bundle.GFacture}" rendered="#{item.libelle == 'GFactureAchat'}" />
+                                                <h:outputText value="#{bundle.GPaiement}" rendered="#{item.libelle == 'GPaiementAchat'}" />
+                                                <h:outputText value="#{bundle.GReception}" rendered="#{item.libelle == 'GReception'}" />
+                                                <h:outputText value="#{bundle.GArticle}" rendered="#{item.libelle == 'GArticleAchat'}" />
+                                                <h:outputText value="#{bundle.GInventaire}" rendered="#{item.libelle == 'GInventaire'}" />
+                                                <h:outputText value="#{bundle.GRetenuSource}" rendered="#{item.libelle == 'GRetenuSource'}" />
+                                                <h:outputText value="#{bundle.GTypeFournisseur}" rendered="#{item.libelle == 'GTypeFournisseur'}" />
+                                                <h:outputText value="#{bundle.GFournisseur}" rendered="#{item.libelle == 'GFournisseur'}" />
+                                                <h:outputText value="#{bundle.GTypeArticle}" rendered="#{item.libelle == 'GTypeArticle'}" />
+                                                <h:outputText value="#{bundle.GMarque}" rendered="#{item.libelle == 'GMarqueArticle'}" />
+                                                <h:outputText value="#{bundle.GCategorie}" rendered="#{item.libelle == 'GCategorieAchat'}" />
+                                                <h:outputText value="#{bundle.GModeReglement}" rendered="#{item.libelle == 'GModeReglement'}" />
+                                                <h:outputText value="#{bundle.GTauxRetenuSource}" rendered="#{item.libelle == 'GTauxRetenuSource'}" />
+                                                <h:outputText value="#{bundle.GPrefixBonCommandeAchat}" rendered="#{item.libelle == 'GPrefixBonCommandeAchat'}" />
+                                                <h:outputText value="#{bundle.GPrefixAvoirAchat}" rendered="#{item.libelle == 'GPrefixAvoirAchat'}" />
+                                                <h:outputText value="#{bundle.GAvoirAchat}" rendered="#{item.libelle == 'GAvoirAchat'}" />
+
+                                                <!-- Stock -->
+                                                <h:outputText value="#{bundle.GStockArticle}" rendered="#{item.libelle == 'GStockArticle'}" />
+                                                <!--   Actualité  -->    
+                                                <h:outputText value="#{bundle.GDashboardResauxSociaux}" rendered="#{item.libelle == 'GDashboardResauxSociaux'}" />
+                                                <h:outputText value="#{bundle.GEmailsDashboard}" rendered="#{item.libelle == 'GEmailsDashboard'}" />
+                                                <h:outputText value="#{bundle.GCompagneMailing}" rendered="#{item.libelle == 'GCompagneMailing'}" />
+                                                <h:outputText value="#{bundle.GNews}" rendered="#{item.libelle == 'GNews'}" />
+                                                <h:outputText value="#{bundle.GEvent}" rendered="#{item.libelle == 'GEvent'}" />
+                                                <h:outputText value="#{bundle.TPublicite}" rendered="#{item.libelle == 'TPublicite'}" />
+                                                <h:outputText value="#{bundle.TControleConnexionTV}" rendered="#{item.libelle == 'TControleConnexionTV'}" />
+                                                <h:outputText value="#{bundle.GChapitreFAQ}" rendered="#{item.libelle == 'GChapitreFAG'}" /> 
+                                                <h:outputText value="#{bundle.GQuestionResponseFAG}" rendered="#{item.libelle == 'GQuestionReponseFAQ'}" />
+                                                <!--   Reclamations  -->
+                                                <h:outputText value="#{bundle.GReclamationDash}" rendered="#{item.libelle == 'GReclamationDash'}" />
+                                                <h:outputText value="#{bundle.GReclamation}" rendered="#{item.libelle == 'GReclamation'}" />
+                                                <h:outputText value="#{bundle.GReclamationCommercial}" rendered="#{item.libelle == 'GReclamationCommercial'}" />
+                                                <h:outputText value="#{bundle.GReclamationConsommateurFinal}" rendered="#{item.libelle == 'GReclamationConsommateur'}" />
+                                                <h:outputText value="#{bundle.GTypeReclamation}" rendered="#{item.libelle == 'GTypeReclamation'}" />
+                                                <h:outputText value="#{bundle.GNatureReclamation}" rendered="#{item.libelle == 'GNatureReclamation'}" />  
+                                                <!--   Commerciale  -->
+                                                <h:outputText value="#{bundle.GSuiviDashboard}" rendered="#{item.libelle == 'GSuiviDashboard'}" />
+                                                <h:outputText value="#{bundle.GDaschboardQuestionnaireSatisfactionClient}" rendered="#{item.libelle == 'GDaschboardQuestionnaireSatisfactionClient'}" />
+
+                                                <h:outputText value="#{bundle.GDashboardQuestionnaire}" rendered="#{item.libelle == 'GDashboardQuestionnaire'}" />
+                                                <h:outputText value="#{bundle.RVisites}" rendered="#{item.libelle == 'RVisites'}" />
+                                                <h:outputText value="#{bundle.REnquetesPresenceArticle}" rendered="#{item.libelle == 'REnquetesPresenceArticle'}" />                                
+                                                <h:outputText value="#{bundle.REnquetesPatrimoine}" rendered="#{item.libelle == 'REnquetesPatrimoine'}" />
+                                                <h:outputText value="#{bundle.REnquetesHygiene}" rendered="#{item.libelle == 'REnquetesHygiene'}" />
+                                                <h:outputText value="#{bundle.REnquetesSatisfactionClient}" rendered="#{item.libelle == 'REnquetesSatisfactionClient'}" />
+                                                <h:outputText value="#{bundle.REnquetesConsommateur}" rendered="#{item.libelle == 'REnquetesConsommateur'}" />
+                                                <h:outputText value="#{bundle.REnquetesQuestionnaire}" rendered="#{item.libelle == 'REnquetesQuestionnaire'}" />
+                                                <h:outputText value="#{bundle.GSuiviPrixConcurrent}" rendered="#{item.libelle == 'GSuiviPrixConcurrent'}" />
+                                                <h:outputText value="#{bundle.GPlanificationVisite}" rendered="#{item.libelle == 'GPlanificationVisite'}" />                                
+                                                <h:outputText value="#{bundle.GCommercial}" rendered="#{item.libelle == 'GCommercial'}" />
+                                                <h:outputText value="#{bundle.GConsommateurFinal}" rendered="#{item.libelle == 'GConsommateurFinal'}" />
+                                                <h:outputText value="#{bundle.GPlanificationActiviteClient}" rendered="#{item.libelle == 'GPlanificationActiviteClient'}" />
+                                                <h:outputText value="#{bundle.GObjectifVisite}" rendered="#{item.libelle == 'GObjectifVisite'}" />
+                                                <h:outputText value="#{bundle.GTemplateArticle}" rendered="#{item.libelle == 'GTemplateArticle'}" />
+                                                <h:outputText value="#{bundle.QuestionnaireHygienes}" rendered="#{item.libelle == 'QuestionnaireHygienes'}" />
+                                                <h:outputText value="#{bundle.QuestionnaireSatisfactionClients}" rendered="#{item.libelle == 'QuestionnaireSatisfactionClients'}" />
+                                                <h:outputText value="#{bundle.QuestionnaireSatisfactionConsomateurs}" rendered="#{item.libelle == 'QuestionnaireSatisfactionConsomateurs'}" />
+                                                <h:outputText value="#{bundle.GQuestionnaire}" rendered="#{item.libelle == 'GQuestionnaire'}" />
+                                                <h:outputText value="#{bundle.GTemplateArticlesConcurrents}" rendered="#{item.libelle == 'GTemplateArticlesConcurrents'}" />
+                                                <h:outputText value="#{bundle.GTacheActiviteClient}" rendered="#{item.libelle == 'GTacheActiviteClient'}" />
+                                                <h:outputText value="#{bundle.GEtapeActiviteClient}" rendered="#{item.libelle == 'GEtapeActiviteClient'}" />
+                                                <!--   Veilles  -->                                   
+                                                <h:outputText value="#{bundle.GVeille}" rendered="#{item.libelle == 'GVeille'}" />
+                                                <h:outputText value="#{bundle.GProspections}" rendered="#{item.libelle == 'GProspections'}" />
+                                                <h:outputText value="#{bundle.GParrainages}" rendered="#{item.libelle == 'GParrainages'}" />
+                                                <h:outputText value="#{bundle.GPlanificationAnimation}" rendered="#{item.libelle == 'GPlanificationAnimation'}" />
+                                                <h:outputText value="#{bundle.GTypeVeille}" rendered="#{item.libelle == 'GTypeVeille'}" />
+                                                <h:outputText value="#{bundle.GNatureVeille}" rendered="#{item.libelle == 'GNatureVeille'}" />                                                               
+                                                <h:outputText value="#{bundle.GEtatProspection}" rendered="#{item.libelle == 'GEtatProspection'}" />
+                                                <h:outputText value="#{bundle.GEvaluationProspection}" rendered="#{item.libelle == 'GEvaluationProspection'}" />
+                                                <h:outputText value="#{bundle.GEtatParrainage}" rendered="#{item.libelle == 'GEtatParrainage'}" />
+                                                <h:outputText value="#{bundle.GAnimatrices}" rendered="#{item.libelle == 'GAnimatrices'}" />
+                                                <!--   Suggestion  --> 
+                                                <h:outputText value="#{bundle.GSuggestionDashboard}" rendered="#{item.libelle == 'GSuggestionDashboard'}" />
+                                                <h:outputText value="#{bundle.GSuggestion}" rendered="#{item.libelle == 'GSuggestion'}" />
+                                                <h:outputText value="#{bundle.GTypeSuggestion}" rendered="#{item.libelle == 'GTypeSuggestion'}" />
+                                                <h:outputText value="#{bundle.GNatureSuggestion}" rendered="#{item.libelle == 'GNatureSuggestion'}" />
+
+                                                <!--   Merchandising  -->                                 
+                                                <!-- <h:outputText value="{bundle.GPlanificationActionMerchandising}" rendered="{item.libelle == 'GPlanificationActionMerchandising'}" /> -->
+                                                <h:outputText value="#{bundle.GPlanVisiteMerchandising}" rendered="#{item.libelle == 'GPlanVisiteMerchandising'}" />
+                                                <h:outputText value="#{bundle.GHistoriqueVisiteMerchandiser}" rendered="#{item.libelle == 'GHistoriqueVisiteMerchandiser'}" />
+                                                <h:outputText value="#{bundle.GRapportVisiteMerchandising}" rendered="#{item.libelle == 'GRapportVisiteMerchandising'}" />
+                                                <h:outputText value="#{bundle.GBudgetMerchndising}" rendered="#{item.libelle == 'GBudgetMerchndising'}" />
+                                                <h:outputText value="#{bundle.GParametrageActionMerchandising}" rendered="#{item.libelle == 'GParametrageActionMerchandising'}" />
+                                                <h:outputText value="#{bundle.GTypeActionParametrageMerchandising}" rendered="#{item.libelle == 'GTypeActionParametrageMerchandising'}" />
+                                                <h:outputText value="#{bundle.GTemplateArticleMerchandising}" rendered="#{item.libelle == 'GTemplateArticleMerchandising'}" />
+                                                <h:outputText value="#{bundle.GEtatVisiteMerchandising}" rendered="#{item.libelle == 'GEtatVisiteMerchandising'}" />
+                                                <h:outputText value="#{bundle.GNivauDeVisibiliteMerchandising}" rendered="#{item.libelle == 'GNivauDeVisibiliteMerchandising'}" />
+                                                <h:outputText value="#{bundle.GMecanismePromotionel}" rendered="#{item.libelle == 'GMecanismePromotionel'}" />
+                                                <h:outputText value="#{bundle.GTypeAnimation}" rendered="#{item.libelle == 'GTypeAnimation'}" />
+                                                <h:outputText value="#{bundle.GMotifAnnulationVisiteMerchandiser}" rendered="#{item.libelle == 'GMotifAnnulationVisiteMerchandiser'}" />
+                                                <h:outputText value="#{bundle.GMiseEnAvant}" rendered="#{item.libelle == 'GMiseEnAvant'}" />
+                                                <h:outputText value="#{bundle.GTypologie}" rendered="#{item.libelle == 'GTypologie'}" />
+                                                <h:outputText value="#{bundle.GActionEntreprise}" rendered="#{item.libelle == 'GActionEntreprise'}" />
+                                                <h:outputText value="#{bundle.GHistoriqueActionsConcurrents}" rendered="#{item.libelle == 'GHistoriqueActionsConcurrents'}" />
+                                                <h:outputText value="#{bundle.GMotifBlocageArticle}" rendered="#{item.libelle == 'GMotifBlocageArticle'}" />
+                                                <h:outputText value="#{bundle.VeilleConcurrentielle}" rendered="#{item.libelle == 'GVeilleConcurrentielle'}" />
+                                                <h:outputText value="#{bundle.VeillePromotionnelle}" rendered="#{item.libelle == 'GVeillePromotionnelle'}" />
+
+                                                <!--   Projets  --> 
+                                                <h:outputText value="#{bundle.GReporting}" rendered="#{item.libelle == 'GReporting'}" />
+                                                <h:outputText value="#{bundle.GProjets}" rendered="#{item.libelle == 'GProjets'}" />
+                                                <h:outputText value="#{bundle.GTache}" rendered="#{item.libelle == 'GTache'}" />
+                                                <h:outputText value="#{bundle.GFeuillesTemps}" rendered="#{item.libelle == 'GFeuillesTemps'}" />
+                                                <h:outputText value="#{bundle.GEquipe}" rendered="#{item.libelle == 'GEquipe'}" />
+                                                <!--   Conges  -->                                 
+                                                <h:outputText value="#{bundle.GReportingConges}" rendered="#{item.libelle == 'GReportingConges'}" />
+                                                <h:outputText value="#{bundle.GHistoriqueConges}" rendered="#{item.libelle == 'GHistoriqueConges'}" />
+                                                <h:outputText value="#{bundle.GCalendrierConges}" rendered="#{item.libelle == 'GCalendrierConges'}" />
+                                                <h:outputText value="#{bundle.GNouvelleDemandeConges}" rendered="#{item.libelle == 'GNouvelleDemandeConges'}" />
+                                                <h:outputText value="#{bundle.GTypesConges}" rendered="#{item.libelle == 'GTypesConges'}" />
+                                                <h:outputText value="#{bundle.GEtatConges}" rendered="#{item.libelle == 'GEtatConges'}" />
+                                                <!--   Production  -->
+                                                <h:outputText value="#{bundle.TDashboardCmdPrevReel}" rendered="#{item.libelle == 'TDashboardCmdPrevReel'}" />
+                                                <h:outputText value="#{bundle.TEmplacement}" rendered="#{item.libelle == 'TEmplacement'}" />
+                                                <h:outputText value="#{bundle.TAmenagement}" rendered="#{item.libelle == 'TAmenagement'}" />
+                                                <h:outputText value="#{bundle.TEntrepot}" rendered="#{item.libelle == 'TEntrepot'}" />
+                                                <h:outputText value="#{bundle.TStockConsommable}" rendered="#{item.libelle == 'TStockConsommable'}" />
+                                                <h:outputText value="#{bundle.TCycleProduction}" rendered="#{item.libelle == 'TCycleProduction'}" />
+                                                <h:outputText value="#{bundle.TPlanificationProduction}" rendered="#{item.libelle == 'TPlanificationProduction'}" />
+                                                <h:outputText value="#{bundle.TPreCommandeReel}" rendered="#{item.libelle == 'TPreCommandeReel'}" />
+                                                <h:outputText value="#{bundle.TCategorieTypeUsager}" rendered="#{item.libelle == 'TCategorieTypeUsager'}" />
+                                                <h:outputText value="#{bundle.TTypeUsager}" rendered="#{item.libelle == 'TTypeUsager'}" />
+                                                <h:outputText value="#{bundle.TPrioriteEntrepot}" rendered="#{item.libelle == 'TPrioriteEntrepot'}" />
+                                                <h:outputText value="#{bundle.TPlanificationUsage}" rendered="#{item.libelle == 'TPlanificationUsage'}" />
+                                                <!--   Articles  -->
+                                                <h:outputText value="#{bundle.GArticle}" rendered="#{item.libelle == 'GArticle'}" />
+                                                <h:outputText value="#{bundle.GArticleConcurrent}" rendered="#{item.libelle == 'GArticleConcurrent'}" />
+                                                <h:outputText value="#{bundle.GCategorie}" rendered="#{item.libelle == 'GCategorie'}" />
+                                                <h:outputText value="#{bundle.GMeteoArticle}" rendered="#{item.libelle == 'GMeteoArticle'}" />
+                                                <h:outputText value="#{bundle.GTypeMesure}" rendered="#{item.libelle == 'GTypeMesure'}" />
+                                                <h:outputText value="#{bundle.GTva}" rendered="#{item.libelle == 'GTva'}" />
+                                                <h:outputText value="#{bundle.TPlageQuantite}" rendered="#{item.libelle == 'TPlageQuantite'}" />
+                                                <h:outputText value="#{bundle.GCategorieSpecialeClients}" rendered="#{item.libelle == 'GCategorieSpecialeClients'}" />
+                                                <h:outputText value="#{bundle.TConditionnement}" rendered="#{item.libelle == 'TConditionnement'}" />
+                                                <h:outputText value="#{bundle.TConcentration}" rendered="#{item.libelle == 'TConcentration'}" />
+                                                <h:outputText value="#{bundle.TGranulometrie}" rendered="#{item.libelle == 'TGranulometrie'}" />
+                                                <h:outputText value="#{bundle.TForme}" rendered="#{item.libelle == 'TForme'}" />
+                                                <!--   Promotions  -->                                
+                                                <h:outputText value="#{bundle.GPromotionArticle}" rendered="#{item.libelle == 'GPromotionArticle'}" />
+                                                <h:outputText value="#{bundle.GPromotionCategorie}" rendered="#{item.libelle == 'GPromotionCategorie'}" />
+                                                <h:outputText value="#{bundle.GPromotionDelegation}" rendered="#{item.libelle == 'GPromotionDelegation'}" />
+                                                <!--   Clients  -->  
+                                                <h:outputText value="#{bundle.GEnsigne}" rendered="#{item.libelle == 'GEnsigne'}" />
+                                                <h:outputText value="#{bundle.GClient}" rendered="#{item.libelle == 'GClient'}" />
+                                                <h:outputText value="#{bundle.GNouveauClient}" rendered="#{item.libelle == 'GNouveauClient'}" />
+                                                <h:outputText value="#{bundle.GCategorieClient}" rendered="#{item.libelle == 'GCategorieClient'}" />
+                                                <h:outputText value="#{bundle.GClassificationClient}" rendered="#{item.libelle == 'GClassificationClient'}" />
+                                                <h:outputText value="#{bundle.GLigneLivraison}" rendered="#{item.libelle == 'GLigneLivraison'}" />
+                                                <h:outputText value="#{bundle.GGroupeClient}" rendered="#{item.libelle == 'GGroupeClient'}" />
+                                                <h:outputText value="#{bundle.GPointDeVente}" rendered="#{item.libelle == 'GPointDeVente'}" /> 
+                                                <h:outputText value="#{bundle.GTypePVT}" rendered="#{item.libelle == 'GTypePVT'}" />
+                                                <h:outputText value="#{bundle.GClassPVT}" rendered="#{item.libelle == 'GClassPVT'}" />   
+                                                <h:outputText value="#{bundle.GPatrimoinePVT}" rendered="#{item.libelle == 'GPatrimoinePVT'}" />
+                                                <h:outputText value="#{bundle.GMotifBlocagePVT}" rendered="#{item.libelle == 'GMotifBlocagePVT'}" />
+                                                <h:outputText value="#{bundle.GGroupePVT}" rendered="#{item.libelle == 'GGroupePVT'}" />
+                                                <!--   Livreur  -->                                  
+                                                <h:outputText value="#{bundle.GLivreur}" rendered="#{item.libelle == 'GLivreur'}" />
+                                                <h:outputText value="#{bundle.PrixArticleParVendeur}" rendered="#{item.libelle == 'PrixArticleParVendeur'}" />
+                                                <h:outputText value="#{bundle.GMarque}" rendered="#{item.libelle == 'GMarque'}" />
+                                                <h:outputText value="#{bundle.GModele}" rendered="#{item.libelle == 'GModele'}" />
+                                                <h:outputText value="#{bundle.GTerminal}" rendered="#{item.libelle == 'GTerminal'}" />
+                                                <h:outputText value="#{bundle.GOperateur}" rendered="#{item.libelle == 'GOperateur'}" /> 
+                                                <h:outputText value="#{bundle.GPuce}" rendered="#{item.libelle == 'GPuce'}" /> 
+                                                <h:outputText value="#{bundle.GAffectation}" rendered="#{item.libelle == 'GAffectation'}" /> 
+                                                <!--   RH  -->
+                                                <h:outputText value="#{bundle.FichesPaie}" rendered="#{item.libelle == 'FichesPaie'}" /> 
+                                                <h:outputText value="#{bundle.GContrat}" rendered="#{item.libelle == 'GContrat'}" /> 
+                                                <h:outputText value="#{bundle.GPrimes}" rendered="#{item.libelle == 'GPrimes'}" />
+                                                <h:outputText value="#{bundle.PrimesExceptionelles}" rendered="#{item.libelle == 'PrimesExceptionelles'}" />
+                                                <h:outputText value="#{bundle.GHeuresTravails}" rendered="#{item.libelle == 'GHeuresTravails'}" />
+                                                <h:outputText value="#{bundle.TableauImp}" rendered="#{item.libelle == 'TableauImp'}" />
+                                                <h:outputText value="#{bundle.GEnfant}" rendered="#{item.libelle == 'GEnfant'}" />
+                                                <h:outputText value="#{bundle.GtypeContrat}" rendered="#{item.libelle == 'GtypeContrat'}" />
+                                                <h:outputText value="#{bundle.GPrimesParametre}" rendered="#{item.libelle == 'GPrimesParametre'}" />
+                                                <h:outputText value="#{bundle.GTypeEnfant}" rendered="#{item.libelle == 'GTypeEnfant'}" /> 
+                                                <h:outputText value="#{bundle.GCompteBoncaire}" rendered="#{item.libelle == 'GCompteBoncaire'}" /> 
+                                                <h:outputText value="#{bundle.GAgences}" rendered="#{item.libelle == 'GAgences'}" /> 
+                                                <!--   Parametrage  -->
+                                                <h:outputText value="#{bundle.GUtilisateur}" rendered="#{item.libelle == 'GUtilisateur'}" /> 
+                                                <h:outputText value="#{bundle.GProfile}" rendered="#{item.libelle == 'GProfile'}" /> 
+                                                <h:outputText value="#{bundle.GDomaineActivite}" rendered="#{item.libelle == 'GDomaineActivite'}" />
+                                                <h:outputText value="#{bundle.GEntreprise}" rendered="#{item.libelle == 'GEntreprise'}" />
+                                                <h:outputText value="#{bundle.GDomaineEntreprise}" rendered="#{item.libelle == 'GDomaineEntreprise'}" />
+                                                <h:outputText value="#{bundle.GDepartement}" rendered="#{item.libelle == 'GDepartement'}" />
+                                                <h:outputText value="#{bundle.GPoste}" rendered="#{item.libelle == 'GPoste'}" />
+                                                <h:outputText value="#{bundle.GConcurrents}" rendered="#{item.libelle == 'GConcurrents'}" />
+                                                <h:outputText value="#{bundle.GPays}" rendered="#{item.libelle == 'GPays'}" />
+                                                <h:outputText value="#{bundle.GGouvernorat}" rendered="#{item.libelle == 'GGouvernorat'}" />
+                                                <h:outputText value="#{bundle.GDelegation}" rendered="#{item.libelle == 'GDelegation'}" /> 
+                                                <h:outputText value="#{bundle.GBanque}" rendered="#{item.libelle == 'GBanque'}" /> 
+                                                <h:outputText value="#{bundle.GTicket}" rendered="#{item.libelle == 'GTicket'}" /> 
+                                                <h:outputText value="#{bundle.GPatrimoine}" rendered="#{item.libelle == 'GPatrimoine'}" /> 
+                                                <h:outputText value="#{bundle.GCalendrierFeries}" rendered="#{item.libelle == 'GCalendrierFeries'}" />
+                                                <h:outputText value="#{bundle.GMotifAvoir}" rendered="#{item.libelle == 'GMotifAvoir'}" />
+
+                                                <!--   Journeaux  -->                                
+                                                <h:outputText value="#{bundle.JConnection}" rendered="#{item.libelle == 'JConnection'}" /> 
+                                                <h:outputText value="#{bundle.JPrixCommandes}" rendered="#{item.libelle == 'JPrixCommandes'}" /> 
+                                                <h:outputText value="#{bundle.JPrixPda}" rendered="#{item.libelle == 'JPrixPda'}" /> 
+                                                <h:outputText value="#{bundle.JSynchroMFG}" rendered="#{item.libelle == 'JSynchroMFG'}" /> 
+                                                <h:outputText value="#{bundle.JHistConxTV}" rendered="#{item.libelle == 'JHistConxTV'}" /> 
+                                                <h:outputText value="#{bundle.GMouvementStock}" rendered="#{item.libelle == 'GMouvementStock'}" /> 
+                                                <h:outputText value="#{bundle.JJournalCycleProduction}" rendered="#{item.libelle == 'JJournalCycleProduction'}" /> 
+                                                <h:outputText value="#{bundle.JJournalUsage}" rendered="#{item.libelle == 'JJournalUsage'}" />    
+
+
+                                            </p:column>
+
+
+
+                                            <p:column rendered="#{item.moduleActiver == true}">
+
+                                                <div align="center">
+                                                    <p:selectBooleanCheckbox value="#{item.lecture}" rendered="#{item.nbPrivelege.toString().contains('1')}" disabled="#{profileController.nonModifiable(item.order)}">
+                                                        <p:ajax event="valueChange"  listener="#{profileController.onRowSelectLecture(index)}"   update="tbl"/>
+                                                    </p:selectBooleanCheckbox>
+
+                                                </div>
+                                            </p:column>
+
+
+                                            <p:column rendered="#{item.moduleActiver == true}">
+                                                <div align="center">
+                                                    <p:selectBooleanCheckbox value="#{item.creation}" rendered="#{item.nbPrivelege.toString().contains('2')}" disabled="#{profileController.nonModifiable(item.order)}">
+                                                        <p:ajax event="valueChange"  listener="#{profileController.onRowSelect(index)}"   update="tbl"/>
+                                                    </p:selectBooleanCheckbox>
+                                                </div>
+                                            </p:column>
+
+                                            <p:column rendered="#{item.moduleActiver == true}">
+                                                <div align="center">
+                                                    <p:selectBooleanCheckbox value="#{item.modification}" rendered="#{item.nbPrivelege.toString().contains('3')}" disabled="#{profileController.nonModifiable(item.order)}">
+                                                        <p:ajax event="valueChange"  listener="#{profileController.onRowSelect(index)}"   update="tbl"/>
+                                                    </p:selectBooleanCheckbox>
+                                                </div>
+                                            </p:column>
+
+                                            <p:column rendered="#{item.moduleActiver == true}">
+                                                <div align="center">
+                                                    <p:selectBooleanCheckbox value="#{item.supression}" rendered="#{item.nbPrivelege.toString().contains('4')}" disabled="#{profileController.nonModifiable(item.order)}">
+                                                        <p:ajax event="valueChange"  listener="#{profileController.onRowSelect(index)}"   update="tbl"/>
+                                                    </p:selectBooleanCheckbox>
+                                                </div>
+                                            </p:column>
+
+                                            <p:column rendered="#{item.moduleActiver == true}">
+                                                <div align="center">
+                                                    <p:selectBooleanCheckbox value="#{item.activation}" rendered="#{item.nbPrivelege.toString().contains('5')}" disabled="#{profileController.nonModifiable(item.order)}">
+                                                        <p:ajax event="valueChange"  listener="#{profileController.onRowSelect(index)}"   update="tbl"/>
+                                                    </p:selectBooleanCheckbox>
+                                                </div>
+                                            </p:column>
+
+                                            <p:column rendered="#{item.moduleActiver == true}">
+                                                <div align="center">
+                                                    <p:selectBooleanCheckbox value="#{item.reinitialisation}"  rendered="#{item.nbPrivelege.toString().contains('6')}" disabled="#{profileController.nonModifiable(item.order)}">
+                                                        <p:ajax event="valueChange"  listener="#{profileController.onRowSelect(index)}"   update="tbl"/>
+                                                    </p:selectBooleanCheckbox>
+                                                </div>
+                                            </p:column>
+                                            
+                                              <p:column rendered="#{item.moduleActiver == true}">
+                                                <div align="center">
+                                                    <p:selectBooleanCheckbox value="#{item.journalisation}"  rendered="#{item.nbPrivelege.toString().contains('7')}" disabled="#{profileController.nonModifiable(item.order)}">
+                                                        <p:ajax event="valueChange"  listener="#{profileController.onRowSelect(index)}"   update="tbl"/>
+                                                    </p:selectBooleanCheckbox>
+                                                </div>
+                                            </p:column>
+
+                                        </p:dataTable>
+
+
+
+
+                                    </div> 
+
+
+
+
+                                </h:form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+
+        </ui:define>
+    </ui:composition>
+
+</html>

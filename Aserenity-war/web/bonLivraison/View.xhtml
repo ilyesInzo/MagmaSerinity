@@ -1,0 +1,176 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      >
+    <ui:composition template="/template.xhtml">
+
+        <ui:define name="pageContent">
+
+            <h:panelGroup id="messagePanel" layout="block">
+                <p:messages closable="true" globalOnly="true" showDetail="true"><p:autoUpdate />
+                </p:messages>
+            </h:panelGroup> 
+
+            <div class="layout-content">
+
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="shadow-box ui-shadow-5">
+                            <div class="card">
+
+                                <h:form id="f1">
+
+                                    <div class="x_title">
+                                        <h2 style="color: #607D8B">#{bundle.GBonLivraison}</h2>
+                                        <ul class="nav navbar-right panel_toolbox">
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('bonLivraison').journalisation}" title="Info" id="metaInfo" oncomplete="PF('dlgInfo').show()" icon="fa fa-book" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                            </li>
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('bonLivraison').modification}" title="#{bundle.Approuver}"  id="Approuver" disabled="#{bonLivraisonController.selected.isNePeutApprouverBonLivraison()}"
+                                                                 icon="fa fa-check" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" oncomplete="PF('dialogApprouver').show()" />
+                                            </li>
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('bonLivraison').modification}" title="Modifier" id="addButton" action="#{bonLivraisonController.prepareEdit()}" disabled="#{bonLivraisonController.selected.isNePeutModifierBonLivraison()}" type="push" ajax="false"  icon="fa fa-pencil" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                            </li>
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('bonLivraison').lecture}" title="Annuler"  id="updateButton" action="#{bonLivraisonController.prepareList()}" ajax="false" immediate="true" icon="fa fa-reply"  style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                            </li>
+
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>         
+
+
+                                    <div class="x_content" >   
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Numero}: " for="numero"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="numero" value="#{bonLivraisonController.selected.numero}" title="#{bundle.Numero}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Client}: " for="categorie"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="categorie" value="#{bonLivraisonController.selected.libelleClient}" title="#{bundle.Client}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.TotaleHT} :" for="montantHT" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="montantHT" value="#{bonLivraisonController.selected.montantHT}" title="#{bundle.TotaleHT}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div>
+
+
+
+                                    </div> 
+                                    <div class="x_content" >
+                                        <p:dataTable  value="#{bonLivraisonController.selected.listeLigneBonLivraisons}"  var="item"  selection="#{bonLivraisonController.selectedLigneBonLivraisonSingle}" rowKey="#{item.id}" liveResize="true"     >
+
+                                            <p:column style="width: 8%" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Code}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.codeArticle}" />
+                                            </p:column>
+
+                                            <p:column style="width: 25%" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Article}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.libelleArticle}" />
+                                            </p:column>
+
+                                            <p:column style="width: 7%" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Quantite}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.quantite}" />
+                                            </p:column>
+
+                                            <p:column style="width: 7%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.PrixUnitaire}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.prixUnitaireHT}" />
+                                            </p:column>
+
+                                            <p:column style="width: 7%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Remise}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.remise}" />
+                                            </p:column>
+
+                                            <p:column style="width: 7%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.PrixUnitaireApresRemise}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.prixUnitaireApresRemise}" />
+                                            </p:column>
+
+                                            <p:column style="width: 7%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.TVA}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.tvaArticle}" />
+                                            </p:column>
+
+                                            <p:column  style="width: 7%" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.MontantHT}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.totalHT}"/>
+                                            </p:column>
+
+
+                                        </p:dataTable>
+
+                                    </div>
+
+                                </h:form>
+                                
+                                
+                                <h:form id="formDialogApprouver">
+                                    
+                                    <p:confirmDialog id="dialogApprouver" widgetVar="dialogApprouver" message="#{bundle.GenererFactureMessage}" header="#{bundle.Confirmation}" severity="alert"  responsive="true">
+                                        <p:commandButton id="confirm" value="Valider" style="float: right" oncomplete="PF('dialogApprouver').hide()" icon="ui-icon-check"  update="f1" action="#{bonLivraisonController.approuverBonLivraison()}" type="push" ajax="false"/>
+                                        <p:commandButton id="decline" value="Annuler" style="float: right" onclick="PF('dialogApprouver').hide()" icon="ui-icon-close"  type="button" />
+                                    </p:confirmDialog>
+                                    
+                                </h:form>
+                                
+                                <p:dialog id="Info"  header="Info"   widgetVar="dlgInfo" height="50%" width="35%" modal="true" resizable="false">
+
+
+                                    <h:panelGrid columns="2" cellpadding="200" cellspacing="200">
+                                        <h:outputText value="#{bundle.Creation} : " />
+                                        <h:outputText value="Creer le #{articleController.selected.dateCreationStringFr} par #{articleController.selected.libelleUserCreate}" style="margin-left: 20px; font: bold"/>
+                                        <h:outputText value="#{bundle.Modification} : " rendered="#{articleController.selected.idUserModif ne null}"/>
+                                        <h:outputText value="Modif le #{articleController.selected.dateSyncStringFr} par #{articleController.selected.libelleUserModif}" style="margin-left: 20px; font: bold" rendered="#{articleController.selected.idUserModif ne null}"/>
+                                    </h:panelGrid>
+
+
+                                </p:dialog>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+
+        </ui:define>
+    </ui:composition>
+
+</html>

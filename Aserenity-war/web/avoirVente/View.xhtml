@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle2.ViewAvoirVenteTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputText value="#{bundle2.ViewAvoirVenteLabel_id}"/>
+                    <h:outputText value="#{avoirVenteController.selected.id}" title="#{bundle2.ViewAvoirVenteTitle_id}"/>
+                    <h:outputText value="#{bundle2.ViewAvoirVenteLabel_montantTTC}"/>
+                    <h:outputText value="#{avoirVenteController.selected.montantTTC}" title="#{bundle2.ViewAvoirVenteTitle_montantTTC}"/>
+                    <h:outputText value="#{bundle2.ViewAvoirVenteLabel_montantHT}"/>
+                    <h:outputText value="#{avoirVenteController.selected.montantHT}" title="#{bundle2.ViewAvoirVenteTitle_montantHT}"/>
+                    <h:outputText value="#{bundle2.ViewAvoirVenteLabel_dateCreation}"/>
+                    <h:outputText value="#{avoirVenteController.selected.dateCreation}" title="#{bundle2.ViewAvoirVenteTitle_dateCreation}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle2.ViewAvoirVenteLabel_numeroFacture}"/>
+                    <h:outputText value="#{avoirVenteController.selected.numeroFacture}" title="#{bundle2.ViewAvoirVenteTitle_numeroFacture}"/>
+                    <h:outputText value="#{bundle2.ViewAvoirVenteLabel_idFacture}"/>
+                    <h:outputText value="#{avoirVenteController.selected.idFacture}" title="#{bundle2.ViewAvoirVenteTitle_idFacture}"/>
+                    <h:outputText value="#{bundle2.ViewAvoirVenteLabel_idClient}"/>
+                    <h:outputText value="#{avoirVenteController.selected.idClient}" title="#{bundle2.ViewAvoirVenteTitle_idClient}"/>
+                    <h:outputText value="#{bundle2.ViewAvoirVenteLabel_codeClient}"/>
+                    <h:outputText value="#{avoirVenteController.selected.codeClient}" title="#{bundle2.ViewAvoirVenteTitle_codeClient}"/>
+                    <h:outputText value="#{bundle2.ViewAvoirVenteLabel_libelleClient}"/>
+                    <h:outputText value="#{avoirVenteController.selected.libelleClient}" title="#{bundle2.ViewAvoirVenteTitle_libelleClient}"/>
+                    <h:outputText value="#{bundle2.ViewAvoirVenteLabel_motifAvoir}"/>
+                    <h:outputText value="#{avoirVenteController.selected.motifAvoir}" title="#{bundle2.ViewAvoirVenteTitle_motifAvoir}"/>
+                    <h:outputText value="#{bundle2.ViewAvoirVenteLabel_numero}"/>
+                    <h:outputText value="#{avoirVenteController.selected.numero}" title="#{bundle2.ViewAvoirVenteTitle_numero}"/>
+                    <h:outputText value="#{bundle2.ViewAvoirVenteLabel_typeAvoir}"/>
+                    <h:outputText value="#{avoirVenteController.selected.typeAvoir}" title="#{bundle2.ViewAvoirVenteTitle_typeAvoir}"/>
+                    <h:outputText value="#{bundle2.ViewAvoirVenteLabel_typeAvoirString}"/>
+                    <h:outputText value="#{avoirVenteController.selected.typeAvoirString}" title="#{bundle2.ViewAvoirVenteTitle_typeAvoirString}"/>
+                    <h:outputText value="#{bundle2.ViewAvoirVenteLabel_remise}"/>
+                    <h:outputText value="#{avoirVenteController.selected.remise}" title="#{bundle2.ViewAvoirVenteTitle_remise}"/>
+                    <h:outputText value="#{bundle2.ViewAvoirVenteLabel_reste}"/>
+                    <h:outputText value="#{avoirVenteController.selected.reste}" title="#{bundle2.ViewAvoirVenteTitle_reste}"/>
+                    <h:outputText value="#{bundle2.ViewAvoirVenteLabel_dateAvoir}"/>
+                    <h:outputText value="#{avoirVenteController.selected.dateAvoir}" title="#{bundle2.ViewAvoirVenteTitle_dateAvoir}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle2.ViewAvoirVenteLabel_dateCreationStringFr}"/>
+                    <h:outputText value="#{avoirVenteController.selected.dateCreationStringFr}" title="#{bundle2.ViewAvoirVenteTitle_dateCreationStringFr}"/>
+                    <h:outputText value="#{bundle2.ViewAvoirVenteLabel_dateCreationStringEn}"/>
+                    <h:outputText value="#{avoirVenteController.selected.dateCreationStringEn}" title="#{bundle2.ViewAvoirVenteTitle_dateCreationStringEn}"/>
+                    <h:outputText value="#{bundle2.ViewAvoirVenteLabel_dateAvoirStringFr}"/>
+                    <h:outputText value="#{avoirVenteController.selected.dateAvoirStringFr}" title="#{bundle2.ViewAvoirVenteTitle_dateAvoirStringFr}"/>
+                    <h:outputText value="#{bundle2.ViewAvoirVenteLabel_dateAvoirStringEn}"/>
+                    <h:outputText value="#{avoirVenteController.selected.dateAvoirStringEn}" title="#{bundle2.ViewAvoirVenteTitle_dateAvoirStringEn}"/>
+                    <h:outputText value="#{bundle2.ViewAvoirVenteLabel_description}"/>
+                    <h:outputText value="#{avoirVenteController.selected.description}" title="#{bundle2.ViewAvoirVenteTitle_description}"/>
+                    <h:outputText value="#{bundle2.ViewAvoirVenteLabel_descriptionString}"/>
+                    <h:outputText value="#{avoirVenteController.selected.descriptionString}" title="#{bundle2.ViewAvoirVenteTitle_descriptionString}"/>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{avoirVenteController.destroyAndView}" value="#{bundle2.ViewAvoirVenteDestroyLink}"/>
+                <br />
+                <br />
+                <h:link outcome="Edit" value="#{bundle2.ViewAvoirVenteEditLink}"/>
+                <br />
+                <h:commandLink action="#{avoirVenteController.prepareCreate}" value="#{bundle2.ViewAvoirVenteCreateLink}" />
+                <br />
+                <h:commandLink action="#{avoirVenteController.prepareList}" value="#{bundle2.ViewAvoirVenteShowAllLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle2.ViewAvoirVenteIndexLink}"/>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

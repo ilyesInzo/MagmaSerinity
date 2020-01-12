@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      >
+    <ui:composition template="/template.xhtml">
+
+        <ui:define name="pageContent">           
+
+            <div class="exception-body error">
+                <div class="exception-panel">
+                    <div class="exception-code"><h:graphicImage id="image" library="default" name="images/404.svg" alt=""/>
+                    </div>
+
+                    <div class="exception-detail">
+
+                        <div class="exception-icon">
+                            <i class="material-icons"></i>
+                        </div>
+                        <h1>#{bundle.EchecOperation}</h1>
+                        <p>#{bundle.ErreurSystem}</p>
+                        <h:link outcome="Acceuil" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+                            <span class="ui-button-text ui-c">#{bundle.PageAcceuil}</span>
+                        </h:link>
+
+                    </div>
+                </div>
+            </div>
+
+        </ui:define>
+    </ui:composition>
+
+
+
+
+
+
+</html>

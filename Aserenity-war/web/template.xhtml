@@ -1,0 +1,792 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <f:view locale="fr_FR" >
+        <h:head>
+            <link rel="shortcut icon" href="../resources/images/magma.png"/>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <!-- Meta, title, CSS, favicons, etc. -->
+            <meta charset="utf-8" />
+            <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1"/>
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+            <title>MAGMA </title>
+
+            <h:outputScript library="default" name="js/jquery.js" />
+            <h:outputScript library="default" name="js/core.js" />
+            <h:outputScript library="default" name="js/components.js" />
+            <h:outputScript library="default" name="js/jquery-plugins.js" />
+
+            <h:outputStylesheet library="default" name="css/custom.css"/> 
+            <h:outputStylesheet library="default" name="css/bootstrap.css"/>
+
+            <h:outputStylesheet library="default" name="css/components.css"/> 
+            <h:outputStylesheet library="default" name="css/theme.css"/>  
+            <h:outputStylesheet library="default" name="css/font-awesome.css"/>   
+
+
+            <h:outputStylesheet library="default" name="css/nanoscroller.css"/> 
+            <!-- Recognized by the files in /entity/controller -->
+            <!-- for the html files directly under web pages we will delete the ../ and don't load the template (re add files) javax.faces.resources -->
+            <link type="text/css" rel="stylesheet" href="../resources/default/css/layout-moody.css" />   
+
+            <h:outputStylesheet library="default" name="css/ripple.css"/>  
+
+            <h:outputStylesheet library="default" name="css/inputswitch.css"/>  
+            <h:outputStylesheet library="default" name="css/keyboard.css"/>   
+            <h:outputStylesheet library="default" name="css/galleria.css"/>
+
+            <h:outputStylesheet library="default" name="css/clock.css"/>  
+            <h:outputStylesheet library="default" name="css/scrollpanel.css"/>   
+            <h:outputStylesheet library="default" name="css/schedule.css"/>
+            <h:outputStylesheet library="default" name="css/fileupload.css"/>
+
+
+            <h:outputScript library="default" name="js/keyboard.js" />
+            <h:outputScript library="default" name="js/inputswitch.js" />
+
+            <h:outputScript library="default" name="js/moment.js" />
+            <h:outputScript library="default" name="js/schedule.js" />
+            <h:outputScript library="default" name="js/ripple.js" />
+
+            <h:outputScript library="default" name="js/nanoscroller.js" />
+            <h:outputScript library="default" name="js/layout.js" />
+            <h:outputScript library="default" name="js/fileupload.js" />
+
+
+            <script language="javascript" type="text/javascript">
+                PrimeFaces.locales ['fr_FR'] = {
+                    closeText: 'Valider',
+                    prevText: 'Précédent',
+                    nextText: 'Suivant',
+                    monthNames: ['Janvier', 'Fevrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Decembre'],
+                    monthNamesShort: ['Jan', 'Fev', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aou', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    dayNames: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
+                    dayNamesShort: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
+                    dayNamesMin: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+                    weekHeader: 'Semaine',
+                    firstDay: 1,
+                    isRTL: false,
+                    showMonthAfterYear: false,
+                    yearSuffix: '',
+                    timeOnlyTitle: 'Choisir l\'heure',
+                    timeText: 'Heure',
+                    hourText: 'Heures',
+                    minuteText: 'Minutes',
+                    secondText: 'Secondes',
+                    currentText: 'Maintenant',
+                    ampm: false,
+                    month: 'Mois',
+                    week: 'Semaine',
+                    day: 'Jour',
+                    allDayText: 'Toute la journée'
+                };
+            </script>
+
+            <!-- <link type="text/css" rel="stylesheet" href="/project/faces/javax.faces.resource/theme.css?ln=primefaces-glass-x" /> -->
+
+
+
+        </h:head>
+
+        <body class="hidden-overflow">
+            <div class="layout-wrapper">
+
+
+
+                <div class="layout-sidebar">
+                    <div class="sidebar-logo" >
+                        <h:form style="display: -webkit-inline-box;"> 
+                            <p:commandLink type="push"  ajax="true" immediate="true"  action="#{authentification.acceuil()}">  <h:graphicImage id="image" library="default" name="images/magma_white.png" alt=""/>
+                                <span  class="app-name">AGMA</span>
+                            </p:commandLink>
+                        </h:form>
+                        <a href="#" class="sidebar-anchor" title="Toggle Menu"></a>
+                    </div>
+
+                    <div class="nano">
+                        <div class="nano-content sidebar-scroll-content">
+                            <div class="layout-menu-container">
+
+                                <h:form >
+                                    <ul  class="layout-menu">
+                                        <!--li ><a class="ripplelink" href="dashboard.html"><i class="material-icons"></i><span class="menuitem-text">Dashboard</span></a></li-->
+
+
+                                        <li style="#{user.visibiliteMVentes}" class="#{AMVente}"><a href="#" class="ripplelink"><i class="fa fa-fw fa-line-chart"/><span class="menuitem-text">#{bundle.MVente}</span><i class="material-icons layout-submenu-toggler">&#xE313;</i></a>
+                                            <ul style="#{MVente}">
+
+                                                <li class="#{GDevis}" style="#{FVGDevis}">
+
+                                                    <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{devisController.initPage()}"  >
+                                                        <i class="material-icons"></i><span class="menuitem-text">#{bundle.GDevis}</span>
+                                                    </p:commandLink>
+
+                                                </li>
+
+                                                <li class="#{GBonLivraison}" style="#{FVGBonLivraison}">
+
+                                                    <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{bonLivraisonController.initPage()}"  >
+                                                        <i class="material-icons"></i><span class="menuitem-text">#{bundle.GBonLivraison}</span>
+                                                    </p:commandLink>
+
+                                                </li>
+
+                                                <li class="#{GFacture}" style="#{FVGFacture}">
+
+                                                    <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{factureController.initPage()}"  >
+                                                        <i class="material-icons"></i><span class="menuitem-text">#{bundle.GFacture}</span>
+                                                    </p:commandLink>
+
+                                                </li>
+
+
+
+                                                <li class="#{GEncaissement}" style="#{FVGEncaissement}">
+
+                                                    <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{encaissementController.initPage()}"  >
+                                                        <i class="material-icons"></i><span class="menuitem-text">#{bundle.GEncaissement}</span>
+                                                    </p:commandLink>
+
+                                                </li>
+
+                                                <li class="#{GEncaissementBonLivraison}" style="#{FVGEncaissementBonLivraison}">
+
+                                                    <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{encaissementBonLivraisonController.initPage()}"  >
+                                                        <i class="material-icons"></i><span class="menuitem-text">#{bundle.GEncaissementBonLivraison}</span>
+                                                    </p:commandLink>
+
+                                                </li>
+
+                                                <li class="#{GRetour}" style="#{FVGRetour}">
+
+                                                    <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{retourController.initPage()}"  >
+                                                        <i class="material-icons"></i><span class="menuitem-text">#{bundle.GRetour}</span>
+                                                    </p:commandLink>
+
+                                                </li>
+
+
+
+                                                <li class="#{GAvoirVente}" style="#{FVGAvoirVente}">
+
+                                                    <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{avoirVenteController.initPage()}"  >
+                                                        <i class="material-icons"></i><span class="menuitem-text">#{bundle.GAvoirVente}</span>
+                                                    </p:commandLink>
+
+                                                </li>
+
+
+
+                                                <li style="#{user.visibiliteSousMVentes}" class="#{SAMVente}"><a href="#" class="ripplelink"><i class="fa fa-fw fa-gear" style="color: aquamarine;"/><span class="menuitem-text" style="color: aquamarine;">Parametrage</span><i class="material-icons layout-submenu-toggler" style="color: aquamarine;">&#xE313;</i></a>
+                                                    <ul style="#{SMVente}">
+                                                        <li class="#{GPrefixFacture} #{GPrefixBonLivraison} #{GTypeEncaissementVente} #{GParametrageTaxe} #{GPrefixDevis} #{GPrefixAvoirVente} #{GMotifAvoir} #{GMotifRejetDevisVente}">
+
+                                                            <li class="#{GPrefixDevis}" style="#{FVGPrefixDevis}">
+
+                                                                <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{prefixDevisController.initPage()}"  >
+                                                                    <i class="material-icons"></i><span class="menuitem-text">#{bundle.GPrefixDevis}</span>
+                                                                </p:commandLink>
+
+                                                            </li>
+
+                                                            <li class="#{GPrefixBonLivraison}" style="#{FVGPrefixBonLivraison}">
+
+                                                                <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{prefixBonLivraisonController.initPage()}"  >
+                                                                    <i class="material-icons"></i><span class="menuitem-text">#{bundle.GPrefixBonLivraison}</span>
+                                                                </p:commandLink>
+
+                                                            </li>
+
+                                                            <li class="#{GPrefixFacture}" style="#{FVGPrefixFacture}">
+
+                                                                <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{prefixFactureController.initPage()}"  >
+                                                                    <i class="material-icons"></i><span class="menuitem-text">#{bundle.GPrefixFacture}</span>
+                                                                </p:commandLink>
+
+                                                            </li>
+
+                                                            <li class="#{GPrefixAvoirVente}" style="#{FVGPrefixAvoirVente}">
+
+                                                                <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{prefixAvoirVenteController.initPage()}"  >
+                                                                    <i class="material-icons"></i><span class="menuitem-text">#{bundle.GPrefixAvoirVente}</span>
+                                                                </p:commandLink>
+
+                                                            </li>
+
+                                                            <li class="#{GMotifAvoir}" style="#{FVGMotifAvoir}">
+
+                                                                <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{motifAvoirController.initPage()}"  >
+                                                                    <i class="material-icons"></i><span class="menuitem-text">#{bundle.GMotifAvoir}</span>
+                                                                </p:commandLink>
+
+                                                            </li>
+
+                                                            <li class="#{GMotifRejetDevisVente}" style="#{FVGMotifRejetDevisVente}">
+
+                                                                <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{motifRejetDevisVenteController.initPage()}"  >
+                                                                    <i class="material-icons"></i><span class="menuitem-text">#{bundle.GMotifRejetDevisVente}</span>
+                                                                </p:commandLink>
+
+                                                            </li>
+
+                                                            <li class="#{GTypeEncaissementVente}" style="#{FVGTypeEncaissementVente}">
+
+                                                                <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{typeEncaissementVenteController.initPage()}"  >
+                                                                    <i class="material-icons"></i><span class="menuitem-text">#{bundle.GTypeEncaissementVente}</span>
+                                                                </p:commandLink>
+
+                                                            </li>
+
+                                                            <li class="#{GParametrageTaxe}" style="#{FVGParametrageTaxe}">
+
+                                                                <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{parametrageTaxeController.initPage()}"  >
+                                                                    <i class="material-icons"></i><span class="menuitem-text">#{bundle.GParametrageTaxe}</span>
+                                                                </p:commandLink>
+
+                                                            </li>
+
+
+                                                        </li>
+                                                    </ul>
+                                                </li>
+
+                                            </ul>
+
+                                        </li>
+
+
+                                        <li style="#{user.visibiliteMProduit}" class="#{AMProduit} "><a href="#" class="ripplelink"><i class="fa fa-fw fa-cubes"/><span class="menuitem-text">#{bundle.MProduit}</span><i class="material-icons layout-submenu-toggler">&#xE313;</i></a>
+                                            <ul style="#{MProduit}">
+
+
+                                                <li class="#{GCategorie}" style="#{FVGCategorie}">
+
+                                                    <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{categorieController.initPage()}"  >
+                                                        <i class="material-icons"></i><span class="menuitem-text">#{bundle.GCategorie}</span>
+                                                    </p:commandLink>
+
+                                                </li>
+
+                                                <li class="#{GArticle}" style="#{FVGArticle}">
+
+                                                    <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{articleController.initPage()}"  >
+                                                        <i class="material-icons"></i><span class="menuitem-text">#{bundle.GArticle}</span>
+                                                    </p:commandLink>
+
+                                                </li>    
+
+                                                <li style="#{user.visibiliteSousMProduit}" class="#{SAMProduit}"><a href="#" class="ripplelink"><i class="fa fa-fw fa-gear" style="color: aquamarine;"/><span class="menuitem-text" style="color: aquamarine;">Parametrage</span><i class="material-icons layout-submenu-toggler" style="color: aquamarine;">&#xE313;</i></a>
+                                                    <ul style="#{SMProduit}">
+                                                        <li class="#{GTva}">
+
+                                                            <li class="#{GTva}" style="#{FVGTva}">
+
+                                                                <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{tvaController.initPage()}"  >
+                                                                    <i class="material-icons"></i><span class="menuitem-text">#{bundle.GTva}</span>
+                                                                </p:commandLink>
+
+                                                            </li> 
+
+                                                        </li>
+                                                    </ul>
+                                                </li>
+
+
+                                            </ul>
+
+                                        </li>
+
+
+                                        <li style="#{user.visibiliteMClient}" class="#{AMClient} "><a href="#" class="ripplelink"><i class="fa fa-fw fa-users"/><span class="menuitem-text">#{bundle.MClient}</span><i class="material-icons layout-submenu-toggler">&#xE313;</i></a>
+                                            <ul style="#{MClient}">
+
+
+                                                <li class="#{GCategorieClient}" style="#{FVGCategorieClient}">
+
+                                                    <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{categorieClientController.initPage()}"  >
+                                                        <i class="material-icons"></i><span class="menuitem-text">#{bundle.GCategorie}</span>
+                                                    </p:commandLink>
+
+                                                </li>
+
+                                                <li class="#{GClient}" style="#{FVGClient}">
+
+                                                    <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{clientController.initPage()}"  >
+                                                        <i class="material-icons"></i><span class="menuitem-text">#{bundle.GClient}</span>
+                                                    </p:commandLink>
+
+                                                </li>
+
+
+                                            </ul>
+
+                                        </li>
+
+                                        <li style="#{user.visibiliteMStockArticle}" class="#{AMStock} "><a href="#" class="ripplelink"><i class="fa fa-fw fa-truck"/><span class="menuitem-text">#{bundle.MStock}</span><i class="material-icons layout-submenu-toggler">&#xE313;</i></a>
+                                            <ul style="#{MStock}">
+
+
+                                                <li class="#{GStockArticle}" style="#{FVGStockArticle}">
+
+                                                    <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{stockArticleController.initPage()}"  >
+                                                        <i class="material-icons"></i><span class="menuitem-text">#{bundle.GStockArticle}</span>
+                                                    </p:commandLink>
+
+                                                </li>
+
+
+                                            </ul>
+
+                                        </li>
+
+
+                                        <li style="#{user.visibiliteMParametrage}" class="#{AMParametrage}"><a href="#" class="ripplelink"><i class="fa fa-fw fa-gears"/><span class="menuitem-text">#{bundle.MParametrage}</span><i class="material-icons layout-submenu-toggler">&#xE313;</i></a>
+                                            <ul style="#{MParametrage}">
+
+
+                                                <li class="#{GProfile}" style="#{FVGProfile}">
+
+                                                    <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{profileController.initPage()}"  >
+                                                        <i class="material-icons"></i><span class="menuitem-text">#{bundle.GProfile}</span>
+                                                    </p:commandLink>
+
+                                                </li>
+
+                                                <li class="#{GUtilisateur}" style="#{FVGUtilisateur}">
+
+                                                    <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{utilisateurController.initPage()}"  >
+                                                        <i class="material-icons"></i><span class="menuitem-text">#{bundle.GUtilisateur}</span>
+                                                    </p:commandLink>
+
+                                                </li>
+
+                                                <li class="#{GEntreprise}" style="#{FVGEntreprise}">
+
+                                                    <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{entrepriseController.initPage()}"  >
+                                                        <i class="material-icons"></i><span class="menuitem-text">#{bundle.GEntreprise}</span>
+                                                    </p:commandLink>
+
+                                                </li>
+
+                                                <li class="#{GGouvernorat}" style="#{FVGGouvernorat}">
+
+                                                    <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{gouvernoratController.initPage()}"  >
+                                                        <i class="material-icons"></i><span class="menuitem-text">#{bundle.GGouvernorat}</span>
+                                                    </p:commandLink>
+
+                                                </li> 
+
+                                                <li class="#{GDelegation}" style="#{FVGDelegation}">
+
+                                                    <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{delegationController.initPage()}"  >
+                                                        <i class="material-icons"></i><span class="menuitem-text">#{bundle.GDelegation}</span>
+                                                    </p:commandLink>
+
+                                                </li>
+
+                                                <li class="#{GDepartement}" style="#{FVGDepartement}">
+
+                                                    <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{departementController.initPage()}"  >
+                                                        <i class="material-icons"></i><span class="menuitem-text">#{bundle.GDepartement}</span>
+                                                    </p:commandLink>
+
+                                                </li> 
+
+                                                <li class="#{GPoste}" style="#{FVGPoste}">
+
+                                                    <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{posteController.initPage()}"  >
+                                                        <i class="material-icons"></i><span class="menuitem-text">#{bundle.GPoste}</span>
+                                                    </p:commandLink>
+
+                                                </li> 
+
+                                                <li class="#{GBanque}" style="#{FVGBanque}">
+
+                                                    <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{banqueController.initPage()}"  >
+                                                        <i class="material-icons"></i><span class="menuitem-text">#{bundle.GBanque}</span>
+                                                    </p:commandLink>
+
+                                                </li> 
+
+                                                <li class="#{GTicket}" style="#{FVGTicket}">
+
+                                                    <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{ticketController.initPage()}"  >
+                                                        <i class="material-icons"></i><span class="menuitem-text">#{bundle.GTicket}</span>
+                                                    </p:commandLink>
+
+                                                </li> 
+
+
+
+                                            </ul>
+
+                                        </li>
+
+
+                                        <!--li ><a href="#" class="ripplelink"><i class="material-icons"></i><span class="menuitem-text">Layout Palette</span><i class="material-icons layout-submenu-toggler">&#xE313;</i></a>
+                                            <ul >
+                                                <li  ><a href="#" class="ripplelink"><i class="material-icons"></i><span class="menuitem-text">Flat</span><i class="material-icons layout-submenu-toggler">&#xE313;</i></a>
+                                                    <ul >
+                                                        <li  ><a class="ripplelink" href="#" ><i class="material-icons"></i><span class="menuitem-text">Indigo - Pink</span></a>
+                                                        </li>
+                                                        <li  ><a class="ripplelink" href="#"><i class="material-icons"></i><span class="menuitem-text">Pink - Amber</span></a>
+                                                        </li>
+
+                                                    </ul>
+                                                </li><li  ><a href="#" class="ripplelink"><i class="material-icons"></i><span class="menuitem-text">Special</span><i class="material-icons layout-submenu-toggler">&#xE313;</i></a>
+                                                    <ul >
+                                                        <li  ><a class="ripplelink" href="#" ><i class="material-icons"></i><span class="menuitem-text">Reflection</span></a>
+                                                        </li>
+                                                        <li  ><a class="ripplelink" href="#" ><i class="material-icons"></i><span class="menuitem-text">Moody</span></a>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </li-->
+                                        <!--li  ><a href="#" class="ripplelink"><i class="material-icons"></i><span class="menuitem-text">Themes</span><i class="material-icons layout-submenu-toggler">&#xE313;</i><span class="menuitem-badge">8</span></a>
+                                            <ul >
+                                                <li  ><a class="ripplelink" href="#" ><i class="material-icons"></i><span class="menuitem-text">Indigo - Pink</span></a>
+                                                </li>
+                                                <li  ><a class="ripplelink" href="#" ><i class="material-icons"></i><span class="menuitem-text">Pink - Amber</span></a>
+                                                </li>
+                                            </ul>
+                                        </li-->
+                                        <!--li  ><a href="#" class="ripplelink"><i class="material-icons"></i><span class="menuitem-text">Components</span><i class="material-icons layout-submenu-toggler">&#xE313;</i><span class="menuitem-badge">2</span></a><ul ><li id="menuform:sr_sample" ><a class="ripplelink" href="sample.html"><i class="material-icons"></i><span class="menuitem-text">Sample Page</span></a></li>
+                                                <li  ><a class="ripplelink" href="forms.html"><i class="material-icons"></i><span class="menuitem-text">Forms</span></a>
+                                                </li>
+                                                <li  ><a class="ripplelink" href="data.html"><i class="material-icons"></i><span class="menuitem-text">Data</span></a>
+                                                </li>
+                                                <li  ><a class="ripplelink" href="panel.html"><i class="material-icons"></i><span class="menuitem-text">Panels</span></a>
+                                                </li>
+                                                <li ><a class="ripplelink" href="overlay.html"><i class="material-icons"></i><span class="menuitem-text">Overlays</span></a>
+                                                </li>
+                                                <li  ><a class="ripplelink" href="menu.html"><i class="material-icons"></i><span class="menuitem-text">Menus</span></a>
+                                                </li>
+                                                <li  ><a class="ripplelink" href="messages.html"><i class="material-icons"></i><span class="menuitem-text">Messages</span></a>
+                                                </li>
+                                                <li  ><a class="ripplelink" href="charts.html"><i class="material-icons"></i><span class="menuitem-text">Charts</span></a>
+                                                </li>
+                                                <li  ><a class="ripplelink" href="file.html"><i class="material-icons"></i><span class="menuitem-text">File</span></a>
+                                                </li>
+                                                <li ><a class="ripplelink" href="misc.html"><i class="material-icons"></i><span class="menuitem-text">Misc</span></a>
+                                                </li>
+                                            </ul>
+                                        </li-->
+                                        <!--li  ><a href="#" class="ripplelink"><i class="material-icons"></i><span class="menuitem-text">Template Pages</span><i class="material-icons layout-submenu-toggler">&#xE313;</i></a>
+                                            <ul >
+                                                <li  ><a class="ripplelink" href="landing.html"><i class="material-icons"></i><span class="menuitem-text">Landing</span></a>
+                                                </li>
+                                                <li  ><a class="ripplelink" href="empty.html"><i class="material-icons"></i><span class="menuitem-text">Empty Page</span></a>
+                                                </li>
+                                                <li ><a class="ripplelink" href="login.html"><i class="material-icons"></i><span class="menuitem-text">Login Page</span></a>
+                                                </li>
+                                                <li  ><a class="ripplelink" href="error.html"><i class="material-icons"></i><span class="menuitem-text">Error Page</span></a>
+                                                </li>
+                                                <li  ><a class="ripplelink" href="notfound.html"><i class="material-icons"></i><span class="menuitem-text">404 Page</span></a>
+                                                </li>
+                                                <li  ><a class="ripplelink" href="access.html"><i class="material-icons"></i><span class="menuitem-text">Access Denied Page</span></a>
+                                                </li>
+                                            </ul>
+                                        </li-->
+                                        <!--li  ><a href="#" class="ripplelink"><i class="material-icons"></i><span class="menuitem-text">Menu Hierarchy</span><i class="material-icons layout-submenu-toggler">&#xE313;</i></a>
+                                            <ul >
+                                                <li  ><a href="#" class="ripplelink"><i class="material-icons"></i><span class="menuitem-text">Submenu 1</span><i class="material-icons layout-submenu-toggler">&#xE313;</i></a>
+                                                    <ul >
+                                                        <li  ><a href="#" class="ripplelink"><i class="material-icons"></i><span class="menuitem-text">Submenu 1.1</span><i class="material-icons layout-submenu-toggler">&#xE313;</i></a>
+                                                            <ul >
+                                                                <li  ><a class="ripplelink" href="#"><i class="material-icons"></i><span class="menuitem-text">Link 1.1.1</span></a>
+                                                                </li>
+                                                                <li  ><a class="ripplelink" href="#"><i class="material-icons"></i><span class="menuitem-text">Link 1.1.2</span></a>
+                                                                </li>
+                                                                <li  ><a class="ripplelink" href="#"><i class="material-icons"></i><span class="menuitem-text">Link 1.1.3</span></a>
+                                                                </li>
+                                                            </ul>
+                                                        </li>
+                                                        <li  ><a href="#" class="ripplelink"><i class="material-icons"></i><span class="menuitem-text">Submenu 1.2</span><i class="material-icons layout-submenu-toggler">&#xE313;</i></a><ul ><li id="menuform:sr_lnk121" ><a class="ripplelink" href="#"><i class="material-icons"></i><span class="menuitem-text">Link 1.2.1</span></a></li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                                <li  ><a href="#" class="ripplelink"><i class="material-icons"></i><span class="menuitem-text">Submenu 2</span><i class="material-icons layout-submenu-toggler">&#xE313;</i></a>
+                                                    <ul >
+                                                        <li  ><a href="#" class="ripplelink"><i class="material-icons"></i><span class="menuitem-text">Submenu 2.1</span><i class="material-icons layout-submenu-toggler">&#xE313;</i></a>
+                                                            <ul >
+                                                                <li  ><a class="ripplelink" href="#"><i class="material-icons"></i><span class="menuitem-text">Link 2.1.1</span></a>
+                                                                </li>
+                                                                <li  ><a class="ripplelink" href="#"><i class="material-icons"></i><span class="menuitem-text">Link 2.1.2</span></a>
+                                                                </li>
+                                                            </ul>
+                                                        </li>
+                                                        <li  ><a href="#" class="ripplelink"><i class="material-icons"></i><span class="menuitem-text">Submenu 2.2</span><i class="material-icons layout-submenu-toggler">&#xE313;</i></a><ul ><li id="menuform:sr_lnk221" ><a class="ripplelink" href="#"><i class="material-icons"></i><span class="menuitem-text">Link 2.2.1</span></a></li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </li-->
+
+                                        <!--li  ><a class="ripplelink" href="utils.html"><i class="material-icons"></i><span class="menuitem-text">Utils</span></a>
+                                        </li-->
+                                        <!--li  ><a class="ripplelink" href="docs.html"><i class="material-icons"></i><span class="menuitem-text">Documentation</span></a>
+                                        </li-->
+                                        <!--li  ><a class="ripplelink" href="https://www.primefaces.org/store"><i class="material-icons"></i><span class="menuitem-text">Buy Now</span></a>
+                                        </li-->
+                                    </ul>
+                                    <!-- <input type="hidden" name="javax.faces.ViewState" id="j_id1:javax.faces.ViewState:0" value="2694367356320541804:1121498893873238542" autocomplete="off" />  -->
+                                </h:form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="layout-main">
+
+
+                    <!-- top navigation -->
+                    <div class="layout-topbar"><h:graphicImage id="image2" library="default" name="images/magma.png" alt="" class="mobile-logo"/>
+
+
+
+                        <a href="#" class="menu-btn">
+                            <i class="material-icons"></i>
+                        </a>
+
+                        <a href="#" class="topbar-menu-btn">
+                            <i class="material-icons"></i>
+                        </a>
+
+                        <div class="layout-topbar-menu-wrapper">            
+                            <ul class="topbar-menu animated">
+                                <li class="profile-item">
+                                    <a href="#">       
+                                        <span class="profile-image-wrapper">
+                                            <p:graphicImage id="image3" value="#{utilisateurController.imageUtilisateur}" cache="false" height="20" width="20" class="img-circle" alt=""> 
+                                                <f:param name="image" value="#{user.photo}"/>
+                                                <f:param name="statut" value="#{user.statut}"/>
+                                            </p:graphicImage>
+                                        </span>                     
+                                        <span class="topbar-item-name profile-name">#{user}</span>
+                                    </a>
+
+                                    <ul class="animated">
+
+
+                                        <li >
+                                            <h:form> 
+                                                <p:commandLink  type="push" ajax="false" immediate="true" action="#{utilisateurController.prepareEditProfile()}" >  
+                                                    <i class="material-icons"></i>
+                                                    <span>#{bundle.Profile}</span>
+                                                </p:commandLink>
+                                            </h:form>
+                                        </li>
+
+                                        <!--li >
+                                            <a href="#">
+                                                <i class="material-icons"></i>
+                                                <span>Privacy</span>
+                                            </a>
+                                        </li-->
+
+
+                                        <li >
+                                            <h:form> 
+                                                <p:commandLink  type="push" ajax="false" immediate="true" action="#{utilisateurController.preparedEditPwd()}" >  
+                                                    <i class="material-icons"></i>
+                                                    <span>#{bundle.ModifierPWD}</span>
+                                                </p:commandLink>
+                                            </h:form>
+                                        </li>
+
+
+                                        <li >
+
+                                            <h:form>
+
+                                                <p:commandLink  type="push" ajax="false" immediate="true" action="#{authentification.deconnecter()}" >  
+                                                    <i class="material-icons"></i>
+                                                    <span>#{bundle.Deconnexion}</span>
+                                                </p:commandLink>
+                                            </h:form>
+
+                                        </li>
+                                    </ul>
+
+                                </li>
+
+                                <!--
+                                <li>
+                                    <a href="#">
+                                        <i class="topbar-icon material-icons"></i>
+                                        <span class="topbar-item-name">Settings</span>
+                                    </a>
+                                    <ul class="ultima-menu animated">
+                                        <li >
+                                            <a href="#">
+                                                <i class="material-icons"></i>
+                                                <span>Change Theme</span>
+                                            </a>
+                                        </li>
+                                        <li >
+                                            <a href="#">
+                                                <i class="material-icons"></i>
+                                                <span>Favorites</span>
+                                            </a>
+                                        </li>
+                                        <li >
+                                            <a href="#">
+                                                <i class="material-icons"></i>
+                                                <span>Lock Screen</span>
+                                            </a>
+                                        </li>
+                                        <li >
+                                            <a href="#">
+                                                <i class="material-icons"></i>
+                                                <span>Wallpaper</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <i class="topbar-icon material-icons animated swing"></i>
+                                        <span class="topbar-badge animated rubberBand">5</span>
+                                        <span class="topbar-item-name">Messages</span>
+                                    </a>
+                                    <ul class="ultima-menu animated">
+                                        <li >
+                                            <a href="#" class="topbar-message"><img id="j_idt25" src="resources/images/avatar1.png049b.png?ln=serenity-layout" alt="" width="35" />
+                                                <span>Give me a call</span>
+                                            </a>
+                                        </li>
+                                        <li >
+                                            <a href="#" class="topbar-message"><img id="j_idt27" src="resources/images/avatar2.png049b.png?ln=serenity-layout" alt="" width="35" />
+                                                <span>Sales reports attached</span>
+                                            </a>
+                                        </li>
+                                        <li >
+                                            <a href="#" class="topbar-message"><img id="j_idt29" src="resources/images/avatar3.png049b.png?ln=serenity-layout" alt="" width="35" />
+                                                <span>About your invoice</span>
+                                            </a>
+                                        </li>
+                                        <li >
+                                            <a href="#" class="topbar-message"><img id="j_idt31" src="resources/images/avatar2.png049b.png?ln=serenity-layout" alt="" width="35" />
+                                                <span>Meeting today at 10pm</span>
+                                            </a>
+                                        </li>
+                                        <li >
+                                            <a href="#" class="topbar-message"><img id="j_idt33" src="resources/images/avatar4.png049b.png?ln=serenity-layout" alt="" width="35" />
+                                                <span>Out of office</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <i class="topbar-icon material-icons"></i>
+                                        <span class="topbar-badge animated rubberBand">4</span>
+                                        <span class="topbar-item-name">Notifications</span>
+                                    </a>
+                                    <ul class="ultima-menu animated">
+                                        <li >
+                                            <a href="#">
+                                                <i class="material-icons"></i>
+                                                <span>Pending tasks</span>
+                                            </a>
+                                        </li>
+                                        <li >
+                                            <a href="#">
+                                                <i class="material-icons"></i>
+                                                <span>Meeting today at 3pm</span>
+                                            </a>
+                                        </li>
+                                        <li >
+                                            <a href="#">
+                                                <i class="material-icons"></i>
+                                                <span>Download documents</span>
+                                            </a>
+                                        </li>
+                                        <li >
+                                            <a href="#">
+                                                <i class="material-icons"></i>
+                                                <span>Book flight</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>-->
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="layout-breadcrumb">
+
+                    </div>
+                    <!-- /top navigation -->
+
+
+
+                    <!-- page content -->
+
+
+
+                    <div class="right_col" role="main">
+
+                        <ui:insert name="pageContent"></ui:insert>
+
+                    </div>
+
+
+
+
+                    <!-- /page content -->
+
+
+
+
+
+
+
+
+                </div>
+
+
+            </div>
+
+
+            <!-- footer content -->
+            <!--footer>
+                <div class="pull-right" >
+                    <strong> Copyright - 2018 <a href="http://www.symatique.com" target="_blank">SYMATIQUE</a>.</strong> All rights
+                    reserved. 
+                </div>
+                <div class="clearfix"></div>
+            </footer-->
+            <!-- /footer content -->   
+
+            <div id="j_idt57" style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+                <div id="j_idt57_start" style="display:none">
+                    <i class="fa fa-circle-o-notch fa-spin ajax-loader" aria-hidden="true"></i>
+                </div>
+                <div id="j_idt57_complete" style="display:none">
+
+                </div>
+
+            </div>
+            <script  type="text/javascript">$(function () {
+                    PrimeFaces.cw("AjaxStatus", "widget_j_idt57", {id: "j_idt57"});
+                });
+            </script>        
+            <script  type="text/javascript">$(function () {
+                    PrimeFaces.cw("Inzo", "", {id: ""});
+                });</script>
+
+
+        </body>
+    </f:view>
+</html>

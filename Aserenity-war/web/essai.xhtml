@@ -1,0 +1,215 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      > 
+    <ui:composition template="/template.xhtml">
+
+        <ui:define name="pageContent">
+
+            <h:panelGroup id="messagePanel" layout="block">
+                <p:messages closable="true" globalOnly="true" /> <!--layout="table" -->
+            </h:panelGroup>  
+
+            <div class="layout-content">
+
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="shadow-box ui-shadow-5">
+                            <div class="card">
+
+                                <h:form id="f1">
+
+                                    <div class="x_title">
+                                        <h2 style="color: #607D8B">Gestion des utilisateurs</h2>
+                                        <ul class="nav navbar-right panel_toolbox">                          
+                                            <li>
+                                                <p:commandButton title="Enregistrer" id="addButton"  type="push" ajax="false"  icon="fa fa-floppy-o" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                            </li>
+                                            <li>
+                                                <p:commandButton title="Annuler"  id="updateButton"  immediate="true" icon="fa fa-mail-reply"  style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                            </li>
+
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>         
+
+
+                                    <div class="x_content" >   
+
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value=" Nom: *" for="code"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:inputText id="code" required="true" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="Prenom : *" for="code2"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:inputText id="code2" required="true" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div> 
+
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="Nombre enfants : *" for="code3"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:inputText id="code3" required="true" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div> 
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="Date de naissance : *" for="code4"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:calendar id="code4" required="true"  showOn="button"/>
+                                            </div>
+                                        </div>      
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="Civilite : *" for="code6"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectOneMenu id="code6"  style="width: 90%; min-width: 180px;} " required="true" styleClass="form-control">
+                                                        <f:selectItem itemLabel="---" itemValue="" />
+                                                        <f:selectItem itemLabel="Mme" itemValue="Mme" />
+                                                        <f:selectItem itemLabel="Mr" itemValue="Mr" />
+                                                        <f:selectItem itemLabel="Autre" itemValue="Autre" />
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div> 
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="Description : *" for="code5"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:inputTextarea id="code5" required="true" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div> 
+
+                                        
+                                    </div> 
+
+                                    <div class="x_content" >
+
+                                        <p:dataTable emptyMessage="vide" 
+                                                     rows="10"
+                                                     paginator="true"
+                                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                     rowsPerPageTemplate="5,10,15"
+                                                     value="#{messagesView.items}" var="item"
+                                                     rowKey="#{item}" selection="#{messagesView.message}"
+                                                     paginatorPosition="bottom"
+                                                     >
+
+                                            <f:facet  name="header">
+                                                <div style="height: 35px" align="right">
+                                                    <p:commandButton  title="cc"  id="addButton2" icon="fa fa-fw fa-plus" style="width: 30px; height: 30px; margin: 3px;" styleClass="btn secondary-btn"  oncomplete="PF('dlg2').show()" />
+
+                                                    <p:commandButton  title="sal" id="deleteButton" icon="fa fa-fw fa-trash-o" style=" width: 30px; height: 30px; margin: 3px;"    oncomplete="PF('confirmation').show()" styleClass="btn secondary-btn"  />
+                                                </div>
+                                            </f:facet>
+
+                                            <p:column selectionMode="single" style="width:35px;text-align:center;">
+                                            </p:column>         
+
+                                            <p:column filterBy="#{item}" sortBy="#{item}" filterMatchMode="contains" filterStyle="width:98%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="Valeur"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item}"/>
+                                            </p:column>
+
+                                        </p:dataTable>
+
+                                    </div>
+
+                                    <p:confirmDialog id="confirmDialogSupp" message="Etes-vous sur de supprimer cet objet" header="Confirmation supression" severity="alert"  widgetVar="confirmation" responsive="true">
+                                        <p:commandButton id="confirm" value="Valider" style="float: right" oncomplete="PF('confirmation').hide()" icon="ui-icon-check"  update="f1" />
+                                        <p:commandButton id="decline" value="Annuler" style="float: right" onclick="PF('confirmation').hide()" icon="ui-icon-close"  type="button" />
+                                    </p:confirmDialog>
+
+                                </h:form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+            </div>   
+
+
+
+
+
+            <h:form id="form">
+                <p:dialog header="Hallo Affichage" widgetVar="dlg2" modal="true" height="50%" width="50%" resizable="false" responsive="true">
+
+
+                    <div class="form-group" >
+                        <h:outputLabel value=" Nom: *" for="code7"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                        <div class="col-md-9 col-sm-9 col-xs-12">
+                            <p:inputText id="code7" required="true" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group" >
+                        <h:outputLabel value="Nombre  : *" for="code3"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                        <div class="col-md-9 col-sm-9 col-xs-12">
+                            <p:inputText id="code3" required="true" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                        </div>
+                    </div> 
+
+                    <div class="form-group" >
+                        <h:outputLabel value="Date : *" for="code14"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                        <div class="col-md-9 col-sm-9 col-xs-12">
+                            <p:calendar id="code14" required="true"  showOn="button"/>
+                        </div>
+                    </div>      
+
+                    <div class="form-group" >
+                        <h:outputLabel value="Civilite : *" for="code10"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                        <div class="col-md-9 col-sm-9 col-xs-12">
+                            <p:selectOneMenu id="code10"  style="width: 90%; min-width: 180px" required="true" styleClass="form-control">
+                                                        <f:selectItem itemLabel="---" itemValue="" />
+                                                        <f:selectItem itemLabel="Mme" itemValue="Mme" />
+                                                        <f:selectItem itemLabel="Mr" itemValue="Mr" />
+                                                        <f:selectItem itemLabel="Autre" itemValue="Autre" />
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+
+                    <div class="form-group" >
+                        <h:outputLabel value="Description : *" for="code6"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                        <div class="col-md-9 col-sm-9 col-xs-12">
+                            <p:inputTextarea id="code6" required="true" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                        </div>
+                    </div> 
+
+                    <p:separator style="width:90%;height:1px;background:#d8d8d8;"/>
+                    
+                    <p:commandButton title="Enregistrer" id="addButton5" ajax="false"  icon="fa fa-save"  styleClass="btn btn-primary"  style="float: right; width: 50px; height: 50px; margin: 3px;"/>
+
+
+                </p:dialog>
+
+
+            </h:form>  
+
+
+
+        </ui:define>
+    </ui:composition>
+
+
+
+
+
+
+</html>

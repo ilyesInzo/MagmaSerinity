@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      >
+    <ui:composition template="/template.xhtml">
+
+        <ui:define name="pageContent">
+
+            <h:panelGroup id="messagePanel" layout="block">
+                <p:messages closable="true" globalOnly="true" showDetail="true"><p:autoUpdate />
+                </p:messages>
+            </h:panelGroup> 
+
+            <div class="layout-content">
+
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="shadow-box ui-shadow-5">
+                            <div class="card">
+
+                                <h:form id="f1">
+
+                                    <div class="x_title">
+                                        <h2 style="color: #607D8B">#{bundle.GEntreprise}</h2>
+                                        <ul class="nav navbar-right panel_toolbox">                          
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('entreprise').modification}" title="Modifier" id="addButton" action="#{entrepriseController.prepareEdit()}"  type="push" ajax="false"  icon="fa fa-pencil" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                            </li>
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('entreprise').lecture}" title="Annuler"  id="updateButton" action="#{entrepriseController.prepareList()}" ajax="false" immediate="true" icon="fa fa-reply"  style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                            </li>
+
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>         
+
+
+                                    <div class="x_content" >  
+
+
+                                        <div class="col-md-3 col-sm-3 col-xs-12" align="center" >
+
+                                            <p:graphicImage cache="false" id="Photo" value="#{entrepriseController.pathPhoto()}"  style="padding: 0px; width: 100%; height: 100%; " />
+
+                                        </div>
+
+                                        <div class="col-md-9 col-sm-9 col-xs-12">
+
+
+                                            <div class="form-group" >
+                                                <h:outputLabel value="#{bundle.Libelle}: " for="libelle"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:outputLabel id="libelle" value="#{entrepriseController.selected.libelle}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group" >
+                                                <h:outputLabel value="#{bundle.Gouvernorat} : " for="Gouvernorat" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:outputLabel id="Gouvernorat" value="#{entrepriseController.selected.libelleGouvernorat}" title="#{bundle.Gouvernorat}"  style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group" >
+                                                <h:outputLabel value="#{bundle.Delegation} : " for="Delegation" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:outputLabel id="Delegation" value="#{entrepriseController.selected.libelleDelegation}" title="#{bundle.Delegation}" style="width: 90%; min-width: 180px"  styleClass="form-control"/>
+                                                </div>
+                                            </div>
+
+
+
+                                            <div class="form-group" >
+                                                <h:outputLabel value="#{bundle.SiteWeb} : " for="siteWeb" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:outputLabel id="siteWeb" value="#{entrepriseController.selected.siteWebString}" title="#{bundle.SiteWeb}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                                </div>
+                                            </div>  
+
+
+                                            <div class="form-group" >
+                                                <h:outputLabel value="#{bundle.Email} : " for="email" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:outputLabel id="email" value="#{entrepriseController.selected.emailString}" title="#{bundle.Email}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="form-group" >
+                                                <h:outputLabel value="#{bundle.Telephone} : " for="telephone" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:outputLabel id="telephone" value="#{entrepriseController.selected.telephoneString}" title="#{bundle.Telephone}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group" >
+                                                <h:outputLabel value="#{bundle.Fax} : " for="fax" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:outputLabel id="fax" value="#{entrepriseController.selected.faxString}" title="#{bundle.Fax}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                                </div>
+                                            </div>
+
+
+
+
+                                            <div class="form-group" >
+                                                <h:outputLabel value="#{bundle.CodePostal} :" for="codePostal" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:outputLabel id="codePostal" value="#{entrepriseController.selected.codePostal}" title="#{bundle.CodePostal}" style="width: 90%; min-width: 180px"  styleClass="form-control"/>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="form-group" >
+                                                <h:outputLabel value="#{bundle.Adresse} : " for="adresse" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:inputTextarea id="adresse" readonly="true" value="#{entrepriseController.selected.adresseString}" title="#{bundle.Adresse}" style="width: 90%; min-width: 180px" required="false" rows="5" cols="100"   styleClass="form-control"/>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group" >
+                                                <h:outputLabel value="#{bundle.Description} : " for="Description"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:inputTextarea id="Description" readonly="true" value="#{entrepriseController.selected.description}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                                </div>
+                                            </div> 
+
+
+                                        </div>
+                                    </div> 
+
+
+                                </h:form>       
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+
+        </ui:define>
+    </ui:composition>
+
+</html>

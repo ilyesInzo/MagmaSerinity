@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+
+        <ui:define name="pageContent">
+
+
+
+            <h:panelGroup id="messagePanel" layout="block">
+                <p:messages closable="true" globalOnly="true" showDetail="true"><p:autoUpdate />
+                </p:messages>
+            </h:panelGroup>
+
+            <div class="layout-content">
+
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="shadow-box ui-shadow-5">
+                            <div class="card">
+
+                                <h:form id="f1">
+
+                                    <div class="x_title">
+                                        <h2 style="color: #607D8B">#{bundle.GUtilisateur}</h2>
+                                        <ul class="nav navbar-right panel_toolbox">                          
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('utilisateur').creation}" title="Enregistrer" id="addButton" action="#{utilisateurController.create()}" type="push" ajax="false"  icon="fa fa-save" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                            </li>
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('utilisateur').lecture}" title="Annuler"  id="updateButton" type="push" action="#{utilisateurController.prepareList()}" ajax="false" immediate="true" icon="fa fa-reply"  style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                            </li>
+
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>         
+
+                                    <div class="x_content" >
+                                        <ul class="nav navbar-right panel_toolbox">                          
+                                            <li >
+                                                <p:selectBooleanButton id="etatUser" value="#{utilisateurController.selected.estActif}" onLabel="#{bundle.Actif}" offLabel="#{bundle.NonActif}"  onIcon="ui-icon-check" offIcon="fa fa-archive"  style="float: right; width: 100px; margin-right: 10px" >
+
+                                                </p:selectBooleanButton>
+                                            </li>
+                                            <li></li>
+                                            <li></li>
+                                            <li>
+                                                <p:selectBooleanButton id="nature" value="#{utilisateurController.selected.estEmploye}" onLabel="#{bundle.Employe}" offLabel="#{bundle.Externe}"   style="float: right; width: 100px; ">
+                                                    <p:ajax update="pgEstEmplye"/>
+                                                </p:selectBooleanButton>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+
+
+                                    <div class="x_content" >
+
+
+                                        <div class="col-md-3 col-sm-3 col-xs-12" align="center" >
+
+                                            <p:graphicImage cache="false" id="Photo"  value="#{utilisateurController.dynamicPhoto()}"  style="padding: 0px; width: 60%; margin-bottom: 10px" />
+
+                                            <p:fileUpload id="Photo5" skinSimple="true" update="Photo" fileUploadListener="#{utilisateurController.uploadRegistre}" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" sizeLimit="10000000" 
+                                                          invalidFileMessage="erreur!" invalidSizeMessage="bundle.MsgSizeFichier" auto="true" multiple="false"  style=" padding: 0px;  width: 60% "
+                                                          required="false" requiredMessage=""  label="#{bundle.Upload}" />
+
+
+                                        </div>
+
+                                        <div class="col-md-9 col-sm-9 col-xs-12">
+
+
+
+                                            <div class="form-group" >
+                                                <h:outputLabel value="#{bundle.Nom}: *" for="nom"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:inputText id="nom" required="true" value="#{utilisateurController.selected.nom}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="form-group" >
+                                                <h:outputLabel value="#{bundle.Prenom} : *" for="prenom"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:inputText id="prenom" required="true" value="#{utilisateurController.selected.prenom}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                                </div>
+                                            </div> 
+
+                                            <div class="form-group" >
+                                                <h:outputLabel value="#{bundle.Civilite} : *" for="Civilite"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:selectOneMenu id="Civilite" value="#{utilisateurController.selected.statut}" style="width: 90%; min-width: 180px; " required="true" styleClass="form-control">
+                                                        <f:selectItem itemLabel="---" itemValue="" />
+                                                        <f:selectItem itemLabel="Mme" itemValue="Mme" />
+                                                        <f:selectItem itemLabel="Mr" itemValue="Mr" />
+                                                        <p:ajax update="Photo"></p:ajax>
+                                                    </p:selectOneMenu>
+                                                </div>
+                                            </div> 
+
+                                            <div class="form-group" >
+                                                <h:outputLabel value="#{bundle.Email} : *" for="email" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:inputText id="email" value="#{utilisateurController.selected.email}" required="true" style="width: 90%; min-width: 180px" styleClass="form-control" >
+                                                        <f:validator validatorId="custom.emailValidator"  />
+                                                    </p:inputText>                           
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group" >
+                                                <h:outputLabel value="#{bundle.Profile} : * " for="Profile" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:selectOneMenu id="Profile" value="#{utilisateurController.selected.profile}" title="Profile" required="true" styleClass="form-control" style="width: 90%; min-width: 180px">
+                                                        <f:selectItems value="#{profileController.itemsAvailableSelectOne}"/>
+
+                                                    </p:selectOneMenu>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="form-group" >
+                                                <h:outputLabel value="#{bundle.Gouvernorat} : " for="Gouvernorat" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:selectOneMenu id="Gouvernorat"   value="#{utilisateurController.selected.gouvernorat}"  title="#{bundle.Gouvernorat}"   styleClass="form-control" required="false" filter="true" filterMatchMode="startsWith" effect="fade" var="l" style="width: 90%; min-width: 180px">
+                                                        <f:selectItems value="#{gouvernoratController.itemsAvailableSelectOne}" var="cl" itemLabel="#{cl.libelle}" itemValue="#{cl}"  />
+                                                        <p:ajax update="Delegation" listener="#{utilisateurController.changedDelegation()}" />
+                                                        <p:column>
+                                                            <h:outputText value="#{l.libelle}" />
+                                                        </p:column>
+                                                    </p:selectOneMenu>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group" >
+                                                <h:outputLabel value="#{bundle.Delegation} : " for="Delegation" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+
+                                                    <p:selectOneMenu id="Delegation"   value="#{utilisateurController.selected.delegation}"  title="#{bundle.Delegation}"   styleClass="form-control" required="false" filter="true" filterMatchMode="startsWith" effect="fade" var="l" style="width: 90%; min-width: 180px">
+                                                        <f:selectItems value="#{utilisateurController.itemsAvailableSelectOneDelegation}" var="cl" itemLabel="#{cl.libelle}" itemValue="#{cl}"  />
+                                                        <p:column>
+                                                            <h:outputText value="#{l.libelle}" />
+                                                        </p:column>
+                                                    </p:selectOneMenu>
+
+                                                </div>
+                                            </div>
+
+
+                                            <h:panelGroup id="pgEstEmplye" >
+                                                <h:panelGroup rendered="#{utilisateurController.selected.estEmploye}">
+
+
+                                                    <div class="form-group" >
+                                                        <h:outputLabel value="#{bundle.Departement} : " for="Departement" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                                            <p:selectOneMenu id="Departement"   value="#{utilisateurController.selected.departement}"  title="#{bundle.Departement}"   styleClass="form-control" required="true" filter="true" filterMatchMode="startsWith" effect="fade" var="l" style="width: 90%; min-width: 180px">
+                                                                <f:selectItems value="#{departementController.itemsAvailableSelectOne}" var="cl" itemLabel="#{cl.libelle}" itemValue="#{cl}"  />
+                                                                <p:ajax update="Poste" listener="#{utilisateurController.changedPoste()}" />
+                                                                <p:column>
+                                                                    <h:outputText value="#{l.libelle}" />
+                                                                </p:column>
+                                                            </p:selectOneMenu>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group" >
+                                                        <h:outputLabel value="#{bundle.Poste} : " for="Poste" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                        <div class="col-md-9 col-sm-9 col-xs-12">
+
+                                                            <p:selectOneMenu id="Poste"   value="#{utilisateurController.selected.poste}"  title="#{bundle.Poste}"   styleClass="form-control" required="true" filter="true" filterMatchMode="startsWith" effect="fade" var="l" style="width: 90%; min-width: 180px">
+                                                                <f:selectItems value="#{utilisateurController.itemsAvailableSelectOnePoste}" var="cl" itemLabel="#{cl.libelle}" itemValue="#{cl}"  />
+                                                                <p:column>
+                                                                    <h:outputText value="#{l.libelleSuiteParentString}" />
+                                                                </p:column>
+                                                            </p:selectOneMenu>
+
+                                                        </div>
+                                                    </div>
+
+                                                </h:panelGroup>
+                                            </h:panelGroup>
+
+
+                                            <div class="form-group" >
+                                                <h:outputLabel value="#{bundle.Description} : " for="Description"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:inputTextarea id="Description" value="#{utilisateurController.selected.description}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                                </div>
+                                            </div> 
+
+                                        </div>
+
+                                    </div> 
+
+
+
+                                    <p:confirmDialog id="confirmDialogSupp" message="Etes-vous sur de supprimer cet objet" header="Confirmation supression" severity="alert"  widgetVar="confirmation" responsive="true">
+                                        <p:commandButton id="confirm" value="Valider" style="float: right" oncomplete="PF('confirmation').hide()" icon="ui-icon-check"  update="f1" />
+                                        <p:commandButton id="decline" value="Annuler" style="float: right" onclick="PF('confirmation').hide()" icon="ui-icon-close"  type="button" />
+                                    </p:confirmDialog>
+
+                                </h:form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+
+        </ui:define>
+    </ui:composition>
+
+</html>

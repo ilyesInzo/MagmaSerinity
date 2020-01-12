@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+
+        <ui:define name="pageContent">
+
+            
+
+            <h:panelGroup id="messagePanel" layout="block">
+                <p:messages closable="true" globalOnly="true" showDetail="true"><p:autoUpdate />
+                </p:messages>
+            </h:panelGroup>
+
+            <div class="layout-content">
+
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="shadow-box ui-shadow-5">
+                            <div class="card">
+
+                                <h:form id="f1">
+
+                                    <div class="x_title">
+                                        <h2 style="color: #607D8B">#{bundle.GEncaissement}</h2>
+                                        <ul class="nav navbar-right panel_toolbox">                          
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('encaissement').creation}" title="Enregistrer" id="addButton" action="#{encaissementController.create()}" type="push" ajax="false"  icon="fa fa-save" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                            </li>
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('encaissement').lecture}" title="Annuler"  id="updateButton" type="push" action="#{encaissementController.prepareList()}" ajax="false" immediate="true" icon="fa fa-reply"  style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                            </li>
+
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>         
+
+
+                                    <div class="x_content" >
+
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Categorie} : *"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectOneMenu id="Categorie" value="#{encaissementController.categorieClient}" style="width: 90%; min-width: 180px" title="#{bundle.Categorie}" filter="true" filterMatchMode="contains"  effect="fade" var="l"  styleClass="form-control"  required="true" >
+                                                    <f:selectItems value="#{categorieClientController.itemsAvailableSelectOne}"  />
+                                                    <p:ajax update="client" event="change" />
+                                                    <p:column>
+                                                        <h:outputText value="#{l.toString()}" />
+                                                    </p:column>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Client} : *" for="client" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectOneMenu id="client" value="#{encaissementController.client}" styleClass="form-control" filter="true" filterMatchMode="contains"  effect="fade" var="l" required="true" style="width: 90%; min-width: 180px">
+                                                    <f:selectItems value="#{encaissementController.itemsAvailableSelectOneClient}" var="cl" itemLabel="#{cl.toString()}" itemValue="#{cl}" />
+                                                    <p:ajax update="facture" listener="#{encaissementController.changeFacture()}" />
+                                                    <p:column>
+                                                        <h:outputText value="#{l.toString()}" />
+                                                    </p:column>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Facture} : *" for="facture" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectOneMenu id="facture" value="#{encaissementController.selected.facture}" styleClass="form-control" filter="true" filterMatchMode="contains"  effect="fade" var="l" required="true" style="width: 90%; min-width: 180px">
+                                                    <f:selectItems value="#{encaissementController.itemsAvailableSelectOneNotPaid}" var="cl" itemLabel="#{cl.toString()}" itemValue="#{cl}" />
+                                                    <p:ajax update="montant,reste,pgAvoir"/>
+                                                    <p:column>
+                                                        <h:outputText value="#{l.toString()} - #{l.dateCreationStringFr}" />
+                                                    </p:column>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.MontantTotal} :"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:inputText id="montant" value="#{encaissementController.selected.facture.totalTTC}" title="#{bundle.Montant}" disabled="true"  styleClass="form-control" style="width: 90%; min-width: 180px"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.ResteAPayer} :" for="reste" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:inputText  id="reste" placeholder="#{encaissementController.selected.facture.reste}" title="#{bundle.ResteAPayer}"  styleClass="form-control" disabled="true" style="width: 90%; min-width: 180px"/>
+                                            </div>
+                                        </div>
+
+
+                                        <h:panelGroup id ="panelTypeEncaissement">
+                                            <div class="form-group">
+                                                <h:outputLabel value="#{bundle.TypeEncaissement} : *" for="TypeEncaissement" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:selectOneMenu id="TypeEncaissement" value="#{encaissementController.selected.typeEncaissementVente}"  title="#{bundle.TypeEncaissement}"  filter="true" filterMatchMode="contains"  effect="fade" var="l" required="true" styleClass="form-control" style="width: 90%; min-width: 180px">
+                                                        <f:selectItems value="#{typeEncaissementVenteController.itemsAvailableSelectOne}"/>
+                                                        <p:ajax update="pgMontant,pgDateCheque,pgBanque,pgVille,pgLibelleTicket,pgDeductionPourcentageTicket,pgMontantTicket,pgNbrTicket,pgTauxRetenu,pgAvoir" listener="#{encaissementController.changeTicket()}"/>
+                                                        <p:column>
+                                                            <h:outputText value="#{l.toString()}" />
+                                                        </p:column>
+                                                    </p:selectOneMenu>
+                                                </div>
+                                            </div>
+
+                                            <h:panelGroup id="pgLibelleTicket" >
+                                                <h:panelGroup rendered="#{encaissementController.selected.typeEncaissementVente.libelleTicket}">
+
+                                                    <div class="form-group" >
+                                                        <h:outputLabel value="#{bundle.Ticket} :*" for="libTicket" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                                            <p:selectOneMenu id="libTicket" autoWidth="false" value="#{encaissementController.selected.ticket}" title="#{bundle.Ticket}"  styleClass="form-control" required="true" style="width: 90%; min-width: 180px">
+                                                                <f:selectItems value="#{ticketController.itemsAvailableSelectOne}"/> 
+                                                                <p:ajax update="deductionTicket" listener="#{encaissementController.changeTicket()}" />
+                                                            </p:selectOneMenu>
+                                                        </div>
+                                                    </div>
+
+                                                </h:panelGroup>
+                                            </h:panelGroup>
+
+                                            <h:panelGroup id="pgMontantTicket" >
+                                                <h:panelGroup rendered="#{encaissementController.selected.typeEncaissementVente.valeurUnitaireTicket}">
+
+                                                    <div class="form-group" >
+                                                        <h:outputLabel value="#{bundle.MontantTicket} :*" for="montTicket" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                                            <p:inputText id="montTicket" value="#{encaissementController.selected.valeurUnitaireTicket}" title="#{bundle.MontantTicket}" required="true"  styleClass="form-control" style="width: 90%; min-width: 180px">
+                                                                <p:ajax update="pgMontant,montant,reste" listener="#{encaissementController.changeMontantTicketResto()}" />
+                                                                <p:keyFilter for="montTicket" mask="num"   />
+                                                            </p:inputText>
+                                                        </div>
+                                                    </div>
+
+                                                </h:panelGroup>
+                                            </h:panelGroup>
+
+                                            <h:panelGroup id="pgDeductionPourcentageTicket" >
+                                                <h:panelGroup rendered="#{encaissementController.selected.typeEncaissementVente.deductionPourcentageTicket}">
+
+                                                    <div class="form-group" >
+                                                        <h:outputLabel value="#{bundle.DeductionPourcentageTicket} :*" for="deductionTicket" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                                            <p:inputText id="deductionTicket" value="#{encaissementController.selected.deductionPourcentageTicket}" title="#{bundle.DeductionPourcentageTicket}" required="true"  styleClass="form-control" disabled="true" style="width: 90%; min-width: 180px">                                       
+                                                                <p:keyFilter for="deductionTicket" mask="num"   />
+                                                                <p:ajax update="pgMontant,montant,reste" listener="#{encaissementController.changeMontantTicketResto()}" />
+                                                            </p:inputText>
+                                                        </div>
+                                                    </div>
+
+                                                </h:panelGroup>
+                                            </h:panelGroup>
+
+                                            <h:panelGroup id="pgNbrTicket" >
+                                                <h:panelGroup rendered="#{encaissementController.selected.typeEncaissementVente.nbrTicket}">
+
+                                                    <div class="form-group" >
+                                                        <h:outputLabel value="#{bundle.Nombre} :*" for="nbrTicket" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                                            <p:inputText id="nbrTicket" value="#{encaissementController.selected.nbrTicket}" title="#{bundle.Nombre}" required="true"  styleClass="form-control" style="width: 90%; min-width: 180px">                                       
+                                                                <p:keyFilter for="nbrTicket" mask="num"   />
+                                                                <p:ajax update="pgMontant,montant,reste" listener="#{encaissementController.changeMontantTicketResto()}" />
+                                                            </p:inputText>
+
+                                                        </div>
+                                                    </div>
+
+                                                </h:panelGroup>
+                                            </h:panelGroup>
+
+                                            <h:panelGroup id="pgMontant" >
+                                                <h:panelGroup rendered="#{encaissementController.selected.typeEncaissementVente.montant}">
+
+                                                    <div class="form-group" >
+                                                        <h:outputLabel value="#{bundle.Montant} :*" for="montant" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                                            <p:inputText id="montantEspece" value="#{encaissementController.selected.montant}" title="#{bundle.Montant}" required="true"  styleClass="form-control" disabled="#{encaissementController.selected.typeEncaissementVente.nbrTicket}" style="width: 90%; min-width: 180px">
+                                                                <p:keyFilter for="montant" mask="num"   />
+                                                                <f:validateDoubleRange minimum="0.001"/>
+                                                                <!--p:ajax update="reste" listener="{encaissementController.calculReste()}"/-->
+                                                            </p:inputText>
+                                                        </div>
+                                                    </div>
+
+                                                </h:panelGroup>
+                                            </h:panelGroup>
+
+                                            <h:panelGroup id="pgNumCheque" >
+                                                <h:panelGroup rendered="#{encaissementController.selected.typeEncaissementVente.numCheque}">
+
+                                                    <div class="form-group" >
+                                                        <h:outputLabel value="#{bundle.NumCheque} :*" for="numCheque" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                                            <p:inputText id="numCheque" value="#{encaissementController.selected.numCheque}" title="#{bundle.NumCheque}" required="true"  styleClass="form-control" style="width: 90%; min-width: 180px">
+
+                                                            </p:inputText>
+                                                        </div>
+                                                    </div>
+
+                                                </h:panelGroup>
+                                            </h:panelGroup>
+
+                                            <h:panelGroup id="pgDateCheque" >
+                                                <h:panelGroup rendered="#{encaissementController.selected.typeEncaissementVente.dateCheque}">
+
+                                                    <div class="form-group" >
+                                                        <h:outputLabel value="#{bundle.DateCheque}: " styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                                            <p:calendar pattern="dd/MM/yyyy" id="dateCreation" value="#{encaissementController.selected.dateCheque}" navigator="true" title="#{bundle.DateCheque}"   required="false" size="32" showOn="button"/>
+                                                        </div>
+                                                    </div>
+
+                                                </h:panelGroup>
+                                            </h:panelGroup>
+
+                                            <h:panelGroup id="pgBanque" >
+                                                <h:panelGroup rendered="#{encaissementController.selected.typeEncaissementVente.banque}">
+
+                                                    <div class="form-group" >
+                                                        <h:outputLabel value="#{bundle.Banque} : *" for="banque" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                        <div class="col-md-9 col-sm-9 col-xs-12">
+
+                                                            <p:selectOneMenu id="banque" autoWidth="false" value="#{encaissementController.selected.banque}" title="#{bundle.Banque}"  styleClass="form-control" converter="entityConverter" rendered="true" style="width: 90%; min-width: 180px">
+                                                                <f:selectItems value="#{banqueController.itemsAvailableSelectOne}"/> 
+                                                            </p:selectOneMenu>
+
+                                                        </div>
+                                                    </div>
+
+                                                </h:panelGroup>
+                                            </h:panelGroup>
+
+                                            <h:panelGroup id="pgVille" >
+                                                <h:panelGroup rendered="#{encaissementController.selected.typeEncaissementVente.ville}">
+
+                                                    <div class="form-group" >
+                                                        <h:outputLabel value="#{bundle.Ville} :*" for="villeCheque" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                                            <p:inputText id="villeCheque" value="#{encaissementController.selected.ville}" title="#{bundle.Ville}" required="true"  styleClass="form-control" style="width: 90%; min-width: 180px">
+                                                            </p:inputText>
+                                                        </div>
+                                                    </div>
+
+                                                </h:panelGroup>
+                                            </h:panelGroup>
+
+                                            <h:panelGroup id="pgAvoir" >
+                                                <h:panelGroup rendered="#{encaissementController.selected.typeEncaissementVente.avoir and encaissementController.selected.facture ne null}">
+
+                                                    <div class="form-group" >
+                                                        <h:outputLabel value="#{bundle.Avoir} :*" for="Avoir" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                                            <p:selectOneMenu id="Avoir" autoWidth="false" value="#{encaissementController.selected.avoir}" title="#{bundle.Avoir}"  styleClass="form-control" converter="entityConverter" required="true" style="width: 90%; min-width: 180px">
+                                                                <f:selectItems value="#{encaissementController.itemsAvailableSelectOneAvoir}"/> 
+                                                                <p:ajax update="MontantAvoir,pgMontant" listener="#{encaissementController.changeMontantAvoir()}" />
+                                                            </p:selectOneMenu>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group" >
+                                                        <h:outputLabel value="#{bundle.Montant} #{bundle.Avoir} :" for="MontantAvoir" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
+                                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                                            <p:inputText  id="MontantAvoir" placeholder="#{encaissementController.selected.avoir.reste}" title="#{bundle.Montant} #{bundle.Avoir}"  styleClass="form-control" disabled="true" style="width: 90%; min-width: 180px"/>
+                                                        </div>
+                                                    </div>
+
+
+
+                                                </h:panelGroup>
+                                            </h:panelGroup>
+
+                                            <h:panelGroup id="pgTauxRetenu" >
+                                                <h:panelGroup rendered="#{encaissementController.selected.typeEncaissementVente.tauxRetenu}">
+
+                                                    <div class="form-group" >
+                                                        <h:outputLabel value="#{bundle.TauxRetenuSource} :*" for="avoir" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                                            <p:inputText id="TauxRetenuSource" value="#{encaissementController.selected.avoir}" title="#{bundle.MontantTicket}" required="true"  styleClass="form-control" style="width: 90%; min-width: 180px">
+                                                                <p:keyFilter for="avoir" mask="num"   />
+                                                                <f:validateDoubleRange minimum="0" maximum="90" />
+                                                            </p:inputText>
+                                                        </div>
+                                                    </div>
+
+                                                </h:panelGroup>
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+
+
+
+                                    </div> 
+
+
+
+                                </h:form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+
+        </ui:define>
+    </ui:composition>
+
+</html>

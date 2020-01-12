@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+
+        <ui:define name="pageContent">
+
+            
+
+            <h:panelGroup id="messagePanel" layout="block">
+                <p:messages closable="true" globalOnly="true" showDetail="true"><p:autoUpdate />
+                </p:messages>
+            </h:panelGroup>
+
+            <div class="layout-content">
+
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="shadow-box ui-shadow-5">
+                            <div class="card">
+
+
+                                <h:form id="f1">
+
+                                    <div class="x_title">
+                                        <h2 style="color: #607D8B">#{bundle.GPrefixAvoirVente}</h2>
+                                        <ul class="nav navbar-right panel_toolbox">                          
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('prefixAvoirVente').creation and prefixAvoirVenteController.items.size() eq 0}" title="Nouveau" action="#{prefixAvoirVenteController.prepareCreate()}" id="addButton"  type="push" ajax="false"  icon="fa fa-plus" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                            </li>
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('prefixAvoirVente').supression}" title="#{bundle.Supprimer}"  id="deleteButton" oncomplete="PF('confirmation').show()" icon="fa fa-fw fa-trash-o" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                            </li>
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('prefixAvoirVente').lecture}" title="Refresh" action="#{prefixAvoirVenteController.prepareList()}" id="updateButton"  immediate="true" icon="fa fa-refresh"  style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                            </li>
+
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>         
+
+
+                                    <div class="x_content" >
+
+                                        <p:dataTable emptyMessage="#{bundle.TableauVide}" 
+                                                     rows="10"
+                                                     paginator="true"
+                                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                     rowsPerPageTemplate="5,10,15"
+                                                     value="#{prefixAvoirVenteController.items}" var="item"
+                                                     rowKey="#{item}" selection="#{prefixAvoirVenteController.selectedSingle}"
+                                                     paginatorPosition="bottom"
+                                                     >
+
+                                            <p:column selectionMode="single" style="width:35px;text-align:center;">
+                                            </p:column>         
+
+                                            <p:column filterBy="#{item.libellePrefixe}" sortBy="#{item.libellePrefixe}" filterMatchMode="contains" filterStyle="width:98%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Prefixe}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.libellePrefixe}"/>
+                                            </p:column>
+
+                                            <p:column filterBy="#{item.compteur}" sortBy="#{item.compteur}" filterMatchMode="contains" filterStyle="width:98%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Compteur}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.compteur}"/>
+                                            </p:column>
+
+                                            <p:column toggleable="false" style="width:50px" >
+                                                <p:commandButton id="selectButton" icon="fa fa-search" style="font-size: 3em" title="Detail"  action="#{prefixAvoirVenteController.prepareView()}" type="push"  immediate="true" ajax="false">
+                                                    <f:setPropertyActionListener value="#{item}" target="#{prefixAvoirVenteController.selected}" />
+                                                </p:commandButton>
+                                            </p:column>
+
+                                        </p:dataTable>
+
+                                    </div>
+
+                                    <p:confirmDialog id="confirmDialogSupp" message="Etes-vous sur de supprimer cet objet" header="Confirmation supression" severity="alert"  widgetVar="confirmation" responsive="true">
+                                        <p:commandButton id="confirm" value="Valider" style="float: right" oncomplete="PF('confirmation').hide()" icon="ui-icon-check"  update="f1" action="#{prefixAvoirVenteController.destroy}"/>
+                                        <p:commandButton id="decline" value="Annuler" style="float: right" onclick="PF('confirmation').hide()" icon="ui-icon-close"  type="button" />
+                                    </p:confirmDialog>
+
+                                </h:form>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+
+        </ui:define>
+    </ui:composition>
+
+</html>

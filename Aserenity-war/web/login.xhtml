@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      >
+    <h:head>
+        <title>MAGMA</title>
+        <link rel="shortcut icon" href="./resources/images/magma.png"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <!-- Meta, title, CSS, favicons, etc. -->
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <h:outputStylesheet library="default" name="css/custom.css"/> 
+        <h:outputStylesheet library="default" name="css/bootstrap.css"/>
+
+        <h:outputStylesheet library="default" name="css/components.css"/> 
+        <h:outputStylesheet library="default" name="css/theme.css"/>  
+        <h:outputStylesheet library="default" name="css/font-awesome.css"/>   
+
+
+        <h:outputStylesheet library="default" name="css/nanoscroller.css"/>  
+        <link type="text/css" rel="stylesheet" href="resources/default/css/layout-moody.css" />    
+        <h:outputStylesheet library="default" name="css/ripple.css"/>  
+
+        <h:outputStylesheet library="default" name="css/inputswitch.css"/>  
+        <h:outputStylesheet library="default" name="css/keyboard.css"/>   
+        <h:outputStylesheet library="default" name="css/galleria.css"/>
+
+        <h:outputStylesheet library="default" name="css/clock.css"/>  
+        <h:outputStylesheet library="default" name="css/scrollpanel.css"/>   
+        <h:outputStylesheet library="default" name="css/schedule.css"/>
+        <h:outputStylesheet library="default" name="css/fileupload.css"/>
+
+        <h:outputScript library="default" name="js/jquery.js" />
+        <h:outputScript library="default" name="js/core.js" />
+        <h:outputScript library="default" name="js/components.js" />
+        <h:outputScript library="default" name="js/jquery-plugins.js" />
+
+        <h:outputScript library="default" name="js/keyboard.js" />
+        <h:outputScript library="default" name="js/inputswitch.js" />
+
+        <h:outputScript library="default" name="js/moment.js" />
+        <h:outputScript library="default" name="js/schedule.js" />
+        <h:outputScript library="default" name="js/ripple.js" />
+
+        <h:outputScript library="default" name="js/nanoscroller.js" />
+        <h:outputScript library="default" name="js/layout.js" />
+
+
+    </h:head>
+    <body class="login-body">
+
+
+        <div class="login-panel ui-fluid">
+
+            <div class="login-panel-header"><h:graphicImage id="image" library="default" name="images/magma.png" alt=""/>
+            </div>
+            <div class="login-panel-content">
+                <h:panelGroup id="messagePanel" layout="block">
+                    <p:messages closable="true" globalOnly="true" showDetail="true"><p:autoUpdate />
+                    </p:messages>
+                </h:panelGroup>
+                <div class="ui-g">
+                    <h:form>
+                        <div class="ui-g-12">
+                            <h1>#{bundle.Welcome}</h1>
+                        </div>
+                        <div class="ui-g-12">
+                            <span class="md-inputfield">
+                                <p:inputText id="username" required="true" value="#{authentification.nomUtilisateur}" ></p:inputText>
+                                <label>#{bundle.Username}</label>
+                            </span>
+                        </div>
+                        <div class="ui-g-12"><span class="md-inputfield">
+                                <p:password id="password" required="true" value="#{authentification.pwdUtilisateur}" >
+                                </p:password>
+                                <label>#{bundle.Password}</label>
+                            </span>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <p:commandButton type="submit" ajax="false" action="#{authentification.connecter()}" icon="ui-icon-person" value="Sign In"></p:commandButton>
+                        </div>
+
+
+                    </h:form>
+                </div>
+            </div>
+        </div>
+
+
+    </body>
+</html>

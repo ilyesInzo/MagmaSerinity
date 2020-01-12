@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+
+        <ui:define name="pageContent">
+
+
+
+            <h:panelGroup id="messagePanel" layout="block">
+                <p:messages closable="true" globalOnly="true" showDetail="true"><p:autoUpdate />
+                </p:messages>
+            </h:panelGroup>
+
+            <div class="layout-content">
+
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="shadow-box ui-shadow-5">
+                            <div class="card">
+
+
+                                <h:form id="f1">
+
+                                    <div class="x_title">
+                                        <h2 style="color: #607D8B">#{bundle.GArticle}</h2>
+                                        <ul class="nav navbar-right panel_toolbox">                          
+                                            <li>
+                                                <p:commandButton title="Nouveau" rendered="#{user.profile.toPrivilege('article').creation}" action="#{articleController.prepareCreate()}" id="addButton"  type="push" ajax="false"  icon="fa fa-plus" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                            </li>
+                                            <li>
+                                                <p:commandButton title="Refresh" rendered="#{user.profile.toPrivilege('article').lecture}" action="#{articleController.prepareList()}" id="updateButton"  immediate="true" icon="fa fa-refresh"  style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                            </li>
+
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>         
+
+
+                                    <div class="x_content" >
+
+                                        <p:dataGrid value="#{articleController.items}"  var="item" layout="grid" id="dataTable" columns="3"  
+                                                    rows="12" paginator="true" paginatorPosition="bottom" rowIndexVar="index" emptyMessage="#{bundle.TableauVide}" style="margin: 10px"
+                                                    paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                    rowsPerPageTemplate="12,24,48,98">
+
+                                            <f:facet name="header"   >
+                                                <p:outputPanel style="margin-bottom: 30px; " >
+                                                    <h:panelGrid columns="2"  style="float: right">
+                                                        <h:outputText value="#{bundle.FiltreGlobal}" style="float: right; margin-right: 10px"/>
+                                                        <p:inputText value="#{articleController.filterValue}" style="color: black" placeholder="#{bundle.Code} ou #{bundle.Article}"  >
+                                                            <p:ajax event="blur" update="dataTable" listener="#{articleController.filterList()}" />
+                                                        </p:inputText>
+                                                    </h:panelGrid>
+                                                </p:outputPanel>
+                                            </f:facet>
+
+
+                                            <p:panel  footer="cc" style="text-align:center">
+                                                <f:facet name="header" >
+
+                                                    <h:outputLabel value="#{item.code} - #{item.libelle}" style="height: 30px"/>
+
+
+
+                                                </f:facet>
+                                                <h:panelGrid columns="1" style="width:100%">
+                                                    <p:graphicImage  id="Photo" value="#{articleController.imageArticle}" cache="false" style=" padding: 0px;border-radius: 3px; border: 0px solid #1a8ea5; height: 120px;"  width="50%">
+                                                        <f:param name="image" value="#{item.photo1}"/>
+                                                    </p:graphicImage>
+
+                                                    <h:outputText value="#{item.categorieSuiteString}" style="margin-top: 10px;"  />
+                                                    <h:panelGrid  style="width: 100%" columns="2">
+
+                                                        <h:panelGrid style="float: right; width: 50%" columns="2">
+                                                            <p:commandButton id="deleteButton" rendered="#{user.profile.toPrivilege('article').supression}" oncomplete="PF('confirmation').show()" icon="ui-icon-trash" style="float: right; width: 35px; height: 35px; margin: 2px;" styleClass="btn btn-primary" >
+                                                                <f:setPropertyActionListener value="#{item}" target="#{articleController.selectedSingle}" />
+                                                            </p:commandButton>
+                                                            <p:commandButton id="selectButton" icon="ui-icon-search" title="#{bundle.Detail}"  action="#{articleController.prepareView()}" style="float: right; width: 35px; height: 35px; margin: 2px;" styleClass="btn btn-primary" type="push"  ajax="false"  >
+                                                                <f:setPropertyActionListener value="#{item}" target="#{articleController.selected}" />
+                                                            </p:commandButton>
+                                                        </h:panelGrid>
+                                                    </h:panelGrid>
+                                                </h:panelGrid>
+                                            </p:panel>
+
+                                        </p:dataGrid>
+
+                                    </div>
+
+                                    <p:confirmDialog id="confirmDialogSupp" message="Etes-vous sur de supprimer cet objet" header="Confirmation supression" severity="alert"  widgetVar="confirmation" responsive="true">
+                                        <p:commandButton id="confirm" value="Valider" style="float: right" oncomplete="PF('confirmation').hide()" icon="ui-icon-check"  update="f1" action="#{articleController.destroy}"/>
+                                        <p:commandButton id="decline" value="Annuler" style="float: right" onclick="PF('confirmation').hide()" icon="ui-icon-close"  type="button" />
+                                    </p:confirmDialog>
+
+                                </h:form>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+
+        </ui:define>
+    </ui:composition>
+
+</html>

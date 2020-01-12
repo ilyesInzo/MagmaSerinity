@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+
+        <ui:define name="pageContent">
+
+            
+
+            <h:panelGroup id="messagePanel" layout="block">
+                <p:messages closable="true" globalOnly="true" showDetail="true"><p:autoUpdate />
+                </p:messages>
+            </h:panelGroup>
+
+            <div class="layout-content">
+
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="shadow-box ui-shadow-5">
+                            <div class="card">
+
+
+                                <h:form id="f1">
+
+                                    <div class="x_title">
+                                        <h2 style="color: #607D8B">#{bundle.GEncaissement}</h2>
+                                        <ul class="nav navbar-right panel_toolbox">                          
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('encaissement').creation}" title="Nouveau" action="#{encaissementController.prepareCreate()}" id="addButton"  type="push" ajax="false"  icon="fa fa-plus" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                            </li>
+
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('encaissement').supression}" title="#{bundle.Supprimer}"  id="deleteButton" oncomplete="PF('confirmation').show()" icon="fa fa-fw fa-trash-o" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                            </li>
+
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('encaissement').lecture}" title="Refresh" action="#{encaissementController.prepareList()}" id="updateButton"  immediate="true" icon="fa fa-refresh"  style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                            </li>
+                                            
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('encaissement').lecture}" title="#{bundle.Rechercher}" id="rechercheButton"   oncomplete="PF('rechercheDetaille').show()"      icon="ui-icon-search" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                            </li>
+
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>         
+
+
+                                    <div class="x_content" >
+
+                                        <p:dataTable emptyMessage="vide" 
+                                                     id="dataTable"
+                                                     rows="10"
+                                                     paginator="true"
+                                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                     rowsPerPageTemplate="5,10,15"
+                                                     value="#{encaissementController.items}" var="item"
+                                                     rowKey="#{item}" selection="#{encaissementController.selectedSingle}"
+                                                     paginatorPosition="bottom"
+                                                     >
+
+                                            <p:headerRow>
+                                                <p:column colspan="6" >
+                                                    <h:outputText value="#{item.numero} - #{item.dateEncaissementStringFr}" />
+                                                </p:column>
+                                            </p:headerRow>
+
+                                            <p:column toggleable="false" selectionMode="single" style="width:4%;text-align:center;"/>
+
+
+                                            <!--   <p:column filterBy="{item.numero}" filterMatchMode="contains" filterStyle="width:98%" sortBy="{item.numero}">
+                                                   <f:facet name="header">
+                                                       <h:outputText value="{bundle.Facture}"/>
+                                                   </f:facet>
+                                                   <h:outputText value="{item.numero}"/>
+                                               </p:column>-->
+
+
+                                            <p:column filterBy="#{item.libelleClient}" filterMatchMode="contains" filterStyle="width:98%" sortBy="#{item.libelleClient}" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Client}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.libelleClient}"/>
+                                            </p:column>
+
+
+                                            <p:column filterBy="#{item.dateEncaissementStringFr}" filterMatchMode="contains" filterStyle="width:98%" sortBy="#{item.dateEncaissement.time}" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Date}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.dateEncaissementStringFr}"/>
+                                            </p:column>
+
+                                            <p:column filterBy="#{item.montant}" filterMatchMode="contains" filterStyle="width:98%" sortBy="#{item.montant}" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Montant}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.montant}"/>
+                                            </p:column>
+
+                                            <p:column   sortBy="#{item.typeEncaissementVente.libelle}" filterBy="#{item.typeEncaissementVente.libelle}" filterMatchMode="startsWith" filterStyle="width:98%;">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Type}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.typeEncaissementVente.libelle}"/>
+                                            </p:column>
+
+                                            <p:column style="width:50px">
+                                                <p:commandButton id="selectButton" icon="ui-icon-search" title="#{bundle.Detail}"  action="#{encaissementController.prepareView()}" style="float: contour; width: 99%; height: 99%; margin: 1px;" type="push"  ajax="false"  styleClass="btn btn-primary">
+                                                    <f:setPropertyActionListener value="#{item}" target="#{encaissementController.selected}" />
+                                                </p:commandButton>
+                                            </p:column>
+
+                                        </p:dataTable>
+
+                                    </div>
+
+                                    <p:confirmDialog id="confirmDialogSupp" message="Etes-vous sur de supprimer cet objet" header="Confirmation supression" severity="alert"  widgetVar="confirmation" responsive="true">
+                                        <p:commandButton id="confirm" value="Valider" style="float: right" oncomplete="PF('confirmation').hide()" icon="ui-icon-check"  update="f1" action="#{encaissementController.destroy}"/>
+                                        <p:commandButton id="decline" value="Annuler" style="float: right" onclick="PF('confirmation').hide()" icon="ui-icon-close"  type="button" />
+                                    </p:confirmDialog>
+
+                                    
+                                    <p:dialog id="confirmDialogRecherche"  header="#{bundle.TitreDialogRecherche}"   widgetVar="rechercheDetaille" height="50%" width="35%" modal="true" resizable="false">
+
+                                        <div class="form-group" >
+                                            <h:outputLabel  value="#{bundle.Client}: " styleClass="control-label col-md-3 col-sm-3 col-xs-12"/> 
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectOneMenu id="client" value="#{encaissementController.client}" styleClass="form-control" style="width: 90%; min-width: 180px" filter="true" filterMatchMode="startsWith" effect="fade" var="l">
+                                                    <f:selectItems value="#{clientController.itemsAvailableSelectOne}" var="cl" itemLabel="#{cl.libelle}" itemValue="#{cl.code} - #{cl}" />
+                                                    <p:column>
+                                                        <h:outputText value="#{l.toString()}" />
+                                                    </p:column>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+
+                                            <div class="form-group">
+                                                <h:outputLabel value="#{bundle.TypeEncaissement} : *" for="TypeEncaissement" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:selectOneMenu id="TypeEncaissement" value="#{encaissementController.typeEncaissementVente}"  title="#{bundle.TypeEncaissement}"  filter="true" filterMatchMode="contains"  effect="fade" var="l" styleClass="form-control" style="width: 90%; min-width: 180px">
+                                                        <f:selectItems value="#{typeEncaissementVenteController.itemsAvailableSelectOne}"/>
+                                                        <p:column>
+                                                            <h:outputText value="#{l.toString()}" />
+                                                        </p:column>
+                                                    </p:selectOneMenu>
+                                                </div>
+                                            </div>
+
+
+                                        <div class="form-group" >
+                                            <h:outputLabel for="HDebut2" value="#{bundle.DateDebut} : "  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+
+                                                <p:calendar pattern="dd/MM/yyyy" id="HDebut2" value="#{encaissementController.dateDebut}" navigator="true" title="#{bundle.DateDebut}" required="true" size="32" showOn="button" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel styleClass="control-label col-md-3 col-sm-3 col-xs-12" for="HFin2" value="#{bundle.DateFin} : " />
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+
+                                                <p:calendar pattern="dd/MM/yyyy" id="HFin2" value="#{encaissementController.dateFin}" navigator="true" title="#{bundle.DateFin}" required="true" size="32" showOn="button" />
+                                            </div>
+                                        </div>
+                                        <p:separator style="width:90%;height:1px;background:#d8d8d8;"/>
+
+                                        <p:commandButton update="dataTable" icon="ui-icon-check" style="float: right" value="#{bundle.Valider}" title="#{bundle.Valider}" ajax="true" actionListener="#{encaissementController.rechercher()}" global="true" onclick="dlgRechercher.hid();" />
+                                    </p:dialog>   
+                                    
+                                </h:form>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+
+        </ui:define>
+    </ui:composition>
+
+</html>
