@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -116,6 +117,32 @@
                                     <ul  class="layout-menu">
                                         <!--li ><a class="ripplelink" href="dashboard.html"><i class="material-icons"></i><span class="menuitem-text">Dashboard</span></a></li-->
 
+                                         <li style="#{user.visibiliteMCommande}" class="#{AMCommande} "><a href="#" class="ripplelink"><i class="fa fa-fw fa-cart-plus"/><span class="menuitem-text">#{bundle.MCommande}</span><i class="material-icons layout-submenu-toggler">&#xE313;</i></a>
+                                            <ul style="#{MCommande}">
+
+
+                                                <li class="#{GCommande}" style="#{FVGCommande}">
+
+                                                    <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{bonCommandeCommercialController.initPage()}"  >
+                                                        <i class="material-icons"></i><span class="menuitem-text">#{bundle.GCommande}</span>
+                                                    </p:commandLink>
+
+                                                </li>
+
+                                                <li class="#{GEtatCommande}" style="#{FVGEtatCommande}">
+
+                                                    <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{etatCommandeController.initPage()}"  >
+                                                        <i class="material-icons"></i><span class="menuitem-text">#{bundle.GEtatCommande}</span>
+                                                    </p:commandLink>
+
+                                                </li>
+
+
+                                            </ul>
+
+                                        </li>
+
+                                        
 
                                         <li style="#{user.visibiliteMVentes}" class="#{AMVente}"><a href="#" class="ripplelink"><i class="fa fa-fw fa-line-chart"/><span class="menuitem-text">#{bundle.MVente}</span><i class="material-icons layout-submenu-toggler">&#xE313;</i></a>
                                             <ul style="#{MVente}">
@@ -132,6 +159,14 @@
 
                                                     <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{bonLivraisonController.initPage()}"  >
                                                         <i class="material-icons"></i><span class="menuitem-text">#{bundle.GBonLivraison}</span>
+                                                    </p:commandLink>
+
+                                                </li>
+                                                
+                                                <li class="#{GBonCommandeVente}" style="#{FVGBonCommandeVente}">
+
+                                                    <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{bonCommandeVenteController.initPage()}"  >
+                                                        <i class="material-icons"></i><span class="menuitem-text">#{bundle.GBonCommandeVente}</span>
                                                     </p:commandLink>
 
                                                 </li>
@@ -201,6 +236,15 @@
                                                                 </p:commandLink>
 
                                                             </li>
+                                                            
+                                                            <li class="#{GPrefixBonCommandeVente}" style="#{FVGPrefixBonCommandeVente}">
+
+                                                                <p:commandLink class="ripplelink" type="push"  ajax="true" immediate="true"  action="#{prefixBonCommandeVenteController.initPage()}"  >
+                                                                    <i class="material-icons"></i><span class="menuitem-text">#{bundle.GPrefixBonCommandeVente}</span>
+                                                                </p:commandLink>
+
+                                                            </li>
+
 
                                                             <li class="#{GPrefixFacture}" style="#{FVGPrefixFacture}">
 
@@ -769,17 +813,17 @@
             </footer-->
             <!-- /footer content -->   
 
-            <div id="j_idt57" style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
-                <div id="j_idt57_start" style="display:none">
+            <div id="test" style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+                <div id="test_start" style="display:none">
                     <i class="fa fa-circle-o-notch fa-spin ajax-loader" aria-hidden="true"></i>
                 </div>
-                <div id="j_idt57_complete" style="display:none">
+                <div id="test_complete" style="display:none">
 
                 </div>
 
             </div>
             <script  type="text/javascript">$(function () {
-                    PrimeFaces.cw("AjaxStatus", "widget_j_idt57", {id: "j_idt57"});
+                    PrimeFaces.cw("AjaxStatus", "widget_test", {id: "test"});
                 });
             </script>        
             <script  type="text/javascript">$(function () {

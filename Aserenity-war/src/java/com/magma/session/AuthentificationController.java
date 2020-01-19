@@ -54,6 +54,8 @@ public class AuthentificationController implements Serializable {
                 if (utilisateur.getPasswd().equals(pwd)) {
 
                     if (utilisateur.isEtatUsr() == true) {
+                        MenuTemplate.initMenu();
+                        utilisateur.setVisibiliteMCommande("display:none;");
 
                         utilisateur.setVisibiliteMVentes("display:none;");
                         utilisateur.setVisibiliteSousMVentes("display:none;");
@@ -81,6 +83,17 @@ public class AuthentificationController implements Serializable {
                             } else {
                                 context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "display: none;");
                             }
+                            
+                            if (privilege.isLecture() == true && privilege.getOrderModule() == 1 && privilege.isModuleActiver() == true) {
+                                utilisateur.setVisibiliteMCommande("");
+
+                                // if (privilege.isLecture() == true) {
+                                //    context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "");
+                                // } else {
+                                //      context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "display: none;");
+                                // }
+                            }
+
 
                             if (privilege.isLecture() == true && privilege.getOrderModule() == 2 && privilege.isModuleActiver() == true) {
                                 utilisateur.setVisibiliteMVentes("");
@@ -165,7 +178,9 @@ public class AuthentificationController implements Serializable {
             connections.setDateDeconnection(new Date());
             ejbFacadeConnection.edit(connections);*/
             session.removeAttribute("user");
-            session.invalidate();
+            System.out.println(session);
+            // already invalidated by the session counter listner
+            //session.invalidate();
         }
         return "Deconnexion";
     }

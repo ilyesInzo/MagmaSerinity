@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+
+        <ui:define name="pageContent">
+
+
+
+            <h:panelGroup id="messagePanel" layout="block">
+                <p:messages closable="true" globalOnly="true" showDetail="true"><p:autoUpdate />
+                </p:messages>
+            </h:panelGroup>
+
+            <div class="layout-content">
+
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="shadow-box ui-shadow-5">
+                            <div class="card">
+
+
+                                <h:form id="f1">
+
+                                    <div class="x_title">
+                                        <h2 style="color: #607D8B">#{bundle.GCommande}</h2>
+                                        <ul class="nav navbar-right panel_toolbox">  
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('bonCommandeCommercial').creation}" title="Nouveau" action="#{bonCommandeCommercialController.prepareCreate()}" id="addButton"  type="push" ajax="false"  icon="fa fa-plus" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                            </li>
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('bonCommandeCommercial').lecture}" title="Refresh" action="#{bonCommandeCommercialController.prepareList()}" id="updateButton"  immediate="true" icon="fa fa-refresh"  style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                            </li>
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('bonCommandeCommercial').lecture}" title="#{bundle.Rechercher}" id="rechercheButton"   oncomplete="PF('rechercheDetaille').show()"      icon="ui-icon-search" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                            </li>
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>         
+
+
+                                    <div class="x_content" >
+
+                                        <p:dataTable emptyMessage="#{bundle.TableauVide}" 
+                                                     id="dataTable"
+                                                     rows="10"
+                                                     paginator="true"
+                                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                     rowsPerPageTemplate="5,10,15"
+                                                     value="#{bonCommandeCommercialController.items}" var="item"
+                                                     rowKey="#{item}" selection="#{bonCommandeCommercialController.selectedSingle}"
+                                                     paginatorPosition="bottom"
+                                                     >
+
+                                            <p:column selectionMode="single" style="width:35px;text-align:center;">
+                                            </p:column>
+                                            
+
+
+                                            <p:column filterBy="#{item.libelleCommercial}" sortBy="#{item.libelleCommercial}" style="width: 15%" filterMatchMode="contains" filterStyle="width:98%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Commercial}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.libelleCommercial}"/>
+                                            </p:column>
+
+                                            <p:column filterBy="#{item.libelleClient}" sortBy="#{item.libelleClient}" style="width: 15%" filterMatchMode="contains" filterStyle="width:98%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Client}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.libelleClient}"/>
+                                            </p:column>
+
+                                            <p:column filterBy="#{item.dateCommandeStringFr}" sortBy="#{item.dateCommandeStringFr}" style="width: 20%" filterMatchMode="contains" filterStyle="width:98%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.DateCommande}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.dateCommandeStringFr}"/>
+                                            </p:column>
+
+                                            <p:column filterBy="#{item.montantHT}" sortBy="#{item.montantHT}" filterMatchMode="contains" filterStyle="width:98%" style="width: 10%; text-align:right">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.TotaleHT}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.montantHT}"/>
+                                            </p:column>
+                                            
+                                            <p:column filterBy="#{item.montantTTC}" filterMatchMode="contains" filterStyle="width:98%" sortBy="#{item.montantTTC}" style="width: 10%; text-align:center">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.TotaleTTC}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.montantTTC}"/>
+                                            </p:column>
+
+                                            <p:column toggleable="false" style="width:50px" >
+                                                <p:commandButton id="selectButton" icon="fa fa-search" style="font-size: 3em" title="Detail"  action="#{bonCommandeCommercialController.prepareView()}" type="push"  immediate="true" ajax="false">
+                                                    <f:setPropertyActionListener value="#{item}" target="#{bonCommandeCommercialController.selected}" />
+                                                </p:commandButton>
+                                            </p:column>
+
+                                            <p:column style="width:4%" toggleable="false"  headerText="">
+                                                <p:rowToggler  />
+                                            </p:column>
+
+                                            <p:rowExpansion>
+                                                <p:dataTable     liveResize="true"       var="itemLF" paginatorPosition="bottom" value="#{item.listeLigneBonCommandeCommercials}" rows="15" id="tblCalculateur" 
+                                                                 emptyMessage="#{bundle.TableauVide}" >
+
+                                                    <p:column style="width: 8%" >
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{bundle.Code}" />
+                                                        </f:facet>
+                                                        <h:outputText value="#{itemLF.codeArticle}" />
+                                                    </p:column>
+
+                                                    <p:column style="width: 25%" >
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{bundle.Article}" />
+                                                        </f:facet>
+                                                        <h:outputText value="#{itemLF.libelleArticle}" />
+                                                    </p:column>
+
+                                                    <p:column style="width: 7%" >
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{bundle.Quantite}" />
+                                                        </f:facet>
+                                                        <h:outputText value="#{itemLF.quantite}" />
+                                                    </p:column>
+
+                                                    <p:column style="width: 7%">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{bundle.PrixUnitaire}" />
+                                                        </f:facet>
+                                                        <h:outputText value="#{itemLF.prixUnitaireHT}" />
+                                                    </p:column>
+
+                                                    <p:column style="width: 7%">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{bundle.Remise}" />
+                                                        </f:facet>
+                                                        <h:outputText value="#{itemLF.remise}" />
+                                                    </p:column>
+
+                                                    <p:column style="width: 7%">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{bundle.PrixUnitaireApresRemise}" />
+                                                        </f:facet>
+                                                        <h:outputText value="#{itemLF.prixUnitaireApresRemise}" />
+                                                    </p:column>
+
+                                                    <p:column style="width: 7%">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{bundle.TVA}" />
+                                                        </f:facet>
+                                                        <h:outputText value="#{itemLF.tvaArticle}" />
+                                                    </p:column>
+
+                                                    <p:column  style="width: 7%" >
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{bundle.MontantHT}"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{itemLF.totalHT}"/>
+                                                    </p:column>
+                                                    
+                                                    <p:column  style="width: 7%" >
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{bundle.MontantTTC}"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{itemLF.totalTTC}"/>
+                                                    </p:column>
+
+                                                </p:dataTable>
+                                            </p:rowExpansion>
+
+
+
+
+
+                                        </p:dataTable>
+
+                                    </div>
+
+                                    <p:confirmDialog id="confirmDialogSupp" message="Etes-vous sur de supprimer cet objet" header="Confirmation supression" severity="alert"  widgetVar="confirmation" responsive="true">
+                                        <p:commandButton id="confirm" value="Valider" style="float: right" oncomplete="PF('confirmation').hide()" icon="ui-icon-check"  update="f1" action="#{bonCommandeCommercialController.destroy}"/>
+                                        <p:commandButton id="decline" value="Annuler" style="float: right" onclick="PF('confirmation').hide()" icon="ui-icon-close"  type="button" />
+                                    </p:confirmDialog>
+
+
+                                    <p:dialog id="confirmDialogRecherche"  header="#{bundle.TitreDialogRecherche}"   widgetVar="rechercheDetaille" height="50%" width="35%" modal="true" resizable="false">
+
+
+                                    </p:dialog>                      
+
+
+                                </h:form>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+
+        </ui:define>
+    </ui:composition>
+
+</html>

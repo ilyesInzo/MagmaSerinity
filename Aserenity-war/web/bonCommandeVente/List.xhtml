@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+
+        <ui:define name="pageContent">
+
+            
+
+            <h:panelGroup id="messagePanel" layout="block">
+                <p:messages closable="true" globalOnly="true" showDetail="true"><p:autoUpdate />
+                </p:messages>
+            </h:panelGroup>
+
+            <div class="layout-content">
+
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="shadow-box ui-shadow-5">
+                            <div class="card">
+
+
+                                <h:form id="f1">
+
+                                    <div class="x_title">
+                                        <h2 style="color: #607D8B">#{bundle.GCommande}</h2>
+                                        <ul class="nav navbar-right panel_toolbox">  
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('bonCommandeVente').lecture}" title="PDF" id="pdfButton"   action="#{bonCommandeVenteController.generationSelectedPDF()}" ajax="false" icon="fa fa-file-pdf-o" style=" float: right; width: 50px; height: 50px; margin: 3px; " styleClass="btn btn-primary"/>
+                                            </li>
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('bonCommandeVente').creation}" title="Nouveau" action="#{bonCommandeVenteController.prepareCreate()}" id="addButton"  type="push" ajax="false"  icon="fa fa-plus" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                            </li>
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('bonCommandeVente').lecture}" title="Refresh" action="#{bonCommandeVenteController.prepareList()}" id="updateButton"  immediate="true" icon="fa fa-refresh"  style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                            </li>
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('bonCommandeVente').lecture}" title="#{bundle.Rechercher}" id="rechercheButton"   oncomplete="PF('rechercheDetaille').show()"      icon="ui-icon-search" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                            </li>
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>         
+
+
+                                    <div class="x_content" >
+
+                                        <p:dataTable emptyMessage="#{bundle.TableauVide}" 
+                                                     id="dataTable"
+                                                     rows="10"
+                                                     paginator="true"
+                                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                     rowsPerPageTemplate="5,10,15"
+                                                     value="#{bonCommandeVenteController.items}" var="item"
+                                                     rowKey="#{item}" selection="#{bonCommandeVenteController.selectedSingle}"
+                                                     paginatorPosition="bottom"
+                                                     >
+
+                                            <p:column selectionMode="single" style="width:35px;text-align:center;">
+                                            </p:column>   
+
+                                            <p:column filterBy="#{item.numero}" sortBy="#{item.numero}" style="width: 15%" filterMatchMode="contains" filterStyle="width:98%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Numero}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.numero}"/>
+                                            </p:column>
+
+                                            <p:column filterBy="#{item.libelleClient}" sortBy="#{item.libelleClient}" style="width: 15%" filterMatchMode="contains" filterStyle="width:98%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Client}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.libelleClient}"/>
+                                            </p:column>
+
+                                            <p:column filterBy="#{item.dateBonCommandeVenteStringFr}" sortBy="#{item.dateBonCommandeVenteStringFr}" style="width: 20%" filterMatchMode="contains" filterStyle="width:98%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Date}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.dateBonCommandeVenteStringFr}"/>
+                                            </p:column>
+
+                                            <p:column filterBy="#{item.montantHT}" sortBy="#{item.montantTTC}" filterMatchMode="contains" filterStyle="width:98%" style="width: 10%; text-align:right">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.TotaleHT}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.montantHT}"/>
+                                            </p:column>
+                                            
+                                            <p:column filterBy="#{item.totalTTC}" filterMatchMode="contains" filterStyle="width:98%" sortBy="#{item.totalTTC}" style="width: 10%; text-align:center">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.TotaleTTC}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.totalTTC}"/>
+                                            </p:column>
+
+                                            <p:column toggleable="false" style="width:50px" >
+                                                <p:commandButton id="selectButton" icon="fa fa-search" style="font-size: 3em" title="Detail"  action="#{bonCommandeVenteController.prepareView()}" type="push"  immediate="true" ajax="false">
+                                                    <f:setPropertyActionListener value="#{item}" target="#{bonCommandeVenteController.selected}" />
+                                                </p:commandButton>
+                                            </p:column>
+
+                                            <p:column style="width:4%" toggleable="false"  headerText="">
+                                                <p:rowToggler  />
+                                            </p:column>
+
+                                            <p:rowExpansion>
+                                                <p:dataTable     liveResize="true"       var="itemLF" paginatorPosition="bottom" value="#{item.listeLigneBonCommandeVentes}" rows="15" id="tblCalculateur" 
+                                                                 emptyMessage="#{bundle.TableauVide}" >
+
+                                                    <p:column style="width: 8%" >
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{bundle.Code}" />
+                                                        </f:facet>
+                                                        <h:outputText value="#{itemLF.codeArticle}" />
+                                                    </p:column>
+
+                                                    <p:column style="width: 25%" >
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{bundle.Article}" />
+                                                        </f:facet>
+                                                        <h:outputText value="#{itemLF.libelleArticle}" />
+                                                    </p:column>
+
+                                                    <p:column style="width: 7%" >
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{bundle.Quantite}" />
+                                                        </f:facet>
+                                                        <h:outputText value="#{itemLF.quantite}" />
+                                                    </p:column>
+
+                                                    <p:column style="width: 7%">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{bundle.PrixUnitaire}" />
+                                                        </f:facet>
+                                                        <h:outputText value="#{itemLF.prixUnitaireHT}" />
+                                                    </p:column>
+
+                                                    <p:column style="width: 7%">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{bundle.Remise}" />
+                                                        </f:facet>
+                                                        <h:outputText value="#{itemLF.remise}" />
+                                                    </p:column>
+
+                                                    <p:column style="width: 7%">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{bundle.PrixUnitaireApresRemise}" />
+                                                        </f:facet>
+                                                        <h:outputText value="#{itemLF.prixUnitaireApresRemise}" />
+                                                    </p:column>
+
+                                                    <p:column style="width: 7%">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{bundle.TVA}" />
+                                                        </f:facet>
+                                                        <h:outputText value="#{itemLF.tvaArticle}" />
+                                                    </p:column>
+
+                                                    <p:column  style="width: 7%" >
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{bundle.MontantHT}"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{itemLF.totalHT}"/>
+                                                    </p:column>
+                                                    
+                                                    <p:column style="width: 7%">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{bundle.MontantTTC}" />
+                                                        </f:facet>
+                                                        <h:outputText value="#{itemLF.totalTTC} " /> 
+                                                    </p:column>
+
+                                                </p:dataTable>
+                                            </p:rowExpansion>
+
+
+
+
+
+                                        </p:dataTable>
+
+                                    </div>
+
+                                    <p:confirmDialog id="confirmDialogSupp" message="Etes-vous sur de supprimer cet objet" header="Confirmation supression" severity="alert"  widgetVar="confirmation" responsive="true">
+                                        <p:commandButton id="confirm" value="Valider" style="float: right" oncomplete="PF('confirmation').hide()" icon="ui-icon-check"  update="f1" action="#{bonCommandeVenteController.destroy}"/>
+                                        <p:commandButton id="decline" value="Annuler" style="float: right" onclick="PF('confirmation').hide()" icon="ui-icon-close"  type="button" />
+                                    </p:confirmDialog>
+
+                                    
+                                    <p:dialog id="confirmDialogRecherche"  header="#{bundle.TitreDialogRecherche}"   widgetVar="rechercheDetaille" height="50%" width="35%" modal="true" resizable="false">
+
+                                        <div class="form-group" >
+                                            <h:outputLabel  value="#{bundle.Client}: " styleClass="control-label col-md-3 col-sm-3 col-xs-12"/> 
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectOneMenu id="client" value="#{bonCommandeVenteController.client}" styleClass="form-control" style="width: 90%; min-width: 180px" filter="true" filterMatchMode="startsWith" effect="fade" var="l">
+                                                    <f:selectItems value="#{clientController.itemsAvailableSelectOne}" var="cl" itemLabel="#{cl.libelle}" itemValue="#{cl.code} - #{cl}" />
+                                                    <p:column>
+                                                        <h:outputText value="#{l.toString()}" />
+                                                    </p:column>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Etat} : " styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectOneMenu  value="#{bonCommandeVenteController.etatBonCommandeVente}" title="#{bundle.Etat}" filter="true" style="width: 90%; min-width: 180px" filterMatchMode="contains"  effect="fade" var="l"  styleClass="form-control" >
+                                                    <f:selectItem itemLabel="---" itemValue="" />
+                                                    <f:selectItem itemValue="0" itemLabel="#{bundle.EnPreparation}" />
+                                                    <f:selectItem itemValue="3" itemLabel="#{bundle.Rejete}"/>
+                                                    <f:selectItem itemValue="4" itemLabel="#{bundle.Approuve}" />
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group" >
+                                            <h:outputLabel for="HDebut2" value="#{bundle.DateDebut} : "  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+
+                                                <p:calendar pattern="dd/MM/yyyy" id="HDebut2" value="#{bonCommandeVenteController.dateDebut}" navigator="true" title="#{bundle.DateDebut}" required="true" size="32" showOn="button" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel styleClass="control-label col-md-3 col-sm-3 col-xs-12" for="HFin2" value="#{bundle.DateFin} : " />
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+
+                                                <p:calendar pattern="dd/MM/yyyy" id="HFin2" value="#{bonCommandeVenteController.dateFin}" navigator="true" title="#{bundle.DateFin}" required="true" size="32" showOn="button" />
+                                            </div>
+                                        </div>
+                                        <p:separator style="width:90%;height:1px;background:#d8d8d8;"/>
+
+                                        <p:commandButton update="dataTable" icon="ui-icon-check" style="float: right" value="#{bundle.Valider}" title="#{bundle.Valider}" ajax="true" actionListener="#{bonCommandeVenteController.rechercher()}" global="true" onclick="dlgRechercher.hid();" />
+                                    </p:dialog>   
+                                    
+                                    
+                                </h:form>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+
+        </ui:define>
+    </ui:composition>
+
+</html>

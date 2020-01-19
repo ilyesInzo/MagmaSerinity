@@ -46,7 +46,7 @@ import com.magma.util.MenuTemplate;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-
+import javax.faces.bean.ManagedBean;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.inject.Named;
-import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.ExternalContext;
@@ -67,7 +67,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-@Named("devisController")
+@ManagedBean(name= "devisController")
 @SessionScoped
 public class DevisController implements Serializable {
 

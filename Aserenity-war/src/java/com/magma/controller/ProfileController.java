@@ -8,7 +8,7 @@ import com.magma.session.util.JsfUtil;
 import com.magma.session.ProfileFacadeLocal;
 import com.magma.util.MenuTemplate;
 import java.io.IOException;
-
+import javax.faces.bean.ManagedBean;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import javax.ejb.EJB;
 import javax.inject.Named;
-import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -26,7 +26,7 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 
-@Named("profileController")
+@ManagedBean(name= "profileController")
 @SessionScoped
 public class ProfileController implements Serializable {
 
@@ -165,6 +165,12 @@ public class ProfileController implements Serializable {
 
         List<Privileges> listPrivileges = new ArrayList<>();
         Privileges privileges = null;
+        //GCommande
+
+        privileges = new Privileges("GCommande","bonCommandeCommercial" ,false, false, false, false, false, 123400700, 10020, "MCommande", 1, false, false, false, true);
+        listPrivileges.add(privileges);
+        privileges = new Privileges("GEtatCommande","etatCommande" ,false, false, false, false, false, 123400700, 10030, "MCommande", 1, false, false, false, true);
+        listPrivileges.add(privileges);
 
         //MVente
         /* Privileges privileges = new Privileges("GDashboard", false, false, false, false, false, 100000000, 20010, "MVente", 2, false, false, false, true);

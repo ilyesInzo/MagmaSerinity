@@ -6,13 +6,13 @@ import com.magma.entity.Utilisateur;
 import com.magma.session.MotifRejetDevisVenteFacadeLocal;
 import com.magma.util.MenuTemplate;
 import java.io.IOException;
-
+import javax.faces.bean.ManagedBean;
 import java.io.Serializable;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.inject.Named;
-import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -21,7 +21,7 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 
-@Named("motifRejetDevisVenteController")
+@ManagedBean(name= "motifRejetDevisVenteController")
 @SessionScoped
 public class MotifRejetDevisVenteController implements Serializable {
 

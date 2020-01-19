@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+
+        <ui:define name="pageContent">
+
+
+
+            <h:panelGroup id="messagePanel" layout="block">
+                <p:messages closable="true" globalOnly="true" showDetail="true"><p:autoUpdate />
+                </p:messages>
+            </h:panelGroup>
+
+            <div class="layout-content">
+
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="shadow-box ui-shadow-5">
+                            <div class="card">
+
+                                <h:form id="f1">
+
+                                    <div class="x_title">
+                                        <h2 style="color: #607D8B">#{bundle.GEtatCommande}</h2>
+                                        <ul class="nav navbar-right panel_toolbox">                          
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('etatCommande').creation}" title="Enregistrer" id="addButton" action="#{etatCommandeController.create()}" type="push" ajax="false"  icon="fa fa-save" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                            </li>
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('etatCommande').lecture}" title="Annuler"  id="updateButton" type="push" action="#{etatCommandeController.prepareList()}" ajax="false" immediate="true" icon="fa fa-reply"  style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                            </li>
+
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>         
+
+
+                                    <div class="x_content" >
+
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Libelle}: *" for="libelle"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:inputText id="libelle" required="true" value="#{etatCommandeController.selected.libelle}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Parent} : " for="Parent" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectOneMenu id="Parent" value="#{etatCommandeController.selected.parent}"  title="#{bundle.Parent}" style="width: 90%; min-width: 180px" styleClass="form-control" required="false" filter="true" filterMatchMode="startsWith" effect="fade" var="l">
+                                                    <f:selectItems value="#{etatCommandeController.itemsAvailableSelectOneParents}" var="cl" itemLabel="#{cl.libelle}" itemValue="#{cl}"  />
+                                                    <p:column>
+                                                        <h:outputText value="#{l.libelle}" />
+                                                    </p:column>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" > 
+                                            <h:outputLabel value="#{bundle.DernierRang} :" for="DernierRang" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectBooleanButton id="DernierRang" value="#{etatCommandeController.selected.dernierRang}" onLabel="#{bundle.Oui}" offLabel="#{bundle.Non}" style="width: 90%; min-width: 180px" styleClass="form-control" >
+                                                    <p:ajax update="pgAcceptation, pgcouleur" listener="#{etatCommandeController.changeCouleur()}"/>
+                                                </p:selectBooleanButton>
+                                            </div>
+                                        </div>
+
+                                        <h:panelGroup id="pgAcceptation" >
+                                            <h:panelGroup rendered="#{etatCommandeController.selected.dernierRang}">
+                                                <div class="form-group"  >
+                                                    <h:outputLabel value="#{bundle.Acceptation} : " for="Acceptation"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <p:selectBooleanButton id="Acceptation" value="#{etatCommandeController.selected.acceptation}" onLabel="#{bundle.Oui}" offLabel="#{bundle.Non}"  style="width: 90%; min-width: 180px" styleClass="form-control">
+                                                            <p:ajax update="pgcouleur" listener="#{etatCommandeController.changeCouleur()}"/>
+                                                        </p:selectBooleanButton>
+                                                    
+                                                    </div>
+                                                </div>
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Departement} :* " for="departement" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectOneMenu id="departement"  value="#{etatCommandeController.selected.departement}" filter="true"  filterMatchMode="contains" title="#{bundle.Departement}"  styleClass="form-control" required="false" style="width: 90%; min-width: 180px">
+                                                    <f:selectItems value="#{departementController.itemsAvailableSelectOne}"/>
+                                                    <p:ajax  update="poste"  listener="#{etatCommandeController.changedPoste()}" />
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Poste} : *" for="poste" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectOneMenu id="poste" value="#{etatCommandeController.selected.poste}" title="#{bundle.Poste}" filter="true"  filterMatchMode="contains"  styleClass="form-control" required="false" style="width: 90%; min-width: 180px">
+                                                    <f:selectItems value="#{etatCommandeController.itemsAvailableSelectOnePoste}"/>
+
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+
+
+                                        <h:panelGroup id="pgcouleur" >
+                                            <div class="form-group" > 
+                                                <h:outputLabel value="#{bundle.Couleur} :" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12" >
+                                                    <p:colorPicker rendered="#{etatCommandeController.selected.dernierRang == false}"  value="#{etatCommandeController.selected.couleur}"   style="width: 90%; min-width: 180px"/>                            
+                                                    <p:outputLabel style="width: 25px; height: 25px; background-color: ##{etatCommandeController.selected.couleur}" rendered="#{etatCommandeController.selected.dernierRang == true}" value=""/>
+                                                </div>
+                                            </div>
+                                        </h:panelGroup>
+
+
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Description} :"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12" style="margin-bottom: 5px">
+                                                <p:inputTextarea id="description" rows="5" value="#{etatCommandeController.selected.description}" title="#{bundle.Description}" required="false"  styleClass="form-control"/>
+                                            </div>
+                                        </div>
+
+
+
+                                    </div> 
+
+
+
+                                </h:form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+
+        </ui:define>
+    </ui:composition>
+
+</html>

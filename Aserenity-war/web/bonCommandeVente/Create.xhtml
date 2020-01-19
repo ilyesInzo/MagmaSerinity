@@ -1,0 +1,571 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+
+        <ui:define name="pageContent">
+
+            
+
+            <h:panelGroup id="messagePanel" layout="block">
+                <p:messages closable="true" globalOnly="true" showDetail="true"><p:autoUpdate />
+                </p:messages>
+            </h:panelGroup>
+
+            <div class="layout-content">
+
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="shadow-box ui-shadow-5">
+                            <div class="card">
+
+                                <h:form id="f1">
+
+                                    <div class="x_title">
+                                        <h2 style="color: #607D8B">#{bundle.GCommande}</h2>
+                                        <ul class="nav navbar-right panel_toolbox">                          
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('bonCommandeVente').creation}" title="Enregistrer" id="addButton" action="#{bonCommandeVenteController.create()}" type="push" ajax="false"  icon="fa fa-save" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                            </li>
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('bonCommandeVente').lecture}" title="Annuler"  id="updateButton" type="push" action="#{bonCommandeVenteController.prepareList()}" ajax="false" immediate="true" icon="fa fa-reply"  style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                            </li>
+
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>         
+
+
+                                    <div class="x_content" >
+                                        
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Origine} :* " styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectOneMenu  value="#{bonCommandeVenteController.selected.origineBonCommandeVente}" title="#{bundle.Origine}" style="width: 90%; min-width: 180px" filter="true" filterMatchMode="contains"  effect="fade" var="l"  styleClass="form-control" required="true">
+                                                    <f:selectItem itemLabel="---" itemValue="" />
+                                                    <f:selectItem itemLabel="#{bundle.VenteDirecte}" itemValue="0" />
+                                                    <f:selectItem itemLabel="#{bundle.Devis}" itemValue="1" />
+                                                    <p:ajax update="PanelDevis, idTable, montantHT , montantTTC" event="change" listener="#{bonCommandeVenteController.loadDevis()}"/>
+                                                    <p:column>
+                                                        <h:outputText value="#{l.toString()}" />
+                                                    </p:column>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Categorie} : *"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectOneMenu id="Categorie" value="#{bonCommandeVenteController.categorieClient}" required="true" title="#{bundle.Categorie}" style="width: 90%; min-width: 180px" styleClass="form-control" filter="true" filterMatchMode="contains"  effect="fade" var="l"  >
+                                                    <f:selectItems value="#{categorieClientController.itemsAvailableSelectOne}"  />
+                                                    <p:column>
+                                                        <h:outputText value="#{l.toString()}" />
+                                                    </p:column>
+                                                    <p:ajax update="client" event="change"/>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Client} : *" for="client" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectOneMenu id="client" value="#{bonCommandeVenteController.selected.client}" required="true" styleClass="form-control" filter="true" filterMatchMode="contains"  effect="fade" var="l" style="width: 90%; min-width: 180px">
+                                                    <f:selectItems value="#{bonCommandeVenteController.itemsAvailableSelectOneClient}" var="cl" itemLabel="#{cl.toString()}" itemValue="#{cl}" />
+                                                    <p:column>
+                                                        <h:outputText value="#{l.toString()}" />
+                                                    </p:column>
+                                                    <p:ajax update="form, PanelDevis" event="change" listener="#{bonCommandeVenteController.loadDevis()}"/>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+                                        
+                                        <h:panelGroup id="PanelDevis">
+                                            <h:panelGroup rendered="#{bonCommandeVenteController.selected.origineBonCommandeVente eq 1}">
+                                                <div class="form-group" >
+                                                    <h:outputLabel value="#{bundle.Devis} : *" for="Devis" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <p:selectOneMenu id="Devis" value="#{bonCommandeVenteController.selected.devis}" styleClass="form-control" filter="true" filterMatchMode="contains"  effect="fade" var="l" style="width: 90%; min-width: 180px" required="true">
+                                                            <f:selectItems value="#{bonCommandeVenteController.itemsAvailableSelectOneDevis}" var="cl" itemLabel="#{cl.toString()}" itemValue="#{cl}" />
+                                                            <p:column>
+                                                                <h:outputText value="#{l.toString()} - #{l.dateCreationStringFr}" />
+                                                            </p:column>
+                                                            <p:ajax update=" montantHT , montantTTC , idTable , idTableTaxe" event="change" listener="#{bonCommandeVenteController.changeDevis()}" />
+                                                        </p:selectOneMenu>
+                                                    </div>
+                                                </div>
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.DateBonCommandeVente}: " styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:calendar pattern="dd/MM/yyyy" id="dateBonCommandeVente" value="#{bonCommandeVenteController.selected.dateBonCommandeVente}" navigator="true" title="#{bundle.DateBonCommandeVente}"   required="true" size="32" showOn="button" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.TotaleHT}: " styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="montantHT" value="#{bonCommandeVenteController.selected.montantHT}" title="#{bundle.MontantHT}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.TotaleTVA}: " styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="montantTVA" value="#{bonCommandeVenteController.selected.montantTVA}" title="#{bundle.TotaleTVA}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.TotaleTTC} : "  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="montantTTC" value="#{bonCommandeVenteController.selected.totalTTC}" title="#{bundle.MontantTTC}" styleClass="form-control" style="width: 90%; min-width: 180px"/>
+                                            </div>
+                                        </div> 
+
+                                    </div> 
+
+                                    <div class="x_title">
+                                        <h2 style="color: #1a8ea5">#{bundle.Details}</h2>                        
+                                        <div class="clearfix"></div>
+                                    </div>
+
+                                    <div class="x_content" >
+
+                                        <p:dataTable id="idTable"  value="#{bonCommandeVenteController.selected.listeLigneBonCommandeVentes}" emptyMessage="#{bundle.TableauVide}" var="item"  rowKey="#{item.id}-#{item.libelleArticle}" selection="#{bonCommandeVenteController.selectedLigneBonCommandeVenteSingle}" liveResize="true"   >
+
+                                            <f:facet  name="header">
+                                                <div style="height: 35px" align="right">
+                                                    <p:commandButton  title="#{bundle.Nouveau}"  id="addButton2" icon="fa fa-fw fa-plus" style="width: 30px; height: 30px; margin: 3px;" styleClass="btn secondary-btn"  oncomplete="PF('dlg2').show()"/>
+                                                </div>
+                                            </f:facet>
+
+                                            <p:column style="width: 8%" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Code}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.codeArticle}" />
+                                            </p:column>
+
+                                            <p:column style="width: 25%" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Article}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.libelleArticle}" />
+                                            </p:column>
+
+                                            <p:column style="width: 7%" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Quantite}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.quantite}" />
+                                            </p:column>
+
+                                            <p:column style="width: 7%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.PrixUnitaire}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.prixUnitaireHT}" />
+                                            </p:column>
+
+                                            <p:column style="width: 7%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Remise}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.remise}" />
+                                            </p:column>
+
+                                            <p:column style="width: 7%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.PrixUnitaireApresRemise}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.prixUnitaireApresRemise}" />
+                                            </p:column>
+
+                                            <p:column style="width: 7%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.TVA}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.tvaArticle}" />
+                                            </p:column>
+
+                                            <p:column  style="width: 7%" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.MontantHT}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.totalHT}"/>
+                                            </p:column>
+
+                                            <p:column style="width: 7%" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.MontantTTC}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.totalTTC}"/>
+                                            </p:column>
+
+                                            <p:column style="width:50px" >
+                                                <p:commandButton title="#{bundle.Supprimer}" id="deleteButton" action="#{bonCommandeVenteController.deleteFromListLigneBonCommandeVente()}"  type="push" ajax="false" icon="ui-icon-trash"  rendered="#{bonCommandeVenteController.selected.origineBonCommandeVente eq 0}">
+                                                    <f:setPropertyActionListener value="#{item}" target="#{bonCommandeVenteController.selectedLigneBonCommandeVenteSingle}" />
+                                                </p:commandButton>
+                                            </p:column>
+
+                                        </p:dataTable>
+
+                                    </div>
+
+                                    <div class="x_content" >
+
+                                    </div>
+
+                                    <div class="x_title">
+                                        <h2 style="color: #1a8ea5">#{bundle.Taxes}</h2>                      
+                                        <div class="clearfix"></div>
+                                    </div>
+
+                                    <div class="x_content" >
+
+                                        <p:dataTable id="idTableTaxe"  value="#{bonCommandeVenteController.selected.listsTaxe}" emptyMessage="#{bundle.TableauVide}" var="item"  rowKey="#{item.id}"  liveResize="true"   >
+
+
+                                            <f:facet  name="header">
+                                                <div style="height: 35px" align="right">
+                                                    <p:commandButton  title="#{bundle.Nouveau}"  id="addButton2" icon="fa fa-fw fa-plus" style="width: 30px; height: 30px; margin: 3px;" styleClass="btn secondary-btn"  oncomplete="PF('dialogTaxe').show()"/>
+                                                </div>
+                                            </f:facet>
+
+
+                                            <p:column  >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Libelle}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.parametrageTaxe.libelle}"/>
+                                            </p:column>
+
+
+                                            <p:column  >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Valeur}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.valeur}"   />                              
+                                            </p:column>
+
+                                            <p:column  >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Type}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.typeTaxeString}"  />                              
+                                            </p:column>
+
+
+                                            <p:column  >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Montant}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.montant}"  />                              
+                                            </p:column>
+
+                                            <p:column style="width:50px" >
+                                                <p:commandButton title="#{bundle.Supprimer}" id="deleteButton" action="#{bonCommandeVenteController.deleteTaxe()}"  type="push" ajax="false" icon="ui-icon-trash" >
+                                                    <f:setPropertyActionListener value="#{item}" target="#{bonCommandeVenteController.selectedSingleTaxe}" />
+                                                </p:commandButton>
+                                            </p:column>
+
+
+                                            <p:columnGroup type="footer">
+                                                <p:row>
+                                                    <p:column colspan="3" style="text-align:right" footerText="#{bundle.Total}" />
+                                                    <p:column  colspan="2" footerText="#{bonCommandeVenteController.selected.totalTaxe}" />
+                                                </p:row>
+                                            </p:columnGroup>
+                                        </p:dataTable>
+
+                                    </div>
+
+                                </h:form>
+
+                                <h:form id="form">
+                                    <p:dialog header="#{bundle.Nouveau}" widgetVar="dlg2" modal="true" height="40%" width="40%">
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Categorie} : *" for="Categorie" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectOneMenu id="Categorie" value="#{bonCommandeVenteController.categorie}"  title="#{bundle.Categorie}" style="width: 90%; min-width: 180px"  styleClass="form-control" required="true" filter="true" filterMatchMode="contains" effect="fade" var="l">
+                                                    <f:selectItems value="#{categorieController.itemsAvailableSelectOneProduits}" var="cl" itemLabel="#{cl.libelle}" itemValue="#{cl}"  />
+                                                    <p:ajax update="article" listener="#{bonCommandeVenteController.changedArticle()}"/>
+                                                    <p:column>
+                                                        <h:outputText value="#{l.libelleSuiteParentString}" />
+                                                    </p:column>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group" id="idDivArticle">
+                                            <h:outputLabel value="#{bundle.Article}: *" for="article" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectOneMenu id="article" value="#{bonCommandeVenteController.selectedLigneBonCommandeVente.article}"  title="#{bundle.Article}" style="width: 90%; min-width: 180px" styleClass="form-control" required="true" filter="true" filterMatchMode="contains" effect="fade" var="l">
+                                                    <f:selectItems value="#{bonCommandeVenteController.itemsAvailableSelectOneArticle}" var="cl" itemLabel="#{cl}" itemValue="#{cl}"  />
+                                                    <p:ajax update="tva, prixUnitaire, Remise, quantite, NouveauPrixUnitaire12" listener="#{bonCommandeVenteController.listnerPrixUnitaire()}"/>
+                                                    <p:column>
+                                                        <h:outputText value="#{l.libelle}" />
+                                                    </p:column>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.PrixUnitaire}: *" for="prixUnitaire" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:inputText id="prixUnitaire" value="#{bonCommandeVenteController.selectedLigneBonCommandeVente.prixUnitaireHT}" title="#{bundle.PrixUnitaire}" style="width: 90%; min-width: 180px" styleClass="form-control" required="true">
+                                                    <f:validateDoubleRange minimum="0.001"/>
+                                                    <p:keyFilter for="prixUnitaire" mask="num"/>
+                                                    <p:ajax update="totaleHT,totaleTTC, NouveauPrixUnitaire12" listener="#{bonCommandeVenteController.changedTotalHtTotalTtc()}" />
+
+                                                </p:inputText>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.TVA}: " for="tva" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="tva"  value="#{bonCommandeVenteController.selectedLigneBonCommandeVente.tvaArticle}" title="#{bundle.TVA}" style="width: 90%; min-width: 180px" styleClass="form-control">
+                                                </p:outputLabel>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Remise}: " for="Remise" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:inputText id="Remise" value="#{bonCommandeVenteController.selectedLigneBonCommandeVente.remise}"  title="#{bundle.Remise}" required="true" style="width: 90%; min-width: 180px" styleClass="form-control">
+                                                    <f:validateLongRange minimum="0"  maximum="90" />
+                                                    <p:ajax update="totaleHT,totaleTTC, NouveauPrixUnitaire12" listener="#{bonCommandeVenteController.changedTotalHtTotalTtc()}" />
+                                                </p:inputText>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.PrixUnitaireApresRemise}: " id="NouveauPrixUnitaire1" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel value="#{bonCommandeVenteController.selectedLigneBonCommandeVente.prixUnitaireApresRemise} " id="NouveauPrixUnitaire12" style="width: 90%; min-width: 180px" styleClass="form-control">
+                                                </p:outputLabel>
+
+                                            </div>
+                                        </div>
+
+
+
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Quantite}: *" for="quantite" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:inputText id="quantite" value="#{bonCommandeVenteController.selectedLigneBonCommandeVente.quantite}" title="#{bundle.Quantite}" required="true" style="width: 90%; min-width: 180px" styleClass="form-control">
+                                                    <f:convertNumber integerOnly="true"/>
+                                                    <f:validateLongRange minimum="1"/>
+                                                    <p:keyFilter for="quantite" mask="num"/>
+                                                    <p:ajax update="totaleHT,totaleTTC" listener="#{bonCommandeVenteController.changedTotalHtTotalTtc()}" />
+                                                </p:inputText>
+
+
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.MontantHT}: " for="totaleHT" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="totaleHT"  value="#{bonCommandeVenteController.selectedLigneBonCommandeVente.totalHT}" title="#{bundle.MontantHT}" style="width: 90%; min-width: 180px" styleClass="form-control">
+
+                                                </p:outputLabel>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.MontantTTC}: " for="totaleTTC" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="totaleTTC"  value="#{bonCommandeVenteController.selectedLigneBonCommandeVente.totalTTC}" title="#{bundle.MontantTTC}" style="width: 90%; min-width: 180px" styleClass="form-control">
+
+                                                </p:outputLabel>
+
+                                            </div>
+                                        </div>
+
+
+
+                                        <p:commandButton title="#{bundle.Valider}" update=":idTable, :montantTTC, :montantHT, :montantTVA " id="addButton3" action="#{bonCommandeVenteController.validerDetailArticle()}" type="push" icon="fa fa-save" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" ajax="false" />
+
+                                    </p:dialog>
+                                </h:form>
+
+                                <h:form id="formTaxe">
+
+                                    <p:dialog header="#{bundle.Taxes}" widgetVar="dialogTaxe" modal="true" height="50%" width="40%">
+
+
+                                        <p:commandButton title="#{bundle.Valider}" update=":idTableTaxe " id="addButton3" action="#{bonCommandeVenteController.validerTaxeBonCommandeVente() }" type="push"  icon="fa fa-save" style="float: right; width: 40px; height: 40px; margin: 3px;" styleClass="btn btn-primary" ajax="false" />
+
+                                        <div class="x_content">
+                                            <p:dataTable id="checkboxDT" var="itemTaxe" value="#{bonCommandeVenteController.listParametrageTaxeEntreprise}" selection="#{bonCommandeVenteController.selectedListParametrageTaxe}" rowKey="#{itemTaxe.id}" style="margin-bottom:0" emptyMessage="#{bundle.TableauVide}">
+
+                                                <p:column selectionMode="multiple" style="width:40px;text-align:center"/>
+
+
+                                                <p:column  >
+                                                    <f:facet name="header">
+                                                        <h:outputText value="#{bundle.Taxe}"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{itemTaxe.libelle}"  />                              
+                                                </p:column>
+
+                                                <p:column  >
+                                                    <f:facet name="header">
+                                                        <h:outputText value="#{bundle.Valeur}"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{itemTaxe.valeur}"  />                              
+                                                </p:column>
+
+
+                                                <p:column  >
+                                                    <f:facet name="header">
+                                                        <h:outputText value="#{bundle.Type}"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{itemTaxe.typeTaxeString}"  />                              
+                                                </p:column>
+
+
+                                                <p:column  >
+                                                    <f:facet name="header">
+                                                        <h:outputText value="#{bundle.Calcul}"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{bundle.AvantTva}"  rendered="#{itemTaxe.apresTva == false}" />    
+                                                    <h:outputText value="#{bundle.ApresTVA}"  rendered="#{itemTaxe.apresTva == true}" />    
+                                                </p:column>
+
+                                                <p:column  >
+                                                    <f:facet name="header">
+                                                        <h:outputText value="#{bundle.Operation}"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{itemTaxe.operation}"  />                              
+                                                </p:column>        
+                                            </p:dataTable>
+                                        </div>
+                                    </p:dialog>
+                                </h:form>
+
+                                <h:form id="formEdit">
+
+                                    <p:dialog header="#{bundle.ModifierDetailCmd}" widgetVar="dlg" id="editDialog" modal="true" height="50%" width="30%">
+
+
+
+
+                                        <div class="form-group">
+                                            <h:outputLabel value="#{bundle.Article} :" for="Article" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="Article" value="#{bonCommandeVenteController.selectedLigneBonCommandeVente.libelleArticle}"  title="#{bundle.Article}" style="width: 90%; min-width: 180px" styleClass="form-control" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.PrixUnitaire}: *" for="prixUnitaire" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:inputText id="prixUnitaire" value="#{bonCommandeVenteController.selectedLigneBonCommandeVente.prixUnitaireHT}" title="#{bundle.PrixUnitaire}" style="width: 90%; min-width: 180px" styleClass="form-control" required="true">
+                                                    <f:validateDoubleRange minimum="0.001"/>
+                                                    <p:keyFilter for="prixUnitaire" mask="num"/>
+                                                    <p:ajax update="totaleHT,totaleTTC, NouveauPrixUnitaire122" listener="#{bonCommandeVenteController.changedTotalHtTotalTtc()}" />
+                                                </p:inputText>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <h:outputLabel value="#{bundle.TVA} :" for="TVA" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="TVA" value="#{bonCommandeVenteController.selectedLigneBonCommandeVente.tvaArticle}"  title="#{bundle.TVA}" style="width: 90%; min-width: 180px" styleClass="form-control" />
+                                            </div>
+                                        </div>     
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Remise}: *" for="Remise" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:inputText id="Remise" value="#{bonCommandeVenteController.selectedLigneBonCommandeVente.remise}"  title="#{bundle.Remise}" readonly="true" style="width: 90%; min-width: 180px" styleClass="form-control">
+                                                    <f:validateLongRange minimum="0"  maximum="90" />
+                                                    <p:ajax update="totaleHT,totaleTTC, NouveauPrixUnitaire122" listener="#{bonCommandeVenteController.changedTotalHtTotalTtc()}" />
+                                                </p:inputText>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.PrixUnitaireApresRemise}: " id="NouveauPrixUnitaire11" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel value="#{bonCommandeVenteController.selectedLigneBonCommandeVente.prixUnitaireApresRemise} " id="NouveauPrixUnitaire122" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.QuantiteMaximale}: *" for="QuantiteMaximale" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="QuantiteMaximale" value="#{bonCommandeVenteController.selectedLigneBonCommandeVente.quantiteMax}" title="#{bundle.QuantiteMaximale}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Quantite}: *" for="quantite" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:inputText id="quantite" value="#{bonCommandeVenteController.selectedLigneBonCommandeVente.quantite}" title="#{bundle.Quantite}" required="true" style="width: 90%; min-width: 180px" styleClass="form-control">
+                                                    <f:convertNumber integerOnly="true"/>
+                                                    <f:validateLongRange minimum="1"/>
+                                                    <p:keyFilter for="quantite" mask="num"/>
+                                                    <p:ajax update="totaleHT,totaleTTC" listener="#{bonCommandeVenteController.changedTotalHtTotalTtc()}" />
+                                                </p:inputText>
+
+
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.MontantHT}: " for="totaleHT" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="totaleHT"  value="#{bonCommandeVenteController.selectedLigneBonCommandeVente.totalHT}" title="#{bundle.MontantHT}" style="width: 90%; min-width: 180px" styleClass="form-control">
+
+                                                </p:outputLabel>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.MontantTTC}: " for="totaleTTC" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="totaleTTC"  value="#{bonCommandeVenteController.selectedLigneBonCommandeVente.totalTTC}" title="#{bundle.MontantTTC}" style="width: 90%; min-width: 180px" styleClass="form-control">
+
+                                                </p:outputLabel>
+
+                                            </div>
+                                        </div>
+
+
+                                        <p:commandButton title="#{bundle.Valider}"  id="addButton3" action="#{bonCommandeVenteController.validerDetailArticleModif()}" icon="fa fa-save" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" type="push" ajax="false" />
+
+                                    </p:dialog>
+                                </h:form>
+
+
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+
+        </ui:define>
+    </ui:composition>
+
+</html>

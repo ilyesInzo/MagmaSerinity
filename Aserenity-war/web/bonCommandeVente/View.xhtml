@@ -1,0 +1,291 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      >
+    <ui:composition template="/template.xhtml">
+
+        <ui:define name="pageContent">
+
+            <h:panelGroup id="messagePanel" layout="block">
+                <p:messages closable="true" globalOnly="true" showDetail="true"><p:autoUpdate />
+                </p:messages>
+            </h:panelGroup> 
+
+            <div class="layout-content">
+
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="shadow-box ui-shadow-5">
+                            <div class="card">
+
+                                <h:form id="f1">
+
+                                    <div class="x_title">
+                                        <h2 style="color: #607D8B">#{bundle.GCommande}</h2>
+                                        <ul class="nav navbar-right panel_toolbox">
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('bonCommandeVente').journalisation}" title="Info" id="metaInfo" oncomplete="PF('dlgInfo').show()" icon="fa fa-book" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                            </li>
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('bonCommandeVente').modification}" title="#{bundle.Rejeter}"  id="Rejete" disabled="#{bonCommandeVenteController.selected.isNePeutRejeterBonCommandeVente()}"  oncomplete="PF('dialogRejete').show()"  
+                                                                 icon="fa fa-close" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"  />
+                                            </li>
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('bonCommandeVente').modification}" title="#{bundle.Approuver}"  id="Approuver" disabled="#{bonCommandeVenteController.selected.isNePeutApprouverBonCommandeVente()}"  oncomplete="PF('dialogApprouver').show()"  
+                                                                 icon="fa fa-check" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"  />
+                                            </li>
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('bonCommandeVente').modification}" title="Modifier" id="addButton" action="#{bonCommandeVenteController.prepareEdit()}" disabled="#{bonCommandeVenteController.selected.isNePeutModifierBonCommandeVente()}" type="push" ajax="false"  icon="fa fa-pencil" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                            </li>
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('bonCommandeVente').lecture}" title="Annuler"  id="updateButton" action="#{bonCommandeVenteController.prepareList()}" ajax="false" immediate="true" icon="fa fa-reply"  style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                            </li>
+
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>         
+
+
+                                    <div class="x_content" > 
+
+
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Numero}: " for="numero"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="numero" value="#{bonCommandeVenteController.selected.numero}" title="#{bundle.Numero}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Client}: " for="categorie"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="categorie" value="#{bonCommandeVenteController.selected.libelleClient}" title="#{bundle.Client}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.TotaleHT} :" for="montantHT" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="montantHT" value="#{bonCommandeVenteController.selected.montantHT}" title="#{bundle.TotaleHT}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.TotaleTVA}: " styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="montantTVA" value="#{bonCommandeVenteController.selected.montantTVA}" title="#{bundle.TotaleTVA}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.TotaleTTC} :" for="montantTTC" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="montantTTC" value="#{bonCommandeVenteController.selected.totalTTC}" title="#{bundle.MontantTTC}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div>
+
+
+                                    </div> 
+
+                                    <div class="x_title">
+                                        <h2 style="color: #1a8ea5">#{bundle.Details}</h2>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div class="x_content" >
+                                        <p:dataTable  value="#{bonCommandeVenteController.selected.listeLigneBonCommandeVentes}"  var="item"  selection="#{bonCommandeVenteController.selectedLigneBonCommandeVenteSingle}" rowKey="#{item.id}" liveResize="true"     >
+
+                                            <p:column style="width: 8%" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Code}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.codeArticle}" />
+                                            </p:column>
+
+                                            <p:column style="width: 25%" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Article}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.libelleArticle}" />
+                                            </p:column>
+
+                                            <p:column style="width: 7%" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Quantite}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.quantite}" />
+                                            </p:column>
+
+                                            <p:column style="width: 7%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.PrixUnitaire}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.prixUnitaireHT}" />
+                                            </p:column>
+
+                                            <p:column style="width: 7%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Remise}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.remise}" />
+                                            </p:column>
+
+                                            <p:column style="width: 7%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.PrixUnitaireApresRemise}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.prixUnitaireApresRemise}" />
+                                            </p:column>
+
+                                            <p:column style="width: 7%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.TVA}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.tvaArticle}" />
+                                            </p:column>
+
+                                            <p:column  style="width: 7%" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.MontantHT}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.totalHT}"/>
+                                            </p:column>
+
+                                            <p:column style="width: 7%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.MontantTTC}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.totalTTC} " /> 
+                                            </p:column>
+
+
+                                        </p:dataTable>
+
+                                    </div>
+                                    <div class="x_content" >
+
+                                    </div>
+
+                                    <div class="x_title">
+                                        <h2 style="color: #1a8ea5">#{bundle.Taxes}</h2>
+                                        <div class="clearfix"></div>
+                                    </div>
+
+                                    <div class="x_content" >
+                                        <p:dataTable  value="#{bonCommandeVenteController.selected.listsTaxe}"  var="item"  selection="#{bonCommandeVenteController.selectedSingleTaxe}" rowKey="#{item.id}" liveResize="true" emptyMessage="#{bundle.TableauVide}"     >
+                                            <p:column  >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Libelle}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.parametrageTaxe.libelle}"/>
+                                            </p:column>
+
+
+                                            <p:column  >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Valeur}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.valeur}"  />                              
+                                            </p:column>
+
+                                            <p:column  >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Type}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.typeTaxeString}"  />                              
+                                            </p:column>
+
+
+                                            <p:column  >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Montant}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.montant}"  />                              
+                                            </p:column>
+
+                                            <p:columnGroup type="footer">
+                                                <p:row>
+                                                    <p:column colspan="3" style="text-align:right" footerText="#{bundle.Total}" />
+                                                    <p:column  colspan="1" footerText="#{bonCommandeVenteController.selected.totalTaxe}" />
+                                                </p:row>
+                                            </p:columnGroup>
+                                        </p:dataTable>
+                                    </div> 
+
+                                </h:form>       
+
+                                <h:form id="formDialogRejet">
+                                    <p:dialog id="dialogRejete" header="#{bundle.MotifDuRejet}" widgetVar="dialogRejete" modal="true" height="10%" width="40%">                
+                                        <div class="x_content">
+                                            <div class="form-group" >
+                                                <h:outputLabel value="#{bundle.Motif}: * "  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:selectOneMenu id="motifRejetBonCommandeVenteVente2" value="#{bonCommandeVenteController.selected.motifRejetBonCommandeVenteVente}" styleClass="form-control" required="true" style="width: 90%; min-width: 180px">
+                                                        <f:selectItems value="#{motifRejetBonCommandeVenteVenteController.itemsAvailableSelectOne}"  />
+                                                    </p:selectOneMenu>
+                                                </div>
+                                            </div>
+                                            
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Description} : " for="DescriptionAnnulation"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:inputTextarea id="DescriptionAnnulation" value="#{bonCommandeVenteController.selected.descriptionMotifAnnulation}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div>
+                                            
+                                            <div class="form-group" >
+                                                <h:outputLabel value=""  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:commandButton title="#{bundle.Valider}" id="addButtonRejete" action="#{bonCommandeVenteController.rejeterBonCommandeVente()}" type="push"  icon="fa fa-save" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" ajax="false" />
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </p:dialog>
+                                </h:form>
+
+                                <h:form id="formDialogApprouver">
+                                    <p:dialog id="dialogApprouver" header="#{bundle.Approuve}" widgetVar="dialogApprouver" modal="true" height="70%" width="55%">
+                                        
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.TransformTo}: *"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectOneMenu id="transFormTo" value="#{bonCommandeVenteController.selected.transFormTo}" styleClass="form-control"  required="true" filter="true" filterMatchMode="contains" effect="fade" var="l" style="width: 90%; min-width: 180px">
+                                                    <f:selectItem itemValue="null" itemLabel="---" />
+                                                    <f:selectItem itemValue="0" itemLabel="#{bundle.BonLivraison}" />
+                                                    <f:selectItem itemValue="1" itemLabel="#{bundle.Facture}"/>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+                                        
+                                        <p:commandButton title="#{bundle.Valider}" id="addButtonApprouve" action="#{bonCommandeVenteController.approuverBonCommandeVente()}" type="push"  icon="fa fa-save" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" ajax="false" />
+
+                                    </p:dialog>
+                                </h:form>
+                                <p:dialog id="Info"  header="Info"   widgetVar="dlgInfo" height="50%" width="35%" modal="true" resizable="false">
+
+
+                                    <h:panelGrid columns="2" cellpadding="200" cellspacing="200">
+                                        <h:outputText value="#{bundle.Creation} : " />
+                                        <h:outputText value="Creer le #{bonCommandeVente.selected.dateCreationStringFr} par #{bonCommandeVente.selected.libelleUserCreate}" style="margin-left: 20px; font: bold"/>
+                                        <h:outputText value="#{bundle.Modification} : " rendered="#{bonCommandeVente.selected.idUserModif ne null}"/>
+                                        <h:outputText value="Modif le #{bonCommandeVente.selected.dateSyncStringFr} par #{bonCommandeVente.selected.libelleUserModif}" style="margin-left: 20px; font: bold" rendered="#{bonCommandeVente.selected.idUserModif ne null}"/>
+                                    </h:panelGrid>
+
+
+                                </p:dialog>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+
+        </ui:define>
+    </ui:composition>
+
+</html>

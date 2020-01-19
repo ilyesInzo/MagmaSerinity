@@ -77,17 +77,17 @@ public class Profile implements Serializable {
     @Transient
     Map<String, Privileges> mapPrivilege;
 
-    public Privileges toPrivilege(String libelle) {
+    public Privileges toPrivilege(String location) {
 
         Privileges privileges = new Privileges();
 
         if (mapPrivilege != null) {
             // the map is added when connection => if it exist okey we will used to access directly
-            return mapPrivilege.get(libelle);
+            return mapPrivilege.get(location);
         } else {
             // depraciated but to avoid issues if probleme with map
             for (Privileges temp : listPrivileges) {
-                if (temp.getLibelle().equals(libelle)) {
+                if (temp.getLocation().equals(location)) {
                     privileges = temp;
                 }
             }

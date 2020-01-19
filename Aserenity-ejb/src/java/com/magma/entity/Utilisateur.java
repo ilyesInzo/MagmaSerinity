@@ -145,7 +145,10 @@ public class Utilisateur implements Serializable {
     
     
     //*********************** Visibilite Modules **************************//
-    
+
+    @Transient
+    private String visibiliteMCommande;
+            
     @Transient
     private String visibiliteMVentes;
     @Transient
@@ -662,6 +665,14 @@ public class Utilisateur implements Serializable {
 
     public void setVisibiliteMJourneaux(String visibiliteMJourneaux) {
         this.visibiliteMJourneaux = visibiliteMJourneaux;
+    }
+
+    public String getVisibiliteMCommande() {
+        return visibiliteMCommande;
+    }
+
+    public void setVisibiliteMCommande(String visibiliteMCommande) {
+        this.visibiliteMCommande = visibiliteMCommande;
     }
     
     

@@ -18,44 +18,51 @@ import javax.faces.context.FacesContext;
  */
 public class MenuTemplate {
 
-    private static List<String> ListFonctionalite = new ArrayList<String>(Arrays.asList(
-            "GProfil",
-            "GUtilisateur",
-            "GGouvernorat",
-            "GDelegation",
-            "GBanque",
-            "GTicket",
-            "GTva",
-            "GCategorie",
-            "GArticle",
-            "GClient",
-            "GCategorieClient",
-            "GFacture",
-            "GBonLivraison",
+private static List<String> ListFonctionalite = new ArrayList<String>(Arrays.asList(
+            "GCommande",
+            "GEtatCommande",
             "GDevis",
-            "GPrefixFacture",
-            "GPrefixDevis",
-            "GPrefixBonLivraison",
+            "GBonCommandeVente",
+            "GBonLivraison",
+            "GFacture",
             "GEncaissement",
             "GEncaissementBonLivraison",
             "GTypeEncaissementVente",
             "GParametrageTaxe",
+            "GPrefixDevis",
+            "GPrefixBonCommandeVente",
+            "GPrefixFacture",
+            "GPrefixBonLivraison",
             "GMotifRejetDevisVente",
-            "GMotifAvoir",
-            "GPrefixAvoirVente",
             "GAvoirVente",
+            "GPrefixAvoirVente",
             "GRetour",
+            "GMotifAvoir",
+            "GArticle",
+            "GCategorie",
+            "GTva",
             "GStockArticle",
+            "GClient",
+            "GCategorieClient",
+            "GUtilisateur",
+            "GProfile",
+            "GEntreprise",
             "GDepartement",
             "GPoste",
-            "GEntreprise"
+            "GGouvernorat",
+            "GDelegation",
+            "GBanque",
+            "GTicket"
+
     ));
+
     private static List<String> ListFonctionaliteModule = new ArrayList<String>(Arrays.asList(
             "MParametrage",
             "MProduit",
             "MClient",
             "MVente",
-            "MStock"));
+            "MStock",
+            "MCommande"));
 
     public static void menuFonctionnalitesModules(String fonctionnalite, String fonctionnaliteModule, String fonctionnaliteSousModule, Utilisateur utilisateur) {
         FacesContext context = FacesContext.getCurrentInstance();
@@ -240,4 +247,17 @@ public class MenuTemplate {
         }
 
     }
+    
+        public static void initMenu(){
+    FacesContext context = FacesContext.getCurrentInstance();
+            for (String privilege : ListFonctionalite) {
+                
+            
+                context.getExternalContext().getSessionMap().put("FV" + privilege, "display: none;");
+                
+            }
+    
+    
+    }
+
 }
