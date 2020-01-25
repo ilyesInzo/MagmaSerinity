@@ -30,10 +30,10 @@
                                         <h2 style="color: #607D8B">#{bundle.GCommande}</h2>
                                         <ul class="nav navbar-right panel_toolbox">                          
                                             <li>
-                                                <p:commandButton title="Enregistrer" rendered="#{user.profile.toPrivilege('bonCommandeCommercial').modification}" id="addButton" action="#{bonCommandeCommercialController.update()}"  type="push" ajax="false"  icon="fa fa-save" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('bonCommandeCommercial').modification}" title="Enregistrer" id="addButton" action="#{bonCommandeCommercialController.update()}"  type="push" ajax="false"  icon="fa fa-save" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
                                             </li>
                                             <li>
-                                                <p:commandButton title="Annuler" rendered="#{user.profile.toPrivilege('bonCommandeCommercial').lecture}" id="updateButton" action="#{bonCommandeCommercialController.prepareList()}"  immediate="true" icon="fa fa-reply"  style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" ajax="false"/>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('bonCommandeCommercial').lecture}" title="Annuler"  ajax="false" id="updateButton" action="#{bonCommandeCommercialController.prepareList()}"  immediate="true" icon="fa fa-reply"  style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
                                             </li>
 
                                         </ul>
@@ -41,65 +41,75 @@
                                     </div>         
 
 
-                                    <div class="x_content" >  
-
-                                        <div class="form-group" >
-                                            <h:outputLabel value="#{bundle.Client}: " for="categorie"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
-                                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                                <p:outputLabel id="categorie" value="#{bonCommandeCommercialController.selected.libelleClient}" title="#{bundle.Client}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
-                                            </div>
+                                    <div class="form-group" >
+                                        <h:outputLabel value="#{bundle.Client}: " for="client"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                            <p:outputLabel id="client" value="#{bonCommandeCommercialController.selected.libelleClient}" title="#{bundle.Client}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
                                         </div>
-                                        
-                                        <h:panelGroup id="pgClientLivraison" >
-                                            <h:panelGroup >  
+                                    </div>
 
-                                                <div class="form-group" >
-                                                    <h:outputLabel value="#{bundle.Client}: " for="clientLivraison"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
-                                                    <div class="col-md-9 col-sm-9 col-xs-12">
-                                                        <p:outputLabel id="clientLivraison" value="#{bonCommandeCommercialController.selected.libelleClientLivraison}" title="#{bundle.Client}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
-                                                    </div>
-                                                </div>
-
-                                            </h:panelGroup>
-                                        </h:panelGroup>
-
-                                        <div class="form-group" >
-                                            <h:outputLabel value="#{bundle.DateCommande}: " styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
-                                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                                <p:calendar pattern="dd/MM/yyyy" id="dateFacture" value="#{bonCommandeCommercialController.selected.dateCommande}" navigator="true" title="#{bundle.DateBonCommandeCommercial}" showOn="button"  required="true" size="32"/>
-                                            </div>
+                                    <div class="form-group" >
+                                        <h:outputLabel value="#{bundle.Categorie} : *"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                            <p:selectOneMenu id="CategorieLivraison" value="#{bonCommandeCommercialController.selected.categorieClientLivraison}" required="true" title="#{bundle.Categorie}" style="width: 90%; min-width: 180px" styleClass="form-control" filter="true" filterMatchMode="contains"  effect="fade" var="l"  >
+                                                <f:selectItems value="#{categorieClientController.itemsAvailableSelectOne}"  />
+                                                <p:column>
+                                                    <h:outputText value="#{l.toString()}" />
+                                                </p:column>
+                                                <p:ajax update="clientLivraison" event="change"/>
+                                            </p:selectOneMenu>
                                         </div>
+                                    </div>
 
-                                        <div class="form-group" >
-                                            <h:outputLabel value="#{bundle.EtatCommande}: *" for="etat" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
-                                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                                <p:selectOneMenu id="etat" value="#{bonCommandeCommercialController.selected.etatCommande}" title="#{bundle.EtatCommande}" required="true" autoWidth="false"  styleClass="form-control" disabled="#{commandeController.selected.commandePartiel()}">
-                                                    <f:selectItems value="#{bonCommandeCommercialController.parentFils()}"/>
-                                                </p:selectOneMenu>
-                                            </div>
+                                    <div class="form-group" >
+                                        <h:outputLabel value="#{bundle.Client} : *" for="clientLivraison" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                            <p:selectOneMenu id="clientLivraison" value="#{bonCommandeCommercialController.selected.clientLivraison}" required="true" styleClass="form-control" filter="true" filterMatchMode="contains"  effect="fade" var="l" style="width: 90%; min-width: 180px">
+                                                <f:selectItems value="#{bonCommandeCommercialController.itemsAvailableSelectOneClientLivraison}" var="cl" itemLabel="#{cl.toString()}" itemValue="#{cl}" />
+                                                <p:column>
+                                                    <h:outputText value="#{l.toString()}" />
+                                                </p:column>
+                                            </p:selectOneMenu>
                                         </div>
+                                    </div>
 
-                                        <div class="form-group" >
-                                            <h:outputLabel value="#{bundle.TotaleHT} :" for="montantHT" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
-                                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                                <p:outputLabel id="montantHT" value="#{bonCommandeCommercialController.selected.montantHT}" title="#{bundle.TotaleHT}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
-                                            </div>
+                                    <div class="form-group" >
+                                        <h:outputLabel value="#{bundle.Etat}: *" for="etat" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                            <p:selectOneMenu id="etat" value="#{bonCommandeCommercialController.selected.etatCommande}" title="#{bundle.Etat}" required="true" autoWidth="false" filter="true" filterMatchMode="contains" effect="fade" var="l" style="width: 90%; min-width: 180px" styleClass="form-control" >
+                                                <f:selectItems value="#{bonCommandeCommercialController.parentFils()}" var="cl" itemLabel="#{cl.libelle}" itemValue="#{cl}" />
+                                                    <p:column>
+                                                        <h:outputText value="#{l.libelleSuiteParentString}" />
+                                                    </p:column>
+                                            </p:selectOneMenu>
                                         </div>
+                                    </div>
 
-                                        <div class="form-group" >
-                                            <h:outputLabel value="#{bundle.TotaleTVA}: " styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
-                                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                                <p:outputLabel id="montantTVA" value="#{bonCommandeCommercialController.selected.montantTVA}" title="#{bundle.TotaleTVA}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
-                                            </div>
+                                    <div class="form-group">
+                                        <h:outputLabel value="#{bundle.TotaleHT} :" for="montantHT" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
+                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                            <p:outputLabel id="montantHT" value="#{bonCommandeCommercialController.selected.montantHT}" title="#{bundle.TotaleHT}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
                                         </div>
+                                    </div>
 
-                                        <div class="form-group" >
-                                            <h:outputLabel value="#{bundle.TotaleTTC} : "  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
-                                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                                <p:outputLabel id="montantTTC" value="#{bonCommandeCommercialController.selected.montantTTC}" title="#{bundle.MontantTTC}" styleClass="form-control" style="width: 90%; min-width: 180px"/>
-                                            </div>
-                                        </div> 
+                                    <div class="form-group" >
+                                        <h:outputLabel value="#{bundle.TotaleTVA}: " styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                            <p:outputLabel id="montantTVA" value="#{bonCommandeCommercialController.selected.montantTVA}" title="#{bundle.TotaleTVA}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                        </div>
+                                    </div>
 
+                                    <div class="form-group" >
+                                        <h:outputLabel value="#{bundle.TotaleTTC} : "  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                            <p:outputLabel id="montantTTC" value="#{bonCommandeCommercialController.selected.totalTTC}" title="#{bundle.MontantTTC}" styleClass="form-control" style="width: 90%; min-width: 180px"/>
+                                        </div>
+                                    </div> 
+
+
+                                    <div class="x_title">
+                                        <h2 style="color: #1a8ea5">#{bundle.Details}</h2>                        
+                                        <div class="clearfix"></div>
                                     </div>
 
                                     <div class="x_content" >
@@ -175,13 +185,6 @@
                                                 <h:outputText value="#{item.totalHT}"/>
                                             </p:column>
 
-                                            <p:column style="width: 7%" >
-                                                <f:facet name="header">
-                                                    <h:outputText value="#{bundle.MontantTTC}"/>
-                                                </f:facet>
-                                                <h:outputText value="#{item.totalTTC}"/>
-                                            </p:column>
-
 
                                             <p:column id="idColonumEdit" style="width:60px" >
                                                 <p:commandButton  id="editButton"  update="formEdit:editDialog" oncomplete="PF('dlg').show()" title="#{bundle.Modifier}" icon="ui-icon-pencil" styleClass="btn btn-primary" >
@@ -242,7 +245,7 @@
                                                 <p:inputText id="prixUnitaire" value="#{bonCommandeCommercialController.selectedLigneBonCommandeCommercial.prixUnitaireHT}" title="#{bundle.PrixUnitaire}" style="width: 90%; min-width: 180px" styleClass="form-control" required="true">
                                                     <f:validateDoubleRange minimum="0.001"/>
                                                     <p:keyFilter for="prixUnitaire" mask="num"/>
-                                                    <p:ajax update="totaleHT, NouveauPrixUnitaire12" listener="#{bonCommandeCommercialController.changedTotalHtTotalTtc()}" />
+                                                    <p:ajax update="totaleHT,totaleTTC, NouveauPrixUnitaire12" listener="#{bonCommandeCommercialController.changedTotalHtTotalTtc()}" />
 
                                                 </p:inputText>
                                             </div>
@@ -261,7 +264,7 @@
                                             <div class="col-md-9 col-sm-9 col-xs-12">
                                                 <p:inputText id="Remise" value="#{bonCommandeCommercialController.selectedLigneBonCommandeCommercial.remise}"  title="#{bundle.Remise}" required="true" style="width: 90%; min-width: 180px" styleClass="form-control">
                                                     <f:validateLongRange minimum="0"  maximum="90" />
-                                                    <p:ajax update="totaleHT, NouveauPrixUnitaire12" listener="#{bonCommandeCommercialController.changedTotalHtTotalTtc()}" />
+                                                    <p:ajax update="totaleHT,totaleTTC, NouveauPrixUnitaire12" listener="#{bonCommandeCommercialController.changedTotalHtTotalTtc()}" />
                                                 </p:inputText>
                                             </div>
                                         </div>
@@ -285,7 +288,7 @@
                                                     <f:convertNumber integerOnly="true"/>
                                                     <f:validateLongRange minimum="1"/>
                                                     <p:keyFilter for="quantite" mask="num"/>
-                                                    <p:ajax update="totaleHT" listener="#{bonCommandeCommercialController.changedTotalHtTotalTtc()}" />
+                                                    <p:ajax update="totaleHT,totaleTTC" listener="#{bonCommandeCommercialController.changedTotalHtTotalTtc()}" />
                                                 </p:inputText>
 
 
@@ -302,7 +305,6 @@
                                             </div>
                                         </div>
 
-
                                         <div class="form-group" >
                                             <h:outputLabel value="#{bundle.MontantTTC}: " for="totaleTTC" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                             <div class="col-md-9 col-sm-9 col-xs-12">
@@ -313,8 +315,7 @@
                                             </div>
                                         </div>
 
-
-                                        <p:commandButton title="#{bundle.Valider}" update=":idTable, :montantTTC, :montantHT " id="addButton3" action="#{bonCommandeCommercialController.validerDetailArticle()}" type="push" icon="fa fa-save" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" ajax="false" />
+                                        <p:commandButton title="#{bundle.Valider}" update=":idTable, :montantTTC, :montantHT, :montantTVA " id="addButton3" action="#{bonCommandeCommercialController.validerDetailArticle()}" type="push" icon="fa fa-save" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" ajax="false" />
 
                                     </p:dialog>
                                 </h:form>
@@ -341,7 +342,7 @@
                                                 <p:inputText id="prixUnitaire" value="#{bonCommandeCommercialController.selectedLigneBonCommandeCommercial.prixUnitaireHT}" title="#{bundle.PrixUnitaire}" style="width: 90%; min-width: 180px" styleClass="form-control" rendered="true">
                                                     <f:validateDoubleRange minimum="0.001"/>
                                                     <p:keyFilter for="prixUnitaire" mask="num"/>
-                                                    <p:ajax update="totaleHT, NouveauPrixUnitaire122" listener="#{bonCommandeCommercialController.changedTotalHtTotalTtc()}" />
+                                                    <p:ajax update="totaleHT,totaleTTC, NouveauPrixUnitaire122" listener="#{bonCommandeCommercialController.changedTotalHtTotalTtc()}" />
 
                                                 </p:inputText>
                                             </div>
@@ -359,7 +360,7 @@
                                             <div class="col-md-9 col-sm-9 col-xs-12">
                                                 <p:inputText id="Remise" value="#{bonCommandeCommercialController.selectedLigneBonCommandeCommercial.remise}"  title="#{bundle.Remise}" style="width: 90%; min-width: 180px" styleClass="form-control">
                                                     <f:validateLongRange minimum="0"  maximum="90" />
-                                                    <p:ajax update="totaleHT, NouveauPrixUnitaire122" listener="#{bonCommandeCommercialController.changedTotalHtTotalTtc()}" />
+                                                    <p:ajax update="totaleHT,totaleTTC, NouveauPrixUnitaire122" listener="#{bonCommandeCommercialController.changedTotalHtTotalTtc()}" />
                                                 </p:inputText>
                                             </div>
                                         </div>
@@ -376,7 +377,7 @@
                                             <h:outputLabel value="{bundle.QuantiteMaximale}: *" for="QuantiteMaximale" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                             <div class="col-md-9 col-sm-9 col-xs-12">
                                                 <p:outputLabel id="QuantiteMaximale" value="{bonCommandeCommercialController.selectedLigneBonCommandeCommercial.quantiteMax}" title="{bundle.QuantiteMaximale}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
-
+    
                                             </div>
                                         </div-->
 
@@ -387,7 +388,7 @@
                                                     <f:convertNumber integerOnly="true"/>
                                                     <f:validateLongRange minimum="1"/>
                                                     <p:keyFilter for="quantite" mask="num"/>
-                                                    <p:ajax update="totaleHT" listener="#{bonCommandeCommercialController.changedTotalHtTotalTtc()}" />
+                                                    <p:ajax update="totaleHT,totaleTTC" listener="#{bonCommandeCommercialController.changedTotalHtTotalTtc()}" />
                                                 </p:inputText>
 
 

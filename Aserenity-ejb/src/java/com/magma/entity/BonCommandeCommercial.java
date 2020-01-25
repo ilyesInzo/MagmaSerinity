@@ -37,27 +37,23 @@ import javax.persistence.Transient;
 public class BonCommandeCommercial implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
+    @Column(name = "BCom_Id", nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "Cmd_Id")
     private Long id;
+
+    @Column(name = "Tab_DateCreation")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateCreation;
     
-    @Column(name = "Cmd_Numero")
+    @Column(name = "BCom_DateBonCommandeCommercial")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateBonCommandeCommercial;
+
+    @Column(name = "BCom_Numero", unique = true)
     private String numero;
 
-    @Column(name = "Cmd_DateCommande")
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date dateCommande;
-    
-    @Column(name = "Cmd_MontantHT", scale = 3, precision = 28)
-    private BigDecimal montantHT;
-
-    @Column(name = "Cmd_MontantTVA", scale = 3, precision = 28)
-    private BigDecimal montantTVA;
-
-    @Column(name = "Cmd_MontantTTC", scale = 3, precision = 28)
-    private BigDecimal montantTTC;
-    
     @Column(name = "Cli_Id")
     private Long idClient;
 
@@ -81,246 +77,94 @@ public class BonCommandeCommercial implements Serializable {
 
     @Column(name = "CCl_LibelleLivraison")
     private String libelleCategorieClientLivraison;
+
+    @Column(name = "BCom_MontantHT", scale = 3, precision = 28)
+    private BigDecimal montantHT;
+    
+    @Column(name = "BCom_MontantTVA", scale = 3, precision = 28)
+    private BigDecimal montantTVA;
+
+    @Column(name = "BCom_MontantTTC", scale = 3, precision = 28)
+    private BigDecimal montantTTC;
+
+    @Column(name = "BCom_TotalHT", scale = 3, precision = 28)
+    private BigDecimal totalHT;
+    
+    @Column(name = "BCom_TotalTVA", scale = 3, precision = 28)
+    private BigDecimal totalTVA;
+
+    @Column(name = "BCom_TotalTTC", scale = 3, precision = 28)
+    private BigDecimal totalTTC;
+
+    
+    @Column(name = "BCom_DescriptionMotifAnnulation")
+    private String descriptionMotifAnnulation;
+
+
+    @Column(name = "BCom_TotalTaxe", precision = 28, scale = 3)
+    private BigDecimal totalTaxe;
+
+    @OneToMany(mappedBy = "bonCommandeCommercial", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<LigneBonCommandeCommercial> listeLigneBonCommandeCommercials;
+
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "ECm_Id", referencedColumnName = "ECm_Id", nullable = false)
+    private EtatCommande etatCommande;
+    
+    // 0: client / 1: Livreur
+    @Column(name = "BCom_TypeVente")
+    private Integer typeVente;
+    
     
     @Column(name = "Cli_AssujettiTVA")
     private boolean assujettiTVA;
-
-    @Column(name = "Com_Id")
-    private Long idCommercial;
-
-    @Column(name = "Com_Libelle")
-    private String libelleCommercial;
+    
     
     @Column(name = "Tab_dateSynch")
     private Long dateSynch;
+        
+    @Transient
+    private Client client;
     
-    @Column(name = "Tab_DateCreation")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dateCreation;
+    @Transient
+    private CategorieClient categorieClient;
+    
+    @Transient
+    private Client clientLivraison;
+    
+    @Transient
+    private CategorieClient categorieClientLivraison;
+
+    @Transient
+    private Utilisateur utilisateur;
     
     @Column(name = "Tab_IdUserCreate")
     private Long idUserCreate;
 
     @Column(name = "Tab_LibelleUserCreate")
     private String libelleUserCreate;
-
+    
     @Column(name = "Tab_IdUserModif")
     private Long idUserModif;
 
     @Column(name = "Tab_LibelleUserModif")
     private String libelleUserModif;
     
-   /* @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "ECm_Id", referencedColumnName = "ECm_Id", nullable = false)
-    private EtatCommande etatCommande;*/
-    
-
-    @OneToMany(mappedBy = "bonCommandeCommercial", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<LigneBonCommandeCommercial> listeLigneBonCommandeCommercials;
-    
     @Transient
-    private Client client;
-    @Transient
-    private CategorieClient categorieClient;
-    
-    @Transient
-    private Client clientLivraison;
-    @Transient
-    private CategorieClient categorieClientLivraison;
+    private Commercial commercial;
 
-    public Long getId() {
-        return id;
-    }
+    @Column(name = "Com_Id")
+    private Long idCommercial;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @Column(name = "Com_TypeCommercial")
+    private int typeCommercial;
 
-    public String getNumero() {
-        return numero;
-    }
+    @Column(name = "Com_Nom")
+    private String nomCommercial;
 
-    public void setNumero(String numero) {
-        this.numero = numero;
-    }
-
-    public Date getDateCommande() {
-        return dateCommande;
-    }
-
-    public void setDateCommande(Date dateCommande) {
-        this.dateCommande = dateCommande;
-    }
-
-    public BigDecimal getMontantHT() {
-        return FonctionsMathematiques.arrondiBigDecimal(montantHT, 3);
-    }
-
-    public void setMontantHT(BigDecimal montantHT) {
-        this.montantHT = montantHT;
-    }
-
-    public BigDecimal getMontantTVA() {
-        return FonctionsMathematiques.arrondiBigDecimal(montantTVA, 3);
-    }
-
-    public void setMontantTVA(BigDecimal montantTVA) {
-        this.montantTVA = montantTVA;
-    }
-
-    public BigDecimal getMontantTTC() {
-        return FonctionsMathematiques.arrondiBigDecimal(montantTTC, 3);
-    }
-
-    public void setMontantTTC(BigDecimal montantTTC) {
-        this.montantTTC = montantTTC;
-    }
-
-    public Long getIdClient() {
-        return idClient;
-    }
-
-    public void setIdClient(Long idClient) {
-        this.idClient = idClient;
-    }
-
-    public String getLibelleClient() {
-        return libelleClient;
-    }
-
-    public void setLibelleClient(String libelleClient) {
-        this.libelleClient = libelleClient;
-    }
-
-    public boolean isAssujettiTVA() {
-        return assujettiTVA;
-    }
-
-    public void setAssujettiTVA(boolean assujettiTVA) {
-        this.assujettiTVA = assujettiTVA;
-    }
-
-    public Long getDateSynch() {
-        return dateSynch;
-    }
-
-    public void setDateSynch(Long dateSynch) {
-        this.dateSynch = dateSynch;
-    }
-
-    public Date getDateCreation() {
-        return dateCreation;
-    }
-
-    public void setDateCreation(Date dateCreation) {
-        this.dateCreation = dateCreation;
-    }
-
-    public Long getIdClientLivraison() {
-        return idClientLivraison;
-    }
-
-    public void setIdClientLivraison(Long idClientLivraison) {
-        this.idClientLivraison = idClientLivraison;
-    }
-
-    public String getLibelleClientLivraison() {
-        return libelleClientLivraison;
-    }
-
-    public void setLibelleClientLivraison(String libelleClientLivraison) {
-        this.libelleClientLivraison = libelleClientLivraison;
-    }
-
-    public CategorieClient getCategorieClient() {
-        return categorieClient;
-    }
-
-    public void setCategorieClient(CategorieClient categorieClient) {
-        this.categorieClient = categorieClient;
-    }
-
-    public Client getClientLivraison() {
-        return clientLivraison;
-    }
-
-    public void setClientLivraison(Client clientLivraison) {
-        this.clientLivraison = clientLivraison;
-    }
-
-    public CategorieClient getCategorieClientLivraison() {
-        return categorieClientLivraison;
-    }
-
-    public void setCategorieClientLivraison(CategorieClient categorieClientLivraison) {
-        this.categorieClientLivraison = categorieClientLivraison;
-    }
-    
-    
-
-    /*public EtatCommande getEtatCommande() {
-        return etatCommande;
-    }
-
-    public void setEtatCommande(EtatCommande etatCommande) {
-        this.etatCommande = etatCommande;
-    }*/
-
-    public List<LigneBonCommandeCommercial> getListeLigneBonCommandeCommercials() {
-        return listeLigneBonCommandeCommercials;
-    }
-
-    public void setListeLigneBonCommandeCommercials(List<LigneBonCommandeCommercial> listeLigneBonCommandeCommercials) {
-        this.listeLigneBonCommandeCommercials = listeLigneBonCommandeCommercials;
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
-    }
-
-    public Long getIdCommercial() {
-        return idCommercial;
-    }
-
-    public void setIdCommercial(Long idCommercial) {
-        this.idCommercial = idCommercial;
-    }
-
-    public String getLibelleCommercial() {
-        return libelleCommercial;
-    }
-
-    public void setLibelleCommercial(String libelleCommercial) {
-        this.libelleCommercial = libelleCommercial;
-    }
-    
-    public String getDateCommandeStringFr() {
-        try {
-            if (dateCommande != null) {
-                return TraitementDate.returnDateHeure(dateCommande);
-            }
-            return "---";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "---";
-        }
-    }
-
-    public String getDateCommandeStringEn() {
-        try {
-            if (dateCommande != null) {
-                return TraitementDate.returnDateHeureEn(dateCommande);
-            }
-            return "---";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "---";
-        }
-    }
+    @Column(name = "Com_Prenom")
+    private String prenomCommercial;
 
     public Long getIdUserCreate() {
         return idUserCreate;
@@ -352,6 +196,54 @@ public class BonCommandeCommercial implements Serializable {
 
     public void setLibelleUserModif(String libelleUserModif) {
         this.libelleUserModif = libelleUserModif;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Date getDateCreation() {
+        return dateCreation;
+    }
+
+    public void setDateCreation(Date dateCreation) {
+        this.dateCreation = dateCreation;
+    }
+
+    public Long getIdClient() {
+        return idClient;
+    }
+
+    public void setIdClient(Long idClient) {
+        this.idClient = idClient;
+    }
+
+    public Long getIdClientLivraison() {
+        return idClientLivraison;
+    }
+
+    public void setIdClientLivraison(Long idClientLivraison) {
+        this.idClientLivraison = idClientLivraison;
+    }
+
+    public String getLibelleClientLivraison() {
+        return libelleClientLivraison;
+    }
+
+    public void setLibelleClientLivraison(String libelleClientLivraison) {
+        this.libelleClientLivraison = libelleClientLivraison;
     }
 
     public Long getIdCategorieClient() {
@@ -386,6 +278,72 @@ public class BonCommandeCommercial implements Serializable {
         this.libelleCategorieClientLivraison = libelleCategorieClientLivraison;
     }
 
+    public CategorieClient getCategorieClient() {
+        return categorieClient;
+    }
+
+    public void setCategorieClient(CategorieClient categorieClient) {
+        this.categorieClient = categorieClient;
+    }
+
+    public Client getClientLivraison() {
+        return clientLivraison;
+    }
+
+    public void setClientLivraison(Client clientLivraison) {
+        this.clientLivraison = clientLivraison;
+    }
+
+    public CategorieClient getCategorieClientLivraison() {
+        return categorieClientLivraison;
+    }
+
+    public void setCategorieClientLivraison(CategorieClient categorieClientLivraison) {
+        this.categorieClientLivraison = categorieClientLivraison;
+    }
+
+
+
+    public BigDecimal getMontantHT() {
+        return FonctionsMathematiques.arrondiBigDecimal(montantHT, 3);
+    }
+
+    public void setMontantHT(BigDecimal montantHT) {
+        this.montantHT = montantHT;
+    }
+
+    public BigDecimal getMontantTTC() {
+        return FonctionsMathematiques.arrondiBigDecimal(montantTTC, 3);
+    }
+
+    public BigDecimal getMontantTTCTF() {
+        /*if (avImpot == true) {
+            return FonctionsMathematiques.arrondiBigDecimal((montantTTC.multiply(new BigDecimal("1.01"))).add(new BigDecimal("0.6")), 3);
+        }*/
+        return montantTTC.add(new BigDecimal("0.6"));
+    }
+
+    public void setMontantTTC(BigDecimal montantTTC) {
+        this.montantTTC = montantTTC;
+    }
+
+
+    public String getNumero() {
+        return numero;
+    }
+
+    public void setNumero(String numero) {
+        this.numero = numero;
+    }
+
+    public List<LigneBonCommandeCommercial> getListeLigneBonCommandeCommercials() {
+        return listeLigneBonCommandeCommercials;
+    }
+
+    public void setListeLigneBonCommandeCommercials(List<LigneBonCommandeCommercial> listeLigneBonCommandeCommercials) {
+        this.listeLigneBonCommandeCommercials = listeLigneBonCommandeCommercials;
+    }
+
     public String getDateCreationStringFr() {
         try {
             if (dateCreation != null) {
@@ -393,7 +351,6 @@ public class BonCommandeCommercial implements Serializable {
             }
             return "---";
         } catch (Exception e) {
-            e.printStackTrace();
             return "---";
         }
     }
@@ -405,7 +362,6 @@ public class BonCommandeCommercial implements Serializable {
             }
             return "---";
         } catch (Exception e) {
-            e.printStackTrace();
             return "---";
         }
     }
@@ -417,7 +373,6 @@ public class BonCommandeCommercial implements Serializable {
             }
             return "---";
         } catch (Exception e) {
-            e.printStackTrace();
             return "---";
         }
     }
@@ -429,9 +384,186 @@ public class BonCommandeCommercial implements Serializable {
             }
             return "---";
         } catch (Exception e) {
-            e.printStackTrace();
             return "---";
         }
+    }
+    
+    public String getDateBonCommandeCommercialStringFr() {
+        try {
+            if (dateBonCommandeCommercial != null) {
+                return TraitementDate.returnDate(dateBonCommandeCommercial);
+            }
+            return "---";
+        } catch (Exception e) {
+            return "---";
+        }
+    }
+
+    public String getLibelleClient() {
+        return libelleClient;
+    }
+
+    public void setLibelleClient(String libelleClient) {
+        this.libelleClient = libelleClient;
+    }
+
+    public BigDecimal getTotalHT() {
+        return FonctionsMathematiques.arrondiBigDecimal(totalHT, 3);
+    }
+
+    public void setTotalHT(BigDecimal totalHT) {
+        this.totalHT = totalHT;
+    }
+
+    public BigDecimal getTotalTTC() {
+        return FonctionsMathematiques.arrondiBigDecimal(totalTTC, 3);
+    }
+
+    public void setTotalTTC(BigDecimal totalTTC) {
+        this.totalTTC = totalTTC;
+    }
+
+    public BigDecimal getTotalTaxe() {
+        return FonctionsMathematiques.arrondiBigDecimal(totalTaxe, 3);
+
+    }
+
+    public void setTotalTaxe(BigDecimal totalTaxe) {
+        this.totalTaxe = totalTaxe;
+    }
+
+    public Utilisateur getUtilisateur() {
+        return utilisateur;
+    }
+
+    public void setUtilisateur(Utilisateur utilisateur) {
+        this.utilisateur = utilisateur;
+    }
+
+    public Integer getTypeVente() {
+        return typeVente;
+    }
+
+    public void setTypeVente(Integer typeVente) {
+        this.typeVente = typeVente;
+    }
+
+    public String getTypeVenteString() {
+        switch (typeVente) {
+            case 0:
+                return "Client";
+            case 1:
+                return "Vendeur";
+            default:
+                break;
+        }
+        return null;
+    }
+
+    public boolean isAssujettiTVA() {
+        return assujettiTVA;
+    }
+
+    public void setAssujettiTVA(boolean assujettiTVA) {
+        this.assujettiTVA = assujettiTVA;
+    }
+
+    public String getDescriptionMotifAnnulation() {
+        return descriptionMotifAnnulation;
+    }
+
+    public void setDescriptionMotifAnnulation(String descriptionMotifAnnulation) {
+        this.descriptionMotifAnnulation = descriptionMotifAnnulation;
+    }
+
+    public Date getDateBonCommandeCommercial() {
+        return dateBonCommandeCommercial;
+    }
+
+    public void setDateBonCommandeCommercial(Date dateBonCommandeCommercial) {
+        this.dateBonCommandeCommercial = dateBonCommandeCommercial;
+    }
+
+    public BigDecimal getMontantTVA() {
+         return FonctionsMathematiques.arrondiBigDecimal(montantTVA, 3);
+    }
+
+    public void setMontantTVA(BigDecimal montantTVA) {
+        this.montantTVA = montantTVA;
+    }
+
+    public BigDecimal getTotalTVA() {
+        return FonctionsMathematiques.arrondiBigDecimal(totalTVA, 3);
+    }
+
+    public void setTotalTVA(BigDecimal totalTVA) {
+        this.totalTVA = totalTVA;
+    }
+
+    public Long getDateSynch() {
+        return dateSynch;
+    }
+
+    public void setDateSynch(Long dateSynch) {
+        this.dateSynch = dateSynch;
+    }
+
+    public EtatCommande getEtatCommande() {
+        return etatCommande;
+    }
+
+    public void setEtatCommande(EtatCommande etatCommande) {
+        this.etatCommande = etatCommande;
+    }
+
+    public Long getIdCommercial() {
+        return idCommercial;
+    }
+
+    public void setIdCommercial(Long idCommercial) {
+        this.idCommercial = idCommercial;
+    }
+
+    public Commercial getCommercial() {
+        return commercial;
+    }
+
+    public void setCommercial(Commercial commercial) {
+        this.commercial = commercial;
+    }
+
+    public int getTypeCommercial() {
+        return typeCommercial;
+    }
+
+    public void setTypeCommercial(int typeCommercial) {
+        this.typeCommercial = typeCommercial;
+    }
+
+    public String getNomCommercial() {
+        return nomCommercial;
+    }
+
+    public void setNomCommercial(String nomCommercial) {
+        this.nomCommercial = nomCommercial;
+    }
+
+    public String getPrenomCommercial() {
+        return prenomCommercial;
+    }
+
+    public void setPrenomCommercial(String prenomCommercial) {
+        this.prenomCommercial = prenomCommercial;
+    }
+
+    
+    public String getNomPrenom() {
+        if (nomCommercial != null) {
+            return prenomCommercial + " " + nomCommercial;
+        } else {
+            return "---";
+        }
+
     }
     
     @PreUpdate
@@ -444,7 +576,6 @@ public class BonCommandeCommercial implements Serializable {
         this.dateCreation = new Date();
         this.dateSynch = System.currentTimeMillis();
     }
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -467,7 +598,7 @@ public class BonCommandeCommercial implements Serializable {
 
     @Override
     public String toString() {
-        return numero;
+        return libelleClient;
     }
     
 }

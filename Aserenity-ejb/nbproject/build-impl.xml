@@ -497,7 +497,8 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
                     <formatter type="brief" usefile="false"/>
                     <formatter type="xml"/>
                     <jvmarg value="-ea"/>
-                    <jvmarg value="-agentlib:jdwp=transport=${debug-transport},address=${jpda.address}"/>
+                    <jvmarg line="${debug-args-line}"/>
+                    <jvmarg value="-Xrunjdwp:transport=${debug-transport},address=${jpda.address}"/>
                     <customize/>
                 </junit>
             </sequential>
@@ -529,7 +530,8 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
                     <formatter type="xml"/>
                     <jvmarg value="-ea"/>
                     <jvmarg line="${run.jvmargs.ide}"/>
-                    <jvmarg value="-agentlib:jdwp=transport=${debug-transport},address=${jpda.address}"/>
+                    <jvmarg line="${debug-args-line}"/>
+                    <jvmarg value="-Xrunjdwp:transport=${debug-transport},address=${jpda.address}"/>
                     <customize/>
                 </junit>
             </sequential>
@@ -680,6 +682,18 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
         </macrodef>
     </target>
     <target name="-init-debug-args">
+        <property name="version-output" value="java version &quot;${ant.java.version}"/>
+        <condition property="have-jdk-older-than-1.4">
+            <or>
+                <contains string="${version-output}" substring="java version &quot;1.0"/>
+                <contains string="${version-output}" substring="java version &quot;1.1"/>
+                <contains string="${version-output}" substring="java version &quot;1.2"/>
+                <contains string="${version-output}" substring="java version &quot;1.3"/>
+            </or>
+        </condition>
+        <condition else="-Xdebug" property="debug-args-line" value="-Xdebug -Xnoagent -Djava.compiler=none">
+            <istrue value="${have-jdk-older-than-1.4}"/>
+        </condition>
         <condition else="dt_socket" property="debug-transport-by-os" value="dt_shmem">
             <os family="windows"/>
         </condition>
@@ -695,7 +709,8 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
             <element name="customize" optional="true"/>
             <sequential>
                 <java classname="@{classname}" fork="true">
-                    <jvmarg value="-agentlib:jdwp=transport=${debug-transport},address=${jpda.address}"/>
+                    <jvmarg line="${debug-args-line}"/>
+                    <jvmarg value="-Xrunjdwp:transport=${debug-transport},address=${jpda.address}"/>
                     <jvmarg line="${runmain.jvmargs}"/>
                     <classpath>
                         <path path="@{classpath}"/>
@@ -780,27 +795,27 @@ exists or setup the property manually. For example like this:
     <target if="is.jars.in.ejbjar" name="-library-inclusion-in-archive-by-user">
         <copyfiles files="${file.reference.mssql-jdbc-6.4.0.jre8.jar}" todir="${build.classes.dir}"/>
         <copyfiles files="${libs.EclipseLink-GlassFish-v3.classpath}" todir="${build.classes.dir}"/>
-        <copyfiles files="${file.reference.Bibliotheque.jar}" todir="${build.classes.dir}"/>
         <copyfiles files="${file.reference.javax.annotation-api.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.Bibliotheque.jar}" todir="${build.classes.dir}"/>
     </target>
     <target if="is.server.weblogic" name="-library-inclusion-in-archive-weblogic">
         <basename file="${file.reference.mssql-jdbc-6.4.0.jre8.jar}" property="manifest.file.reference.mssql-jdbc-6.4.0.jre8.jar"/>
         <basename file="${libs.EclipseLink-GlassFish-v3.classpath}" property="manifest.libs.EclipseLink-GlassFish-v3.classpath"/>
-        <basename file="${file.reference.Bibliotheque.jar}" property="manifest.file.reference.Bibliotheque.jar"/>
         <basename file="${file.reference.javax.annotation-api.jar}" property="manifest.file.reference.javax.annotation-api.jar"/>
+        <basename file="${file.reference.Bibliotheque.jar}" property="manifest.file.reference.Bibliotheque.jar"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
             <attribute name="Extension-List" value="jar-1 jar-2 jar-3 jar-4 "/>
             <attribute name="jar-1-Extension-Name" value="${manifest.file.reference.mssql-jdbc-6.4.0.jre8.jar}"/>
             <attribute name="jar-2-Extension-Name" value="${manifest.libs.EclipseLink-GlassFish-v3.classpath}"/>
-            <attribute name="jar-3-Extension-Name" value="${manifest.file.reference.Bibliotheque.jar}"/>
-            <attribute name="jar-4-Extension-Name" value="${manifest.file.reference.javax.annotation-api.jar}"/>
+            <attribute name="jar-3-Extension-Name" value="${manifest.file.reference.javax.annotation-api.jar}"/>
+            <attribute name="jar-4-Extension-Name" value="${manifest.file.reference.Bibliotheque.jar}"/>
         </manifest>
     </target>
     <target depends="compile" name="library-inclusion-in-manifest">
         <copyfiles files="${file.reference.mssql-jdbc-6.4.0.jre8.jar}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${libs.EclipseLink-GlassFish-v3.classpath}" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.Bibliotheque.jar}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.javax.annotation-api.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.Bibliotheque.jar}" todir="${dist.ear.dir}/lib"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update"/>
     </target>
     <target name="-copy-meta-inf">

@@ -11,30 +11,40 @@ import com.magma.entity.BonCommandeCommercial;
 import com.magma.entity.Categorie;
 import com.magma.entity.CategorieClient;
 import com.magma.entity.Client;
+import com.magma.entity.Commercial;
 import com.magma.entity.EtatCommande;
 import com.magma.entity.LigneBonCommandeCommercial;
+import com.magma.entity.ParametrageTaxe;
 import com.magma.entity.Utilisateur;
+import com.magma.session.BonLivraisonFacadeLocal;
 import com.magma.session.BonCommandeCommercialFacadeLocal;
 import com.magma.session.CategorieClientFacadeLocal;
 import com.magma.session.ClientFacadeLocal;
 import com.magma.session.EtatCommandeFacadeLocal;
+import com.magma.session.FactureFacadeLocal;
+import com.magma.session.LigneBonLivraisonFacadeLocal;
 import com.magma.session.LigneBonCommandeCommercialFacadeLocal;
+import com.magma.session.LigneFactureFacadeLocal;
+import com.magma.session.LigneRetourFacadeLocal;
+import com.magma.session.ParametrageTaxeFacadeLocal;
+import com.magma.session.PrefixBonLivraisonFacadeLocal;
+import com.magma.session.PrefixFactureFacadeLocal;
+import com.magma.session.RetourFacadeLocal;
+import com.magma.session.TaxesFactureFacadeLocal;
 import com.magma.util.MenuTemplate;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-
+import javax.faces.bean.ManagedBean;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -52,22 +62,45 @@ public class BonCommandeCommercialController implements Serializable {
     private BonCommandeCommercial selected;
     private BonCommandeCommercial selectedSingle;
     private List<BonCommandeCommercial> items = null;
-
+    private Utilisateur utilisateur;
     @EJB
     private BonCommandeCommercialFacadeLocal ejbFacade;
+
     @EJB
     private LigneBonCommandeCommercialFacadeLocal ejbFacadeLigneBonCommandeCommercial;
+
     @EJB
     private CategorieClientFacadeLocal ejbFacadeCatgorieClient;
-    
     private CategorieClient categorieClient = null;
 
     @EJB
     private ClientFacadeLocal ejbFacadeClient;
-    
+
+    @EJB
+    private ParametrageTaxeFacadeLocal ejbFacadeParametrageTaxe;
+
     @EJB
     private EtatCommandeFacadeLocal ejbFacadeEtatCommande;
 
+    @EJB
+    private BonLivraisonFacadeLocal ejbFacadeBonLivraison;
+    @EJB
+    private PrefixBonLivraisonFacadeLocal ejbFacadePrefixBonLivraison;
+    @EJB
+    private LigneFactureFacadeLocal ejbFacadeLigneFacture;
+
+    @EJB
+    private FactureFacadeLocal ejbFacadeFacture;
+    @EJB
+    private PrefixFactureFacadeLocal ejbFacadePrefixFacture;
+    @EJB
+    private LigneBonLivraisonFacadeLocal ejbFacadeLigneBonLivraison;
+    @EJB
+    private TaxesFactureFacadeLocal ejbFacadeTaxeFacture;
+    @EJB
+    private RetourFacadeLocal ejbFacadeRetour;
+    @EJB
+    private LigneRetourFacadeLocal ejbFacadeLigneRetour;
     private List<Client> listClient = null;
     private List<Client> listClientLivraison = null;
 
@@ -89,14 +122,13 @@ public class BonCommandeCommercialController implements Serializable {
     private List<LigneBonCommandeCommercial> AncienLigneBonCommandeCommercial;
     private List<CategorieClient> listCategorieClient = null;
     private List<Article> listArticles = null;
-    private Utilisateur utilisateur;
+    private List<ParametrageTaxe> listParametrageTaxeEntreprise = null;
+    private List<ParametrageTaxe> selectedListParametrageTaxe = null;
 
     private Date dateDebut = new Date();
     private Date dateFin = new Date();
     private Integer etatBonCommandeCommercial;
-    private Integer origineBonCommandeCommercial;
     private Client client;
-    private boolean retour;
 
     public BonCommandeCommercialController() {
         items = null;
@@ -105,10 +137,10 @@ public class BonCommandeCommercialController implements Serializable {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
         /*if (bonCommandeCommercial.getIdEntrepriseSuivi() != null && bonCommandeCommercial.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = bonCommandeCommercial.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = bonCommandeCommercial.getEntreprise().getId();
-            }*/
+         idEntreprise = bonCommandeCommercial.getIdEntrepriseSuivi();
+         } else {
+         idEntreprise = bonCommandeCommercial.getEntreprise().getId();
+         }*/
     }
 
     public String initPage() {
@@ -116,14 +148,14 @@ public class BonCommandeCommercialController implements Serializable {
             FacesContext context = FacesContext.getCurrentInstance();
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
             utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
-            MenuTemplate.menuFonctionnalitesModules("GCommande", "MCommande", null, utilisateur);
 
-            // MenuTemplate.menuFonctionnalitesModules("GBonCommandeCommercial", utilisateur);
-            /*if (bonCommandeCommercial.getIdEntrepriseSuivi() != null && bonCommandeCommercial.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = bonCommandeCommercial.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = bonCommandeCommercial.getEntreprise().getId();
-            }*/
+            MenuTemplate.menuFonctionnalitesModules("GCommande", "MCommande", null, utilisateur);
+            //MenuTemplate.menuFonctionnalitesModules("GBonCommandeCommercial", utilisateur);
+            /* if (bonCommandeCommercial.getIdEntrepriseSuivi() != null && bonCommandeCommercial.getIdEntrepriseSuivi() != 0) {
+             idEntreprise = bonCommandeCommercial.getIdEntrepriseSuivi();
+             } else {
+             idEntreprise = bonCommandeCommercial.getEntreprise().getId();
+             }*/
             recreateModel();
             FacesContext.getCurrentInstance().getExternalContext().redirect("../bonCommandeCommercial/List.xhtml");
         } catch (IOException ex) {
@@ -140,13 +172,11 @@ public class BonCommandeCommercialController implements Serializable {
     public List<BonCommandeCommercial> getItems() {
         try {
             if (items == null) {
-
                 String debut = TraitementDate.returnDate(dateDebut) + " 00:00:00";
                 String fin = TraitementDate.returnDate(dateFin) + " 23:59:59";
 
-                String clause = " where o.Cmd_DateCommande between '" + debut + "' and '" + fin + "' ";
-                System.out.println("" + clause);
-                items = getFacade().findAllNative(clause + " order by o.Cmd_DateCommande desc");
+                String clause = " where o.BCom_DateBonCommandeCommercial between '" + debut + "' and '" + fin + "' ";
+                items = getFacade().findAllNative(clause + " order by o.BCom_DateBonCommandeCommercial desc");
             }
             return items;
         } catch (Exception e) {
@@ -195,6 +225,13 @@ public class BonCommandeCommercialController implements Serializable {
 
     public String prepareView() {
         if (selected != null) {
+            /*annulation = false;
+             if (selected.getIdBonCommandeCommercial() == null && selected.getListEncaissementBonCommandeCommercials().isEmpty()) {
+             annulation = true;
+             }*/
+            /*System.err.println(System.getenv("SystemDrive"));
+             System.err.println(System.getProperty("user.dir"));
+             System.err.println(System.getProperty("user.home"));*/
 
             return "View";
         }
@@ -205,17 +242,18 @@ public class BonCommandeCommercialController implements Serializable {
 
         categorieClient = new CategorieClient();
         selected = new BonCommandeCommercial();
-        errorMsg = false;
-        selected.setDateCommande(new Date());
+        selected.setDateBonCommandeCommercial(new Date());
+
         EtatCommande etatCommande = null;
-        /*try {
+        try {
             etatCommande = ejbFacadeEtatCommande.findAll(" where o.rang = 0 and o.supprimer = 0 ").get(0);
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("EtatCmdNull")));
             return null;
         }
-        selected.setEtatCommande(etatCommande);*/
+        selected.setEtatCommande(etatCommande);
 
+        errorMsg = false;
         selectedLigneBonCommandeCommercial = new LigneBonCommandeCommercial();
         selectedLigneBonCommandeCommercial.setPrixUnitaireHT(BigDecimal.ZERO);
         selectedLigneBonCommandeCommercial.setTvaArticle(BigDecimal.ZERO);
@@ -243,20 +281,22 @@ public class BonCommandeCommercialController implements Serializable {
         selectedLigneBonCommandeCommercialSingle.setTotalHT(BigDecimal.ZERO);
         selectedLigneBonCommandeCommercialSingle.setTotalTTC(BigDecimal.ZERO);
 
+        selectedListParametrageTaxe = new ArrayList<>();
+        selected.setTotalTaxe(BigDecimal.ZERO);
+        selected.setTypeVente(0);
         selected.setListeLigneBonCommandeCommercials(new ArrayList<LigneBonCommandeCommercial>());
-
+        //selected.setEtat(-1);
         categorie = new Categorie();
+
         return "Create";
     }
 
     public String create() {
 
-        errorMsg = false;
-
+        /*try {*/
         if (errorMsg == false) {
 
             if (selected.getListeLigneBonCommandeCommercials() != null && !selected.getListeLigneBonCommandeCommercials().isEmpty()) {
-
                 LigneBonCommandeCommercialTemps = selected.getListeLigneBonCommandeCommercials();
 
 //                    for (LigneBonCommandeCommercial ligneBonCommandeCommercial : LigneBonCommandeCommercialTemps) {
@@ -271,6 +311,10 @@ public class BonCommandeCommercialController implements Serializable {
                 }
 
                 selected.setListeLigneBonCommandeCommercials(null);
+                /*                selected.setDateSynch(System.currentTimeMillis());
+                 selected.setSupprimer(false);*/
+                //selected.setDateCreation(new Date());
+
                 selected.setDateSynch(System.currentTimeMillis());
 
                 if (selected.getCategorieClient() != null) {
@@ -295,7 +339,16 @@ public class BonCommandeCommercialController implements Serializable {
                         selected.setLibelleCategorieClientLivraison(selected.getCategorieClientLivraison().getLibelle());
                     }
                 }
-
+                
+                if(selected.getCommercial() != null){
+                
+                    selected.setNomCommercial(selected.getCommercial().getNom());
+                    selected.setPrenomCommercial(selected.getCommercial().getPrenom());
+                    selected.setIdCommercial(selected.getCommercial().getId());
+                    selected.setTypeCommercial(selected.getCommercial().getTypeCommercial());
+                
+                }
+                selected.setNumero("BC"+System.currentTimeMillis());
                 getFacade().create(selected);
 
                 for (LigneBonCommandeCommercial ligneBonCommandeCommercial : LigneBonCommandeCommercialTemps) {
@@ -312,15 +365,15 @@ public class BonCommandeCommercialController implements Serializable {
 
         } else {
             FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), " " + ResourceBundle.getBundle("/Bundle").getString("CeChampExist")));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), "" + " " + ResourceBundle.getBundle("/Bundle").getString("CeChampExist")));
             return null;
         }
 
         /*} catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("EchecOperation")));
-            System.out.println("Erreur- BonCommandeCommercialController - create: " + e.getMessage());
-            return null;
-        }*/
+         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("EchecOperation")));
+         System.out.println("Erreur- BonCommandeCommercialController - create: " + e.getMessage());
+         return null;
+         }*/
     }
 
     public Long getIdTemp() {
@@ -339,13 +392,53 @@ public class BonCommandeCommercialController implements Serializable {
             selectedLigneBonCommandeCommercial = new LigneBonCommandeCommercial();
             selectedLigneBonCommandeCommercialModif = new LigneBonCommandeCommercial();
             selectedLigneBonCommandeCommercialSingle = new LigneBonCommandeCommercial();
+
+            selectedListParametrageTaxe = new ArrayList<>();
+            listParametrageTaxeEntreprise = ejbFacadeParametrageTaxe.findAll("");
             categorie = new Categorie();
 
-            Client client = new Client();
-            client.setId(selected.getIdClient());
-            client.setAssujettiTVA(selected.isAssujettiTVA());
-            client.setLibelle(selected.getLibelleClient());
-            selected.setClient(client);
+            if (selected.getIdCategorieClient() != null) {
+                CategorieClient categorieClient = new CategorieClient();
+                categorieClient.setId(selected.getIdCategorieClient());
+                categorieClient.setLibelle(selected.getLibelleCategorieClient());
+                selected.setCategorieClient(categorieClient);
+                if (selected.getIdClient() != null) {
+                    Client client = new Client();
+                    client.setId(selected.getIdClient());
+                    client.setAssujettiTVA(selected.isAssujettiTVA());
+                    client.setLibelle(selected.getLibelleClient());
+                    selected.setClient(client);
+                }
+
+            }
+            
+            
+            if (selected.getIdCategorieClientLivraison()!= null) {
+                CategorieClient categorieClient = new CategorieClient();
+                categorieClient.setId(selected.getIdCategorieClientLivraison());
+                categorieClient.setLibelle(selected.getLibelleCategorieClientLivraison());
+                selected.setCategorieClientLivraison(categorieClient);
+                if (selected.getIdClientLivraison() != null) {
+                    Client client = new Client();
+                    client.setId(selected.getIdClientLivraison());
+                    client.setAssujettiTVA(selected.isAssujettiTVA());
+                    client.setLibelle(selected.getLibelleClientLivraison());
+                    selected.setClientLivraison(client);
+                }
+
+            }      
+            
+            
+            if (selected.getIdCommercial()!= null) {
+                Commercial commercial = new Commercial();
+                commercial.setId(selected.getIdCommercial());
+                commercial.setNom(selected.getNomCommercial());
+                commercial.setPrenom(selected.getPrenomCommercial());
+                commercial.setTypeCommercial(0);
+                selected.setCommercial(commercial);
+            }
+            
+            
 
             //ancienMontantHT = selected.getMontantHT();
             for (LigneBonCommandeCommercial ligneBonCommandeCommercial : selected.getListeLigneBonCommandeCommercials()) {
@@ -372,7 +465,42 @@ public class BonCommandeCommercialController implements Serializable {
 
                 LigneBonCommandeCommercialTemps = new ArrayList<LigneBonCommandeCommercial>(selected.getListeLigneBonCommandeCommercials());
                 selected.setListeLigneBonCommandeCommercials(null);
+                
+                if (selected.getCategorieClient() != null) {
+                    if (selected.getClient() != null) {
 
+                        selected.setIdClient(selected.getClient().getId());
+                        selected.setAssujettiTVA(selected.getClient().isAssujettiTVA());
+                        selected.setLibelleClient(selected.getClient().getLibelle());
+
+                        selected.setIdCategorieClient(selected.getCategorieClient().getId());
+                        selected.setLibelleCategorieClient(selected.getCategorieClient().getLibelle());
+                    }
+                }
+
+                if (selected.getCategorieClientLivraison() != null) {
+                    if (selected.getClientLivraison() != null) {
+                        selected.setIdClientLivraison(selected.getClientLivraison().getId());
+                        selected.setAssujettiTVA(selected.getClientLivraison().isAssujettiTVA());
+                        selected.setLibelleClientLivraison(selected.getClientLivraison().getLibelle());
+
+                        selected.setIdCategorieClientLivraison(selected.getCategorieClientLivraison().getId());
+                        selected.setLibelleCategorieClientLivraison(selected.getCategorieClientLivraison().getLibelle());
+                    }
+                }
+                
+                
+                if(selected.getCommercial() != null){
+                
+                    selected.setNomCommercial(selected.getCommercial().getNom());
+                    selected.setPrenomCommercial(selected.getCommercial().getPrenom());
+                    selected.setIdCommercial(selected.getCommercial().getId());
+                    selected.setTypeCommercial(selected.getCommercial().getTypeCommercial());
+                
+                }
+                
+                
+                
                 getFacade().edit(selected);
 
                 //LigneBonCommandeCommercialTemps = selected.getListeLigneBonCommandeCommercials();
@@ -392,15 +520,15 @@ public class BonCommandeCommercialController implements Serializable {
                     }
 
                 }
-                sauvegardeNouvelleLigneBonCommande();
+                sauvegardeNouvelleLigneBonCommandeCommercial();
 
                 //errorMsg = getFacade().verifierUnique(selected.getLibellePrefixe().trim(), selected.getId());
                 //if (errorMsg == false) {
                 /* if (selected.getMontant().compareTo(BigDecimal.ZERO) == -1) {
-                    FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), " " + ResourceBundle.getBundle("/Bundle").getString("ValeurIncorrecte")));
-                    return null;
-                } else {*/
+                 FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), " " + ResourceBundle.getBundle("/Bundle").getString("ValeurIncorrecte")));
+                 return null;
+                 } else {*/
                 //selected.setIdEntreprise(idEntreprise);
                 return prepareList();
 
@@ -411,10 +539,10 @@ public class BonCommandeCommercialController implements Serializable {
 
             //}
             /* } else {
-                FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), selected.getNumero() + " " + ResourceBundle.getBundle("/Bundle").getString("CeChampExist")));
-                return null;
-            }*/
+             FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), selected.getNumero() + " " + ResourceBundle.getBundle("/Bundle").getString("CeChampExist")));
+             return null;
+             }*/
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": " + ResourceBundle.getBundle("/Bundle").getString("EchecOperation"), ""));
             System.out.println("Erreur- BonCommandeCommercialController - update: " + e.getMessage());
@@ -422,7 +550,7 @@ public class BonCommandeCommercialController implements Serializable {
         }
     }
 
-    private void sauvegardeNouvelleLigneBonCommande() {
+    private void sauvegardeNouvelleLigneBonCommandeCommercial() {
 
         int j = 0;
         //boolean trouve = false;
@@ -444,8 +572,8 @@ public class BonCommandeCommercialController implements Serializable {
             //if (temps == null || temps.isEmpty()) {
             performDestroy();
             /*} else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SuppressionNonAutorisé")));
-            }*/
+             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SuppressionNonAutorisé")));
+             }*/
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": " + ResourceBundle.getBundle("/Bundle").getString("SelectionnerObjet"), ""));
         }
@@ -466,6 +594,7 @@ public class BonCommandeCommercialController implements Serializable {
         if (selectedLigneBonCommandeCommercialSingle != null) {
             selected.getListeLigneBonCommandeCommercials().remove(selectedLigneBonCommandeCommercialSingle);
             recalculerTotal();
+
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": " + ResourceBundle.getBundle("/Bundle").getString("SelectionnerObjet"), ""));
         }
@@ -483,6 +612,7 @@ public class BonCommandeCommercialController implements Serializable {
                 selected.getListeLigneBonCommandeCommercials().get(index).setPrixUnitaireApresRemise(selectedLigneBonCommandeCommercial.getPrixUnitaireApresRemise());
                 selected.getListeLigneBonCommandeCommercials().get(index).setRemise(selectedLigneBonCommandeCommercial.getRemise());
                 selected.getListeLigneBonCommandeCommercials().get(index).setTvaArticle(new BigDecimal(selectedLigneBonCommandeCommercial.getTvaArticle() + ""));
+
                 selected.getListeLigneBonCommandeCommercials().get(index).setTotalHT(selectedLigneBonCommandeCommercial.getTotalHT());
                 selected.getListeLigneBonCommandeCommercials().get(index).setTotalTVA(selectedLigneBonCommandeCommercial.getTotalTVA());
                 selected.getListeLigneBonCommandeCommercials().get(index).setTotalTTC(selectedLigneBonCommandeCommercial.getTotalTTC());
@@ -495,6 +625,7 @@ public class BonCommandeCommercialController implements Serializable {
                 selectedLigneBonCommandeCommercial = new LigneBonCommandeCommercial();
                 categorie = new Categorie();
             }
+
         }
     }
 
@@ -513,15 +644,22 @@ public class BonCommandeCommercialController implements Serializable {
     }
 
     public void recalculerTotal() {
-        selected.setMontantHT(new BigDecimal(BigInteger.ZERO));
-        selected.setMontantTVA(new BigDecimal(BigInteger.ZERO));
-        selected.setMontantTTC(new BigDecimal(BigInteger.ZERO));
+
+        selected.setMontantHT(BigDecimal.ZERO);
+        selected.setMontantTVA(BigDecimal.ZERO);
+        selected.setMontantTTC(BigDecimal.ZERO);
         for (LigneBonCommandeCommercial ligneBonCommandeCommercial : selected.getListeLigneBonCommandeCommercials()) {
+            System.out.println("da" + selected.getMontantHT().add(ligneBonCommandeCommercial.getTotalHT()));
+
+            System.out.println("da" + selected.getMontantTVA().add(ligneBonCommandeCommercial.getTotalTVA()));
+
             selected.setMontantHT(selected.getMontantHT().add(ligneBonCommandeCommercial.getTotalHT()));
             selected.setMontantTVA(selected.getMontantTVA().add(ligneBonCommandeCommercial.getTotalTVA()));
             selected.setMontantTTC(selected.getMontantTTC().add(ligneBonCommandeCommercial.getTotalTTC()));
         }
-
+        selected.setTotalHT(selected.getMontantHT());
+        selected.setTotalTVA(selected.getMontantTVA());
+        selected.setTotalTTC(selected.getMontantTTC());
     }
 
     public void listnerPrixUnitaire() {
@@ -535,6 +673,7 @@ public class BonCommandeCommercialController implements Serializable {
             selectedLigneBonCommandeCommercial.setRemise(BigDecimal.ZERO);
             selectedLigneBonCommandeCommercial.setPrixUnitaireApresRemise(BigDecimal.ZERO);
             selectedLigneBonCommandeCommercial.setTotalHT(BigDecimal.ZERO);
+            selectedLigneBonCommandeCommercial.setTotalTVA(BigDecimal.ZERO);
             selectedLigneBonCommandeCommercial.setTotalTTC(BigDecimal.ZERO);
         }
     }
@@ -547,20 +686,20 @@ public class BonCommandeCommercialController implements Serializable {
             selectedLigneBonCommandeCommercial.setRemise(BigDecimal.ZERO);
             selectedLigneBonCommandeCommercial.setPrixUnitaireApresRemise(BigDecimal.ZERO);
             selectedLigneBonCommandeCommercial.setTotalHT(BigDecimal.ZERO);
+            selectedLigneBonCommandeCommercial.setTotalTVA(BigDecimal.ZERO);
             selectedLigneBonCommandeCommercial.setTotalTTC(BigDecimal.ZERO);
         } else {
             selectedLigneBonCommandeCommercial.setTotalHT(BigDecimal.ZERO);
+            selectedLigneBonCommandeCommercial.setTotalTVA(BigDecimal.ZERO);
             selectedLigneBonCommandeCommercial.setTotalTTC(BigDecimal.ZERO);
             selectedLigneBonCommandeCommercial.setQuantiteMax(selectedLigneBonCommandeCommercial.getQuantite());
             selectedLigneBonCommandeCommercial.setPrixUnitaireApresRemise(BigDecimal.ZERO);
             BigDecimal prixRevendeur = selectedLigneBonCommandeCommercial.getPrixUnitaireHT();
-
             if (selectedLigneBonCommandeCommercial.getRemise().compareTo(BigDecimal.ZERO) == 1) {
                 BigDecimal valRemise = FonctionsMathematiques.arrondiBigDecimal(prixRevendeur.multiply(selectedLigneBonCommandeCommercial.getRemise()), 3);
                 valRemise = FonctionsMathematiques.arrondiBigDecimal(valRemise.divide(new BigDecimal("100")), 3);
                 prixRevendeur = prixRevendeur.subtract(valRemise);
             }
-
             selectedLigneBonCommandeCommercial.setPrixUnitaireApresRemise(prixRevendeur);
 
             BigDecimal TotalHT = FonctionsMathematiques.arrondiBigDecimal((selectedLigneBonCommandeCommercial.getPrixUnitaireApresRemise()).multiply(selectedLigneBonCommandeCommercial.getQuantite()), 3);
@@ -573,45 +712,124 @@ public class BonCommandeCommercialController implements Serializable {
             } else {
                 selectedLigneBonCommandeCommercial.setTotalTVA(BigDecimal.ZERO);
                 selectedLigneBonCommandeCommercial.setTotalTTC(TotalHT);
+            }
+
+            /*            BigDecimal valTemp = FonctionsMathematiques.arrondiBigDecimal(selectedLigneBonCommandeCommercial.getMontantHT().multiply(selectedLigneBonCommandeCommercial.getTvaArticle()), 3);
+             selectedLigneBonCommandeCommercial.setMontantTVA(FonctionsMathematiques.arrondiBigDecimal(valTemp.divide(BigDecimal.valueOf(100)), 3));
+             selectedLigneBonCommandeCommercial.setMontantTTC(selectedLigneBonCommandeCommercial.getMontantHT().add(selectedLigneBonCommandeCommercial.getMontantTVA()));*/
+        }
+    }
+
+    public void generationSelectedPDF() throws IOException, DocumentException {
+
+        if (selectedSingle != null) {
+
+            ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+            String path = LireParametrage.returnValeurParametrage("urlDocumentNonPersistant") + "Facture_" + selectedSingle.getNumero() + ".pdf";
+            String image = LireParametrage.returnValeurParametrage("urlUmploadPhoto") + utilisateur.getEntreprise().getLogo();
+
+            if (utilisateur.getEntreprise().getLogo().contains("/resources/images/") == true) {
+
+                File fileImage = new File(image);
+                try {
+                    if (fileImage.exists() == false) {
+                        image = ec.getRealPath("resources/images") + "/company.png";
+                    }
+                } catch (Exception e) {
+                    image = ec.getRealPath("resources/images") + "/company.png";
+                }
+            }
+
+            // addHeaderInfo
+            String dateBonCommandeCommercial = TraitementDate.returnDate(selectedSingle.getDateCreation());
+            String numeroBonCommandeCommercial = selectedSingle.getNumero();
+
+            //addCompanyCustomerInfo
+            ArrayList<String> entrepriseInfos = new ArrayList();
+            entrepriseInfos.add(utilisateur.getEntreprise().getLibelle());
+            entrepriseInfos.add(utilisateur.getEntreprise().getLibelleGouvernorat() + ", " + utilisateur.getEntreprise().getLibelleDelegation());
+            entrepriseInfos.add(utilisateur.getEntreprise().getAdresse());
+            entrepriseInfos.add(utilisateur.getEntreprise().getTelephone());
+            entrepriseInfos.add(utilisateur.getEntreprise().getEmail());
+
+            Client client = ejbFacadeClient.find(selectedSingle.getIdClient());
+            ArrayList<String> clientInfos = new ArrayList();
+            clientInfos.add(client.getLibelle());
+            clientInfos.add(client.getLibelleGouvernorat() + ", " + client.getLibelleDelegation());
+            clientInfos.add(client.getAdresse());
+            clientInfos.add(client.getGsm());
+            clientInfos.add(client.getEmail());
+
+            //addInvoiceInfo
+            ArrayList<String> ligneBonCommandeCommercialEntete = new ArrayList();
+
+            ligneBonCommandeCommercialEntete.add("Reference");
+            ligneBonCommandeCommercialEntete.add("Produit");
+            ligneBonCommandeCommercialEntete.add("TVA");
+            ligneBonCommandeCommercialEntete.add("Quantite");
+            ligneBonCommandeCommercialEntete.add("Prix UT");
+            ligneBonCommandeCommercialEntete.add("Total HT");
+
+            ArrayList<ArrayList<String>> ligneFactures = new ArrayList<ArrayList<String>>();
+
+            ArrayList<String> ligneBonCommandeCommercialInfo;
+
+            for (int i = 0; i < selectedSingle.getListeLigneBonCommandeCommercials().size(); i++) {
+
+                ligneBonCommandeCommercialInfo = new ArrayList();
+                //0:left 1: linea left 2:center 3:linea right 4:right
+                ligneBonCommandeCommercialInfo.add("1:" + selectedSingle.getListeLigneBonCommandeCommercials().get(i).getCodeArticle());
+                ligneBonCommandeCommercialInfo.add("1:" + selectedSingle.getListeLigneBonCommandeCommercials().get(i).getLibelleArticle());
+                ligneBonCommandeCommercialInfo.add("3:" + selectedSingle.getListeLigneBonCommandeCommercials().get(i).getTvaArticle() + "%");
+                ligneBonCommandeCommercialInfo.add("3:" + selectedSingle.getListeLigneBonCommandeCommercials().get(i).getQuantite());
+                ligneBonCommandeCommercialInfo.add("3:" + selectedSingle.getListeLigneBonCommandeCommercials().get(i).getPrixUnitaireApresRemise());
+                ligneBonCommandeCommercialInfo.add("3:" + selectedSingle.getListeLigneBonCommandeCommercials().get(i).getTotalHT());
+                ligneFactures.add(i, ligneBonCommandeCommercialInfo);
+            }
+
+            //addInvoiceSummarize
+            ArrayList<String> bonCommandeCommercialSummarizeInfos = new ArrayList();
+
+            bonCommandeCommercialSummarizeInfos.add("Total HT" + " : " + selectedSingle.getTotalHT());
+            bonCommandeCommercialSummarizeInfos.add("Total TVA" + " : " + selectedSingle.getTotalTVA());
+            bonCommandeCommercialSummarizeInfos.add("Total Taxe" + " : " + selectedSingle.getTotalTaxe());
+            bonCommandeCommercialSummarizeInfos.add("Total TTC" + " : " + selectedSingle.getTotalTTC());
+
+            GenerationPdf.generationPdf(image, path, "BonCommandeCommercial", numeroBonCommandeCommercial, dateBonCommandeCommercial, entrepriseInfos, clientInfos, ligneBonCommandeCommercialEntete, ligneFactures, bonCommandeCommercialSummarizeInfos);
+
+            File file = new File(path);
+            HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+            response.setHeader("Content-Disposition", "attachment;filename=" + "BonCommandeCommercial_" + numeroBonCommandeCommercial + ".pdf");
+            response.setContentLength((int) file.length());
+            ServletOutputStream out = null;
+            try {
+                FileInputStream input = new FileInputStream(file);
+                byte[] buffer = new byte[1024];
+                out = response.getOutputStream();
+                int i = 0;
+                while ((i = input.read(buffer)) != -1) {
+                    out.write(buffer);
+                    out.flush();
+                }
+                FacesContext.getCurrentInstance().responseComplete();
+                FacesContext.getCurrentInstance().renderResponse();
+            } catch (IOException err) {
+                System.out.println("/Generate PDF Error : -> " + err.getMessage());
+            } finally {
+                selectedSingle = null;
 
             }
 
-//            BigDecimal valTemp = FonctionsMathematiques.arrondiBigDecimal(selectedLigneBonCommandeCommercial.getMontantHT().multiply(selectedLigneBonCommandeCommercial.getTvaArticle()), 3);
-//            selectedLigneBonCommandeCommercial.setMontantTVA(FonctionsMathematiques.arrondiBigDecimal(valTemp.divide(BigDecimal.valueOf(100)), 3));
-//            selectedLigneBonCommandeCommercial.setMontantTTC(selectedLigneBonCommandeCommercial.getMontantHT().add(selectedLigneBonCommandeCommercial.getMontantTVA()));
-        }
-    }
-
-    public BigDecimal getTotaleHT() {
-        BigDecimal totalHT = new BigDecimal(0);
-        if (selectedLigneBonCommandeCommercial.getLibelleArticle() == null) {
-            return new BigDecimal(0);
-        }
-        BigDecimal prixRevendeur = selectedLigneBonCommandeCommercial.getPrixUnitaireHT();
-        totalHT = prixRevendeur.multiply(selectedLigneBonCommandeCommercial.getQuantite());
-        if (totalHT != new BigDecimal(0)) {
-            return FonctionsMathematiques.arrondiBigDecimal(totalHT, 3);
         } else {
-            return FonctionsMathematiques.arrondiBigDecimal(new BigDecimal(0), 3);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": " + ResourceBundle.getBundle("/Bundle").getString("SelectionnerObjet"), ""));
         }
 
     }
 
-    public BigDecimal getTotaleTTC() {
-        BigDecimal totalTTC = new BigDecimal(0);
-        if (selectedLigneBonCommandeCommercial.getLibelleArticle() == null) {
-            return new BigDecimal(0);
-        }
-        BigDecimal prixRevendeur = selectedLigneBonCommandeCommercial.getPrixUnitaireHT();
+    public void changedArticle() {
+        listArticles = new ArrayList<>();
+        listArticles = categorie.getArticles();
 
-        BigDecimal totaleHT = (prixRevendeur).multiply(selectedLigneBonCommandeCommercial.getQuantite());
-        totalTTC = totaleHT.add(totaleHT.multiply(selectedLigneBonCommandeCommercial.getTvaArticle().divide(BigDecimal.valueOf(100))));
-
-        if (totalTTC != new BigDecimal(0)) {
-            return FonctionsMathematiques.arrondiBigDecimal(totalTTC, 3);
-        } else {
-            return FonctionsMathematiques.arrondiBigDecimal(new BigDecimal(0), 3);
-        }
     }
 
     public void rechercher() {
@@ -623,7 +841,8 @@ public class BonCommandeCommercialController implements Serializable {
                 String debut = TraitementDate.returnDate(dateDebut) + " 00:00:00";
                 String fin = TraitementDate.returnDate(dateFin) + " 23:59:59";
 
-                //items = getFacade().searchAllNative(debut, fin, etatBonCommandeCommercial, origineBonCommandeCommercial, client != null ? client.getId() : null, retour);
+                items = getFacade().searchAllNative(debut, fin, etatBonCommandeCommercial, client != null ? client.getId() : null);
+
             } else {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("ErreuPeriode")));
             }
@@ -631,13 +850,6 @@ public class BonCommandeCommercialController implements Serializable {
         } catch (Exception e) {
 
         }
-    }
-
-
-    public void changedArticle() {
-        listArticles = new ArrayList<>();
-        listArticles = categorie.getArticles();
-
     }
 
     public SelectItem[] getItemsAvailableSelectOneArticle() {
@@ -735,12 +947,20 @@ public class BonCommandeCommercialController implements Serializable {
         this.annulation = annulation;
     }
 
-    public Integer getEtatBonCommandeCommercial() {
-        return etatBonCommandeCommercial;
+    public List<ParametrageTaxe> getListParametrageTaxeEntreprise() {
+        return listParametrageTaxeEntreprise;
     }
 
-    public void setEtatBonCommandeCommercial(Integer etatBonCommandeCommercial) {
-        this.etatBonCommandeCommercial = etatBonCommandeCommercial;
+    public void setListParametrageTaxeEntreprise(List<ParametrageTaxe> listParametrageTaxeEntreprise) {
+        this.listParametrageTaxeEntreprise = listParametrageTaxeEntreprise;
+    }
+
+    public List<ParametrageTaxe> getSelectedListParametrageTaxe() {
+        return selectedListParametrageTaxe;
+    }
+
+    public void setSelectedListParametrageTaxe(List<ParametrageTaxe> selectedListParametrageTaxe) {
+        this.selectedListParametrageTaxe = selectedListParametrageTaxe;
     }
 
     public Date getDateDebut() {
@@ -759,12 +979,12 @@ public class BonCommandeCommercialController implements Serializable {
         this.dateFin = dateFin;
     }
 
-    public Integer getOrigineBonCommandeCommercial() {
-        return origineBonCommandeCommercial;
+    public Integer getEtatBonCommandeCommercial() {
+        return etatBonCommandeCommercial;
     }
 
-    public void setOrigineBonCommandeCommercial(Integer origineBonCommandeCommercial) {
-        this.origineBonCommandeCommercial = origineBonCommandeCommercial;
+    public void setEtatBonCommandeCommercial(Integer etatBonCommandeCommercial) {
+        this.etatBonCommandeCommercial = etatBonCommandeCommercial;
     }
 
     public Client getClient() {
@@ -774,22 +994,49 @@ public class BonCommandeCommercialController implements Serializable {
     public void setClient(Client client) {
         this.client = client;
     }
+    
+    public SelectItem[] parentFils() {
+        // TODO check poste for son
+        if (selected.getEtatCommande().getRang() == 0) {
 
-    public boolean isRetour() {
-        return retour;
-    }
+            // i will not use request => i will use the parent son instead
+            
+            List<EtatCommande> etatCommandes = new ArrayList<EtatCommande>();
+            etatCommandes.addAll(selected.getEtatCommande().getListEtatCommandesFils());
+            etatCommandes.add(selected.getEtatCommande());
+            return JsfUtil.getSelectItems(etatCommandes, true);
+            
+            
+            
+            //return JsfUtil.getSelectItems(ejbFacadeEtatCommande.findAllNative(" where ( o.ECm_Rang = 1 OR o.ECm_Rang = 0 )" ), true);
 
-    public void setRetour(boolean retour) {
-        this.retour = retour;
-    }
+        } else if (selected.getEtatCommande().isDernierRang() == true) {
+            // int rangFils = selected.getEtatCommande().getRang() - 1;
+            List<EtatCommande> etatCommandes = new ArrayList<EtatCommande>();
+            
+            
+            etatCommandes.add(selected.getEtatCommande());
+            etatCommandes.add(selected.getEtatCommande().getParent());
+            
+            //etatCommandes = ejbFacadeEtatCommande.findAllNative(" where o.ECm_Rang = " + rangFils + " OR o.ECm_Id = "+selected.getEtatCommande().getId());
+            etatCommandes.add(selected.getEtatCommande());
+            return JsfUtil.getSelectItems(etatCommandes, true);
 
-    public SelectItem[] getItemsAvailableSelectOneClient() {
-        listClient = new ArrayList<>();
-        if (selected.getCategorieClient() != null) {
-            listClient = ejbFacadeClient.findAllNative(" where o.CCl_Id = " + selected.getCategorieClient().getId());
+        } else {
+            //int rangParent = selected.getEtatCommande().getRang() + 1;
+            //int rangFils = selected.getEtatCommande().getRang() - 1;
+            List<EtatCommande> etatCommandes = new ArrayList<EtatCommande>();
+            
+            etatCommandes.add(selected.getEtatCommande());// RETURN TO PARENT
+            etatCommandes.add(selected.getEtatCommande().getParent());// STAY
+            etatCommandes.addAll(selected.getEtatCommande().getListEtatCommandesFils()); //GO TO SUN
+            
+            //etatCommandes = ejbFacadeEtatCommande.findAllNative(" where  ( o.ECm_Rang = " + rangParent + " OR o.ECm_Rang = " + rangFils + " OR o.ECm_Id = "+selected.getEtatCommande().getId()+" )");
+           // etatCommandes.add(selected.getEtatCommande());
+
+            return JsfUtil.getSelectItems(etatCommandes, true);
+
         }
-        return JsfUtil.getSelectItems(listClient, true);
-
     }
 
     public SelectItem[] getItemsAvailableSelectOneClientLivraison() {
@@ -798,6 +1045,15 @@ public class BonCommandeCommercialController implements Serializable {
             listClientLivraison = ejbFacadeClient.findAllNative(" where o.CCl_Id = " + selected.getCategorieClientLivraison().getId());
         }
         return JsfUtil.getSelectItems(listClientLivraison, true);
+
+    }
+
+    public SelectItem[] getItemsAvailableSelectOneClient() {
+        listClient = new ArrayList<>();
+        if (selected.getCategorieClient() != null) {
+            listClient = ejbFacadeClient.findAllNative(" where o.CCl_Id = " + selected.getCategorieClient().getId());
+        }
+        return JsfUtil.getSelectItems(listClient, true);
 
     }
 

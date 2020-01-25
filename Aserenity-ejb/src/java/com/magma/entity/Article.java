@@ -80,6 +80,9 @@ public class Article implements Serializable {
     @Column(name = "Art_Photo5")
     private String photo5;
     
+    @Column(name = "Art_Catalogue")
+    private boolean catalogue;
+    
     @Column(name = "Tab_dateSynch")
     private Long dateSynch;
     
@@ -351,7 +354,16 @@ public class Article implements Serializable {
     public void setDateSynch(Long dateSynch) {
         this.dateSynch = dateSynch;
     }
-            @PreUpdate
+
+    public boolean isCatalogue() {
+        return catalogue;
+    }
+
+    public void setCatalogue(boolean catalogue) {
+        this.catalogue = catalogue;
+    }
+    
+    @PreUpdate
     void preupdate() {
         this.dateSynch = System.currentTimeMillis();
 

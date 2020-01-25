@@ -102,5 +102,11 @@ public class UtilisateurFacade extends AbstractFacade<Utilisateur> implements Ut
         }
 
     }
+    
+    @Override
+    public List<Utilisateur> findAllNative(String clause) {
+        Query q = (Query) getEntityManager().createNativeQuery("Select * from T_Utilisateur as o " + clause + " ", Utilisateur.class).setHint(QueryHints.REFRESH, HintValues.TRUE);
+        return q.getResultList();
+    }
 
 }

@@ -31,7 +31,7 @@
                                         <h2 style="color: #607D8B">#{bundle.GEtatCommande}</h2>
                                         <ul class="nav navbar-right panel_toolbox">                          
                                             <li>
-                                                <p:commandButton rendered="#{user.profile.toPrivilege('etatCommande').creation and etatCommandeController.items.size() eq 0}" title="Nouveau" action="#{etatCommandeController.prepareCreate()}" id="addButton"  type="push" ajax="false"  icon="fa fa-plus" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('etatCommande').creation}" title="Nouveau" action="#{etatCommandeController.prepareCreate()}" id="addButton"  type="push" ajax="false"  icon="fa fa-plus" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
                                             </li>
                                             <li>
                                                 <p:commandButton rendered="#{user.profile.toPrivilege('etatCommande').supression}" title="#{bundle.Supprimer}"  id="deleteButton" oncomplete="PF('confirmation').show()" icon="fa fa-fw fa-trash-o" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>

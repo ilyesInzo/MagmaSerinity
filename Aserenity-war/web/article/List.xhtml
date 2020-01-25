@@ -76,7 +76,10 @@
 
                                                     <h:outputText value="#{item.categorieSuiteString}" style="margin-top: 10px;"  />
                                                     <h:panelGrid  style="width: 100%" columns="2">
-
+                                                        <h:panelGrid style="float: left; width: 50%" columns="1">
+                                                            <p:graphicImage url="../resources/images/etoileColor.png"   style="width: 35px; height: 35px" rendered="#{item.catalogue == true}"/>
+                                                            <p:graphicImage url="../resources/images/etoilegris.png"   style="width: 35px; height: 35px" rendered="#{item.catalogue == false}"/>
+                                                        </h:panelGrid>
                                                         <h:panelGrid style="float: right; width: 50%" columns="2">
                                                             <p:commandButton id="deleteButton" rendered="#{user.profile.toPrivilege('article').supression}" oncomplete="PF('confirmation').show()" icon="ui-icon-trash" style="float: right; width: 35px; height: 35px; margin: 2px;" styleClass="btn btn-primary" >
                                                                 <f:setPropertyActionListener value="#{item}" target="#{articleController.selectedSingle}" />

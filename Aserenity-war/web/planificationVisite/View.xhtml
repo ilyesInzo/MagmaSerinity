@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle2.ViewPlanificationVisiteTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputText value="#{bundle2.ViewPlanificationVisiteLabel_id}"/>
+                    <h:outputText value="#{planificationVisiteController.selected.id}" title="#{bundle2.ViewPlanificationVisiteTitle_id}"/>
+                    <h:outputText value="#{bundle2.ViewPlanificationVisiteLabel_etat}"/>
+                    <h:outputText value="#{planificationVisiteController.selected.etat}" title="#{bundle2.ViewPlanificationVisiteTitle_etat}"/>
+                    <h:outputText value="#{bundle2.ViewPlanificationVisiteLabel_dateDebut}"/>
+                    <h:outputText value="#{planificationVisiteController.selected.dateDebut}" title="#{bundle2.ViewPlanificationVisiteTitle_dateDebut}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle2.ViewPlanificationVisiteLabel_dateFin}"/>
+                    <h:outputText value="#{planificationVisiteController.selected.dateFin}" title="#{bundle2.ViewPlanificationVisiteTitle_dateFin}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle2.ViewPlanificationVisiteLabel_idClient}"/>
+                    <h:outputText value="#{planificationVisiteController.selected.idClient}" title="#{bundle2.ViewPlanificationVisiteTitle_idClient}"/>
+                    <h:outputText value="#{bundle2.ViewPlanificationVisiteLabel_codeClient}"/>
+                    <h:outputText value="#{planificationVisiteController.selected.codeClient}" title="#{bundle2.ViewPlanificationVisiteTitle_codeClient}"/>
+                    <h:outputText value="#{bundle2.ViewPlanificationVisiteLabel_libelleClient}"/>
+                    <h:outputText value="#{planificationVisiteController.selected.libelleClient}" title="#{bundle2.ViewPlanificationVisiteTitle_libelleClient}"/>
+                    <h:outputText value="#{bundle2.ViewPlanificationVisiteLabel_dateSynch}"/>
+                    <h:outputText value="#{planificationVisiteController.selected.dateSynch}" title="#{bundle2.ViewPlanificationVisiteTitle_dateSynch}"/>
+                    <h:outputText value="#{bundle2.ViewPlanificationVisiteLabel_dateCreation}"/>
+                    <h:outputText value="#{planificationVisiteController.selected.dateCreation}" title="#{bundle2.ViewPlanificationVisiteTitle_dateCreation}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle2.ViewPlanificationVisiteLabel_idCategorieClient}"/>
+                    <h:outputText value="#{planificationVisiteController.selected.idCategorieClient}" title="#{bundle2.ViewPlanificationVisiteTitle_idCategorieClient}"/>
+                    <h:outputText value="#{bundle2.ViewPlanificationVisiteLabel_libelleCategorieClient}"/>
+                    <h:outputText value="#{planificationVisiteController.selected.libelleCategorieClient}" title="#{bundle2.ViewPlanificationVisiteTitle_libelleCategorieClient}"/>
+                    <h:outputText value="#{bundle2.ViewPlanificationVisiteLabel_client}"/>
+                    <h:outputText value="#{planificationVisiteController.selected.client}" title="#{bundle2.ViewPlanificationVisiteTitle_client}"/>
+                    <h:outputText value="#{bundle2.ViewPlanificationVisiteLabel_categorieClient}"/>
+                    <h:outputText value="#{planificationVisiteController.selected.categorieClient}" title="#{bundle2.ViewPlanificationVisiteTitle_categorieClient}"/>
+                    <h:outputText value="#{bundle2.ViewPlanificationVisiteLabel_dateCreationStringFr}"/>
+                    <h:outputText value="#{planificationVisiteController.selected.dateCreationStringFr}" title="#{bundle2.ViewPlanificationVisiteTitle_dateCreationStringFr}"/>
+                    <h:outputText value="#{bundle2.ViewPlanificationVisiteLabel_dateCreationStringEn}"/>
+                    <h:outputText value="#{planificationVisiteController.selected.dateCreationStringEn}" title="#{bundle2.ViewPlanificationVisiteTitle_dateCreationStringEn}"/>
+                    <h:outputText value="#{bundle2.ViewPlanificationVisiteLabel_dateSyncStringFr}"/>
+                    <h:outputText value="#{planificationVisiteController.selected.dateSyncStringFr}" title="#{bundle2.ViewPlanificationVisiteTitle_dateSyncStringFr}"/>
+                    <h:outputText value="#{bundle2.ViewPlanificationVisiteLabel_dateSyncStringEn}"/>
+                    <h:outputText value="#{planificationVisiteController.selected.dateSyncStringEn}" title="#{bundle2.ViewPlanificationVisiteTitle_dateSyncStringEn}"/>
+                    <h:outputText value="#{bundle2.ViewPlanificationVisiteLabel_description}"/>
+                    <h:outputText value="#{planificationVisiteController.selected.description}" title="#{bundle2.ViewPlanificationVisiteTitle_description}"/>
+                    <h:outputText value="#{bundle2.ViewPlanificationVisiteLabel_descriptionString}"/>
+                    <h:outputText value="#{planificationVisiteController.selected.descriptionString}" title="#{bundle2.ViewPlanificationVisiteTitle_descriptionString}"/>
+                    <h:outputText value="#{bundle2.ViewPlanificationVisiteLabel_utilisateur}"/>
+                    <h:outputText value="#{planificationVisiteController.selected.utilisateur}" title="#{bundle2.ViewPlanificationVisiteTitle_utilisateur}"/>
+                    <h:outputText value="#{bundle2.ViewPlanificationVisiteLabel_idUtilisateur}"/>
+                    <h:outputText value="#{planificationVisiteController.selected.idUtilisateur}" title="#{bundle2.ViewPlanificationVisiteTitle_idUtilisateur}"/>
+                    <h:outputText value="#{bundle2.ViewPlanificationVisiteLabel_codeUtilisateur}"/>
+                    <h:outputText value="#{planificationVisiteController.selected.codeUtilisateur}" title="#{bundle2.ViewPlanificationVisiteTitle_codeUtilisateur}"/>
+                    <h:outputText value="#{bundle2.ViewPlanificationVisiteLabel_nom}"/>
+                    <h:outputText value="#{planificationVisiteController.selected.nom}" title="#{bundle2.ViewPlanificationVisiteTitle_nom}"/>
+                    <h:outputText value="#{bundle2.ViewPlanificationVisiteLabel_prenom}"/>
+                    <h:outputText value="#{planificationVisiteController.selected.prenom}" title="#{bundle2.ViewPlanificationVisiteTitle_prenom}"/>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{planificationVisiteController.destroyAndView}" value="#{bundle2.ViewPlanificationVisiteDestroyLink}"/>
+                <br />
+                <br />
+                <h:link outcome="Edit" value="#{bundle2.ViewPlanificationVisiteEditLink}"/>
+                <br />
+                <h:commandLink action="#{planificationVisiteController.prepareCreate}" value="#{bundle2.ViewPlanificationVisiteCreateLink}" />
+                <br />
+                <h:commandLink action="#{planificationVisiteController.prepareList}" value="#{bundle2.ViewPlanificationVisiteShowAllLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle2.ViewPlanificationVisiteIndexLink}"/>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

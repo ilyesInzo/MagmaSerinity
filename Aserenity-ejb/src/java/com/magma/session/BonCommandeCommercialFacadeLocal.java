@@ -27,11 +27,16 @@ public interface BonCommandeCommercialFacadeLocal {
     List<BonCommandeCommercial> findAll();
 
     List<BonCommandeCommercial> findRange(int[] range);
+
+    int count();
     
     List<BonCommandeCommercial> findAllNative(String clause);
     
     List<BonCommandeCommercial> findAll(String clause);
-
-    int count();
     
+    boolean verifierUniqueNumero(String numero);
+    
+    
+    List<BonCommandeCommercial> searchAllNative(String dateDebut, String dateFin, Integer etatFacture, Long idClient);
+
 }

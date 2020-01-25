@@ -166,6 +166,12 @@ public class Utilisateur implements Serializable {
     @Transient
     private String visibiliteSousMProduit;
     
+            
+    @Transient
+    private String visibiliteMCommercial;
+    @Transient
+    private String visibiliteSousMCommercial;    
+            
     @Transient
     private String visibiliteMParametrage;
     @Transient
@@ -673,6 +679,22 @@ public class Utilisateur implements Serializable {
 
     public void setVisibiliteMCommande(String visibiliteMCommande) {
         this.visibiliteMCommande = visibiliteMCommande;
+    }
+
+    public String getVisibiliteMCommercial() {
+        return visibiliteMCommercial;
+    }
+
+    public void setVisibiliteMCommercial(String visibiliteMCommercial) {
+        this.visibiliteMCommercial = visibiliteMCommercial;
+    }
+
+    public String getVisibiliteSousMCommercial() {
+        return visibiliteSousMCommercial;
+    }
+
+    public void setVisibiliteSousMCommercial(String visibiliteSousMCommercial) {
+        this.visibiliteSousMCommercial = visibiliteSousMCommercial;
     }
     
     

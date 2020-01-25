@@ -273,9 +273,9 @@ public class ProfileController implements Serializable {
         listPrivileges.add(privileges);*/
         privileges = new Privileges("GCategorieClient","categorieClient", false, false, false, false, false, 123400700, 620030, "MClient", 62, false, false, false, true);
         listPrivileges.add(privileges);
-        /* privileges = new Privileges("GClassificationClient", false, false, false, false, false, 123400000, 620040, "MClient", 62, false, false, false, true);
+        privileges = new Privileges("GClassificationClient","classificationClient", false, false, false, false, false, 123400700, 620040, "MClient", 62, false, false, false, true);
         listPrivileges.add(privileges);
-        privileges = new Privileges("GLigneLivraison", false, false, false, false, false, 123400000, 620050, "MClient", 62, false, false, false, true);
+        /*privileges = new Privileges("GLigneLivraison", false, false, false, false, false, 123400000, 620050, "MClient", 62, false, false, false, true);
         listPrivileges.add(privileges);
         privileges = new Privileges("GGroupeClient", false, false, false, false, false, 123400000, 620060, "MClient", 62, false, false, false, true);
         listPrivileges.add(privileges);
@@ -294,6 +294,15 @@ public class ProfileController implements Serializable {
         privileges = new Privileges("GConsommateurFinal", false, false, false, false, false, 123400000, 620130, "MClient", 62, false, false, false, true);
         listPrivileges.add(privileges);*/
 
+        
+        //MCommerciale
+        
+        privileges = new Privileges("GCommercial","commercial", false, false, false, false, false, 123400700, 60120, "MCommercial", 6, false, false, false, true);
+        listPrivileges.add(privileges);
+        privileges = new Privileges("GPlanificationVisite","planificationVisite", false, false, false, false, false, 123400000, 60130, "MCommercial", 6, false, false, false, true);
+        listPrivileges.add(privileges);
+        
+        
         //Parametrage
         privileges = new Privileges("GUtilisateur","utilisateur", false, false, false, false, false, 123456700, 900010, "MParametrage", 90, false, false, false, true);
         listPrivileges.add(privileges);

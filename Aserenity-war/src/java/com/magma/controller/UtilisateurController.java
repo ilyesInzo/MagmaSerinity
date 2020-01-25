@@ -854,6 +854,10 @@ public class UtilisateurController implements Serializable {
         listePostes = new ArrayList<>();
         listePostes = selected.getDepartement().getPostes();
     }
+    
+    public SelectItem[] getItemsAvailableSelectOneCommercial() {
+        return JsfUtil.getSelectItems(getFacade().findAllNative(" where o.Usr_Id not in (select e.Com_Id from T_Commercial as e) and o.Usr_EstEmploye = 1 "), true);
+    }
 
     public SelectItem[] getItemsAvailableSelectOnePoste() {
         if (listePostes == null) {

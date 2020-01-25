@@ -74,10 +74,10 @@ public class EtatCommande implements Serializable {
 
     @Column(name = "ECm_IdPremierParent")
     private Long idPremierParent;
-/*
+
     @OneToMany(mappedBy = "etatCommande", fetch = FetchType.EAGER)
     private List<BonCommandeCommercial> listBonCommandeCommercial;
-*/
+
     @ManyToOne
     @JoinColumn(name = "ECm_IdParent")
     private EtatCommande parent;
@@ -310,14 +310,22 @@ public class EtatCommande implements Serializable {
             return libelle;
         }
     }
-/*
+    
+    public String getCategorieParentSuiteString() {
+        if (getParent() != null) {
+            return getParent().getCategorieParentSuiteString() + " > " +libelle;
+        } else {
+            return libelle;
+        }
+    }
+
     public List<BonCommandeCommercial> getListBonCommandeCommercial() {
         return listBonCommandeCommercial;
     }
 
     public void setListBonCommandeCommercial(List<BonCommandeCommercial> listBonCommandeCommercial) {
         this.listBonCommandeCommercial = listBonCommandeCommercial;
-    }*/
+    }
 
     public String getCouleur() {
         return couleur;
@@ -465,7 +473,7 @@ public class EtatCommande implements Serializable {
 
     @Override
     public String toString() {
-        return getLibelleSuiteParentString();
+        return libelle;
     }
 
 }

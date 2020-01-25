@@ -18,7 +18,7 @@ import javax.faces.context.FacesContext;
  */
 public class MenuTemplate {
 
-private static List<String> ListFonctionalite = new ArrayList<String>(Arrays.asList(
+    private static List<String> ListFonctionalite = new ArrayList<String>(Arrays.asList(
             "GCommande",
             "GEtatCommande",
             "GDevis",
@@ -52,8 +52,8 @@ private static List<String> ListFonctionalite = new ArrayList<String>(Arrays.asL
             "GGouvernorat",
             "GDelegation",
             "GBanque",
-            "GTicket"
-
+            "GTicket",
+            "GClassificationClient"
     ));
 
     private static List<String> ListFonctionaliteModule = new ArrayList<String>(Arrays.asList(
@@ -68,19 +68,19 @@ private static List<String> ListFonctionalite = new ArrayList<String>(Arrays.asL
         FacesContext context = FacesContext.getCurrentInstance();
         //String Module1 = "";
         /*   for (String privilege : ListFonctionalite) {
-            if (privilege.equals(fonctionnalite)) {
-                context.getExternalContext().getSessionMap().put(privilege, "active-menuitem");
-            } else {
-                context.getExternalContext().getSessionMap().put(privilege, "");
-            }
+         if (privilege.equals(fonctionnalite)) {
+         context.getExternalContext().getSessionMap().put(privilege, "active-menuitem");
+         } else {
+         context.getExternalContext().getSessionMap().put(privilege, "");
+         }
 
-        }
+         }
 
-        for (String module : ListFonctionaliteModule) {
+         for (String module : ListFonctionaliteModule) {
 
-            context.getExternalContext().getSessionMap().put(module, "");
-        }
-        context.getExternalContext().getSessionMap().put(fonctionnaliteModule, "display: block");*/
+         context.getExternalContext().getSessionMap().put(module, "");
+         }
+         context.getExternalContext().getSessionMap().put(fonctionnaliteModule, "display: block");*/
 
         // i will retrieve the old selected privilege , model and sous module
         MenuItemProperties s = (MenuItemProperties) context.getExternalContext().getSessionMap().get("OldMenuItemProperties");
@@ -126,78 +126,78 @@ private static List<String> ListFonctionalite = new ArrayList<String>(Arrays.asL
             //Vissibilité pour les fonctionnalitées
             if (privilege.isLecture() == true) {
                 /* if (privilege.getOrder() == 900050) {
-                    if (utilisateur.getEntrepriseEnCours().isMultiDomaine()) {
-                        context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "");
-                    } else {
-                        context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "display: none;");
-                    }
-                } else if (privilege.getOrder() == 910040) {
-                    if (utilisateur.getEntrepriseEnCours().isSynchronisationMFG()) {
-                        context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "");
-                    } else {
-                        context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "display: none;");
-                    }
-                } else if (privilege.getOrder() == 910070) {
-                    if (utilisateur.getEntrepriseEnCours().isModuleProduction()) {
-                        context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "");
-                    } else {
-                        context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "display: none;");
-                    }
-                } else if (privilege.getOrder() == 910080) {
-                    if (utilisateur.getEntrepriseEnCours().isModuleProduction()) {
-                        context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "");
-                    } else {
-                        context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "display: none;");
-                    }
-                } else if (privilege.getOrder() == 910030) {
-                    if (utilisateur.getEntrepriseEnCours().isModuleVente()) {
-                        context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "");
-                    } else {
-                        context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "display: none;");
-                    }
-                } else if (privilege.getOrder() == 600080) {
-                    if (utilisateur.getEntrepriseEnCours().isModuleProduction()) {
-                        context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "");
-                    } else {
-                        context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "display: none;");
-                    }
-                } else if (privilege.getOrder() == 600090) {
-                    if (utilisateur.getEntrepriseEnCours().isModuleProduction()) {
-                        context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "");
-                    } else {
-                        context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "display: none;");
-                    }
-                } else if (privilege.getOrder() == 600100) {
-                    if (utilisateur.getEntrepriseEnCours().isModuleProduction()) {
-                        context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "");
-                    } else {
-                        context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "display: none;");
-                    }
-                } else if (privilege.getOrder() == 600110) {
-                    if (utilisateur.getEntrepriseEnCours().isModuleProduction()) {
-                        context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "");
-                    } else {
-                        context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "display: none;");
-                    }
-                } else if (privilege.getOrder() == 600120) {
-                    if (utilisateur.getEntrepriseEnCours().isModuleProduction()) {
-                        context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "");
-                    } else {
-                        context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "display: none;");
-                    }
-                } else if (privilege.getOrder() == 620130) {
-                    if (utilisateur.getEntrepriseEnCours().isGestionConsomateur()) {
-                        context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "");
-                    } else {
-                        context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "display: none;");
-                    }
-                } else if (privilege.getOrder() == 50040) {
-                    if (utilisateur.getEntrepriseEnCours().isGestionConsomateur()) {
-                        context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "");
-                    } else {
-                        context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "display: none;");
-                    }
-                } else {*/
+                 if (utilisateur.getEntrepriseEnCours().isMultiDomaine()) {
+                 context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "");
+                 } else {
+                 context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "display: none;");
+                 }
+                 } else if (privilege.getOrder() == 910040) {
+                 if (utilisateur.getEntrepriseEnCours().isSynchronisationMFG()) {
+                 context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "");
+                 } else {
+                 context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "display: none;");
+                 }
+                 } else if (privilege.getOrder() == 910070) {
+                 if (utilisateur.getEntrepriseEnCours().isModuleProduction()) {
+                 context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "");
+                 } else {
+                 context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "display: none;");
+                 }
+                 } else if (privilege.getOrder() == 910080) {
+                 if (utilisateur.getEntrepriseEnCours().isModuleProduction()) {
+                 context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "");
+                 } else {
+                 context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "display: none;");
+                 }
+                 } else if (privilege.getOrder() == 910030) {
+                 if (utilisateur.getEntrepriseEnCours().isModuleVente()) {
+                 context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "");
+                 } else {
+                 context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "display: none;");
+                 }
+                 } else if (privilege.getOrder() == 600080) {
+                 if (utilisateur.getEntrepriseEnCours().isModuleProduction()) {
+                 context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "");
+                 } else {
+                 context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "display: none;");
+                 }
+                 } else if (privilege.getOrder() == 600090) {
+                 if (utilisateur.getEntrepriseEnCours().isModuleProduction()) {
+                 context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "");
+                 } else {
+                 context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "display: none;");
+                 }
+                 } else if (privilege.getOrder() == 600100) {
+                 if (utilisateur.getEntrepriseEnCours().isModuleProduction()) {
+                 context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "");
+                 } else {
+                 context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "display: none;");
+                 }
+                 } else if (privilege.getOrder() == 600110) {
+                 if (utilisateur.getEntrepriseEnCours().isModuleProduction()) {
+                 context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "");
+                 } else {
+                 context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "display: none;");
+                 }
+                 } else if (privilege.getOrder() == 600120) {
+                 if (utilisateur.getEntrepriseEnCours().isModuleProduction()) {
+                 context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "");
+                 } else {
+                 context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "display: none;");
+                 }
+                 } else if (privilege.getOrder() == 620130) {
+                 if (utilisateur.getEntrepriseEnCours().isGestionConsomateur()) {
+                 context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "");
+                 } else {
+                 context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "display: none;");
+                 }
+                 } else if (privilege.getOrder() == 50040) {
+                 if (utilisateur.getEntrepriseEnCours().isGestionConsomateur()) {
+                 context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "");
+                 } else {
+                 context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "display: none;");
+                 }
+                 } else {*/
                 context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "");
                 //}
 
@@ -247,17 +247,15 @@ private static List<String> ListFonctionalite = new ArrayList<String>(Arrays.asL
         }
 
     }
-    
-        public static void initMenu(){
-    FacesContext context = FacesContext.getCurrentInstance();
-            for (String privilege : ListFonctionalite) {
-                
-            
-                context.getExternalContext().getSessionMap().put("FV" + privilege, "display: none;");
-                
-            }
-    
-    
+
+    public static void initMenu() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        for (String privilege : ListFonctionalite) {
+
+            context.getExternalContext().getSessionMap().put("FV" + privilege, "display: none;");
+
+        }
+
     }
 
 }

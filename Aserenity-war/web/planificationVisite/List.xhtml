@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+
+        <ui:define name="pageContent">
+
+
+
+            <h:panelGroup id="messagePanel" layout="block">
+                <p:messages closable="true" globalOnly="true" showDetail="true"><p:autoUpdate />
+                </p:messages>
+            </h:panelGroup>
+
+            <div class="layout-content">
+
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="shadow-box ui-shadow-5">
+                            <div class="card">
+
+
+                                <h:form >
+
+
+                                    <br/>
+
+                                    <div class="x_panel">
+
+                                        <div class="x_content" >
+                                            <br />
+
+                                            <h:panelGrid columnClasses="value">
+                                                <h3 style="margin-top: 0">#{bundle.GPlanificationVisite}</h3>
+
+                                                <h:panelGrid  columns="2" style="width: 100%">
+                                                    <h:panelGrid  columns="3" style="float: left">                                    
+                                                        <p:selectOneButton id="idSelectOneButton" value="#{planificationVisiteController.optionAfficheCalendrier}">
+                                                            <f:selectItem itemLabel="#{bundle.Jour}" itemValue="agendaDay" />
+                                                            <f:selectItem itemLabel="#{bundle.Semaine}" itemValue="agendaWeek" />
+                                                            <f:selectItem itemLabel="#{bundle.Mois}" itemValue="month" />
+                                                            <p:ajax update="schedule, idSelectOneButton" />
+                                                        </p:selectOneButton>
+                                                    </h:panelGrid>
+
+                                                    <h:panelGrid columns="3" style="float: right">
+                                                        <p:selectOneMenu id="commercial" value="#{planificationVisiteController.commercial}" styleClass="form-control" style="width: 250px;float: right;margin-bottom: 15px" required="true" filter="true" filterMatchMode="startsWith" effect="fade" var="l">
+                                                            <f:selectItems value="#{commercialController.itemsAvailableSelectOne}" var="cl" itemLabel="#{cl.nomPrenom}" itemValue="#{cl}" />
+                                                            <p:ajax listener="#{planificationVisiteController.changedCommercial()}" update="schedule, commercial" />
+                                                            <p:column>
+                                                                <h:outputText value="#{l.nomPrenom}" />
+                                                            </p:column>
+                                                        </p:selectOneMenu>
+                                                    </h:panelGrid>
+
+                                                </h:panelGrid>
+
+                                                <h:panelGrid  columns="2" style="width: 100%">
+                                                    <h:panelGrid  columns="4" style="float: right">
+                                                        <p:commandButton icon="fa fa-calendar" title="#{bundle.Date}" id="buttonDate"  oncomplete="PF('dialogDate').show()" style="float: right; width: 30px; height: 30px; margin: 3px;" styleClass="btn btn-primary"/>
+                                                        <p:commandButton value="#{bundle.Maintenant}" title="#{bundle.Maintenant}" action="#{planificationVisiteController.gestionDateActuelle()}" style="float: right;  height: 30px; margin: 3px;" immediate="true" type="push" update="schedule" oncomplete="PF('myschedule').update();" styleClass="btn btn-primary"/>
+                                                        <p:commandButton icon="ui-icon-circle-triangle-w" title="#{bundle.Precedant}" action="#{planificationVisiteController.gestionDatePrecedent()}" style="float: right; width: 30px; height: 30px; margin: 3px;" immediate="true" type="push" update="schedule" oncomplete="PF('myschedule').update();" styleClass="btn btn-primary"/>
+                                                        <p:commandButton icon="ui-icon-circle-triangle-e" title="#{bundle.Suivant}" action="#{planificationVisiteController.gestionDateSuivant()}" style="float: right; width: 30px; height: 30px; margin: 3px;" immediate="true" type="push" update="schedule" oncomplete="PF('myschedule').update();" styleClass="btn btn-primary"/>
+                                                    </h:panelGrid>
+                                                </h:panelGrid>
+
+
+
+                                                <p:schedule  id="schedule" slotLabelFormat="HH:mm" draggable="true"  leftHeaderTemplate="" rightHeaderTemplate="" initialDate="#{planificationVisiteController.dateCalender}" clientTimeZone="local"
+                                                             minTime="07:00:00" maxTime="21:00:00" resizable="false"  view="#{planificationVisiteController.optionAfficheCalendrier}" timeFormat="HH:mm" 
+                                                             value="#{planificationVisiteController.lazyEventModel}" widgetVar="myschedule" allDaySlot="false" >
+                                                    <p:ajax event="dateSelect" listener="#{planificationVisiteController.onDateSelect}"  resetValues="true" update="idEventDialog, schedule"   oncomplete="PF('eventDialog').show()"  />
+                                                    <p:ajax event="eventSelect" listener="#{planificationVisiteController.onEventSelect}" update="confirmDialogSupp, schedule"  oncomplete="PF('confirmation').show();" />
+                                                    <p:ajax event="eventMove" listener="#{planificationVisiteController.onEventMove}" update="schedule"/>
+                                                    <p:ajax event="eventResize" listener="#{planificationVisiteController.onEventResize}" />
+                                                </p:schedule>
+
+                                                <p:blockUI block="schedule" widgetVar="statusDialog" >
+                                                    #{bundle.Loading}...<br />
+                                                    <p:graphicImage value="../resources/images/loading.gif"/>
+                                                </p:blockUI>
+
+                                            </h:panelGrid>
+
+                                        </div>
+                                        <br/>
+                                    </div>
+
+                                    <p:dialog widgetVar="dialogDate" id="idDialogDate" closable="true" closeOnEscape="false" header="#{bundle.Date}" showEffect="clip" hideEffect="clip">
+
+                                        <p:calendar locale="fr_FR" showOn="button" id="calendrier" navigator="true" value="#{planificationVisiteController.dateCalender}"  pattern="dd/MM/yyyy"  size="32" >
+                                            <p:ajax event="dateSelect" update="schedule"  oncomplete="PF('dialogDate').hide();" />
+                                        </p:calendar>
+                                    </p:dialog>
+
+                                    <p:dialog widgetVar="confirmation" id="confirmDialogSupp" closable="false" closeOnEscape="false" header="#{bundle.Detail}" showEffect="clip" hideEffect="clip">
+                                        <p:panelGrid id="eventDetails1" style="margin: 5px; padding: 5px;"  columns="2">
+
+                                            <h:outputLabel value="#{bundle.Client} : "  />
+                                            <p:outputLabel id="client" value=" #{planificationVisiteController.selected.clientString}" title="#{bundle.Client}" style="width: 250px"/>                       
+
+                                            <h:outputLabel  value="#{bundle.DateDebut} :  "   />
+                                            <h:outputLabel  value="#{planificationVisiteController.selected.dateDebutStringFr}   "   />
+
+                                            <h:outputLabel value="#{bundle.DateFin} : "   />
+                                            <h:outputLabel  value="#{planificationVisiteController.selected.dateFinStringFr}   "   />
+
+
+                                        </p:panelGrid>
+                                        <p:commandButton icon="fa fa-mail-reply" id="annuler2"  oncomplete="PF('myschedule').update();PF('confirmation').hide();" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                        <p:commandButton icon="fa fa-trash-o" id="removeButton2" rendered="#{planificationVisiteController.conditionAffichageEventDialog == 'visible'}" oncomplete="PF('myschedule').update();PF('confirmation').hide();" immediate="true" actionListener="#{planificationVisiteController.removeEvent}" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                    </p:dialog>
+
+                                    <p:dialog widgetVar="eventDialog" id="idEventDialog"  style="visibility: #{planificationVisiteController.conditionAffichageEventDialog}" closable="false" closeOnEscape="false"  header="#{bundle.Nouveau}" showEffect="clip" hideEffect="clip" height="70%" width="50%" >
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Client}: * " for="Client" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+
+                                                <p:selectOneMenu id="Client" value="#{planificationVisiteController.client}" style="width: 90%; min-width: 180px"  required="true" styleClass="form-control" filter="true" filterMatchMode="contains" effect="fade" var="l">
+                                                    <f:selectItems value="#{planificationVisiteController.itemsAvailableSelectOneClientByCommercial}" var="cl" itemLabel="#{cl.toString()}" itemValue="#{cl}" />
+                                                    <p:column>
+                                                        <h:outputText value="#{l.toString()}" />
+                                                    </p:column>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel for="dateDebut" value="#{bundle.DateDebut} :* "  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:calendar  minHour="07"  maxHour="21" locale="fr_FR" inputStyleClass="form-control" id="dateDebut" navigator="true" value="#{planificationVisiteController.selected.dateDebut}" title="#{bundle.DateDebut}" pattern="dd/MM/yyyy HH:mm" required="true" size="26" style="width: 90%; min-width: 180px"/>                            
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel styleClass="control-label col-md-3 col-sm-3 col-xs-12" for="dateFin" value="#{bundle.DateFin} : *" />
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+
+                                                <p:calendar  minHour="07" maxHour="21" locale="fr_FR" inputStyleClass="form-control"  id="dateFin" navigator="true" value="#{planificationVisiteController.selected.dateFin}" title="#{bundle.DateFin}" pattern="dd/MM/yyyy HH:mm" required="true" size="26" style="width: 90%; min-width: 180px"/>
+
+                                            </div>
+                                        </div>
+
+                                        <p:commandButton icon="fa fa-remove" title="#{bundle.Annuler}" id="annuler" oncomplete="PF('myschedule').update();PF('eventDialog').hide();" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                        <p:commandButton icon="fa fa-save" title="#{bundle.Valider}" id="addButton" actionListener="#{planificationVisiteController.addEvent}"   oncomplete="PF('myschedule').update();PF('eventDialog').hide();" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"  update="messagePanel" />
+
+                                    </p:dialog>
+
+
+                                </h:form>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+
+        </ui:define>
+    </ui:composition>
+
+</html>

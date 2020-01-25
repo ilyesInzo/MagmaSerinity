@@ -42,4 +42,5 @@ public interface UtilisateurFacadeLocal {
     
     Utilisateur findUserByEmail(String email);
     
+    List<Utilisateur> findAllNative(String clause);
 }

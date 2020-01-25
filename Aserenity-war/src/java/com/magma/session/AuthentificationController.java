@@ -59,12 +59,20 @@ public class AuthentificationController implements Serializable {
 
                         utilisateur.setVisibiliteMVentes("display:none;");
                         utilisateur.setVisibiliteSousMVentes("display:none;");
+                        
                         utilisateur.setVisibiliteMProduit("display:none;");
                         utilisateur.setVisibiliteSousMProduit("display:none;");
+                        
                         utilisateur.setVisibiliteMStockArticle("display:none;");
+                        
                         utilisateur.setVisibiliteMClient("display:none;");
+                        
+                        utilisateur.setVisibiliteMCommercial("display:none;");
+                        utilisateur.setVisibiliteSousMCommercial("display:none;");
+                        
                         utilisateur.setVisibiliteMJourneaux("display:none;");
                         utilisateur.setVisibiliteMParametrage("display:none;");
+                        
                         Map<String, Privileges> mapPrivilege;
 
                         // the key may be replaced by the repo where the xhtml file are stored
@@ -99,6 +107,18 @@ public class AuthentificationController implements Serializable {
                                 utilisateur.setVisibiliteMVentes("");
                                 if (privilege.isSousModule() == true) {
                                     utilisateur.setVisibiliteSousMVentes("");
+                                }
+                                // if (privilege.isLecture() == true) {
+                                //    context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "");
+                                // } else {
+                                //      context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "display: none;");
+                                // }
+                            }
+                            
+                            if (privilege.isLecture() == true && privilege.getOrderModule() == 6 && privilege.isModuleActiver() == true) {
+                                utilisateur.setVisibiliteMCommercial("");
+                                if (privilege.isSousModule() == true) {
+                                    utilisateur.setVisibiliteSousMCommercial("");
                                 }
                                 // if (privilege.isLecture() == true) {
                                 //    context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "");
@@ -178,9 +198,8 @@ public class AuthentificationController implements Serializable {
             connections.setDateDeconnection(new Date());
             ejbFacadeConnection.edit(connections);*/
             session.removeAttribute("user");
-            System.out.println(session);
             // already invalidated by the session counter listner
-            //session.invalidate();
+            session.invalidate();
         }
         return "Deconnexion";
     }

@@ -2,10 +2,12 @@ package com.magma.controller;
 
 import com.magma.controller.util.JsfUtil;
 import com.magma.entity.Client;
+import com.magma.entity.Commercial;
 import com.magma.entity.Delegation;
 import com.magma.entity.Gouvernorat;
 import com.magma.entity.Utilisateur;
 import com.magma.session.ClientFacadeLocal;
+import com.magma.session.CommercialFacadeLocal;
 import com.magma.session.DelegationFacadeLocal;
 import com.magma.util.MenuTemplate;
 import java.io.IOException;
@@ -36,6 +38,10 @@ public class ClientController implements Serializable {
     private ClientFacadeLocal ejbFacade;
     @EJB
     private DelegationFacadeLocal ejbFacadeDelegation;
+    
+    @EJB
+    private CommercialFacadeLocal ejbFacadeCommercial;
+    
     private boolean errorMsg;
     private Long idTemp;
     private Client client;
@@ -147,6 +153,15 @@ public class ClientController implements Serializable {
             errorMsg = getFacade().verifierUnique(selected.getLibelle().trim(), selected.getGsm());
 
             if (errorMsg == false) {
+                
+                if(selected.getCommercial() != null){
+                
+                    selected.setNomCommercial(selected.getCommercial().getNom());
+                    selected.setPrenomCommercial(selected.getCommercial().getPrenom());
+                    selected.setIdCommercial(selected.getCommercial().getId());
+                    selected.setTypeCommercial(selected.getCommercial().getTypeCommercial());
+                
+                }
 
                 if (selected.getGouvernorat() != null) {
                     selected.setIdGouvernorat(selected.getGouvernorat().getId());
@@ -186,6 +201,15 @@ public class ClientController implements Serializable {
         if (selected != null) {
             errorMsg = false;
             idTemp = selected.getId();
+            
+
+            if (selected.getIdCommercial()!= null) {
+                Commercial commercial = new Commercial();
+                commercial.setId(selected.getIdCommercial());
+                commercial.setNom(null);
+                commercial.setPrenom(null);
+                selected.setCommercial(commercial);
+            }
 
             Gouvernorat gouvernorat = new Gouvernorat();
             if (selected.getIdGouvernorat() != null) {
@@ -215,6 +239,15 @@ public class ClientController implements Serializable {
 
             if (errorMsg == false) {
 
+                if(selected.getCommercial() != null){
+                
+                    selected.setNomCommercial(selected.getCommercial().getNom());
+                    selected.setPrenomCommercial(selected.getCommercial().getPrenom());
+                    selected.setIdCommercial(selected.getCommercial().getId());
+                    selected.setTypeCommercial(selected.getCommercial().getTypeCommercial());
+                
+                }
+                
                 if (selected.getGouvernorat() != null) {
                     selected.setIdGouvernorat(selected.getGouvernorat().getId());
                     selected.setLibelleGouvernorat(selected.getGouvernorat().getLibelle());
@@ -294,7 +327,13 @@ public class ClientController implements Serializable {
         }
         return JsfUtil.getSelectItems(listDelegation, true);
     }
+    
 
+    public SelectItem[] getItemsAvailableSelectOneCommercial() {
+        
+        return JsfUtil.getSelectItems(ejbFacadeCommercial.findAll(" where o.etatUsr = 1 and o.typeCommercial = "+selected.getTypeCommercial()), true);
+    }
+    
     public SelectItem[] getItemsAvailableSelectMany() {
         return JsfUtil.getSelectItems(ejbFacade.findAll(), false);
     }

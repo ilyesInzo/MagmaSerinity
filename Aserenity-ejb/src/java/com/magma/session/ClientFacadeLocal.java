@@ -21,6 +21,12 @@ public interface ClientFacadeLocal {
     void edit(Client client);
 
     void remove(Client client);
+    
+    void create(List<Client> client);
+
+    void edit(List<Client> client);
+
+    void remove(List<Client> client);
 
     Client find(Object id);
 

@@ -88,6 +88,13 @@
 
                                             </div>
                                         </div>
+                                        
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Classification}: " for="ClassificationClient"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="ClassificationClient" value="#{clientController.selected.classificationClient.libelle}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div>
 
                                         <div class="form-group" >
                                             <h:outputLabel value="#{bundle.CodePostal} : " for="codePostal" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
@@ -103,6 +110,13 @@
                                                 <p:inputTextarea rows="5" id="adresse" readonly="true" value="#{clientController.selected.adresse}" title="#{bundle.Adresse}" required="false"  styleClass="form-control" style="width: 90%; min-width: 180px"/>
                                             </div>
                                         </div>
+                                        
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Commercial} : " for="Commercial" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="Commercial" value="#{clientController.selected.nomPrenom}" styleClass="form-control" style="width: 90%; min-width: 180px"/>
+                                            </div>
+                                        </div> 
 
                                         <div class="form-group" >
                                             <h:outputLabel value="#{bundle.Description} : " for="Description"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
@@ -122,9 +136,9 @@
 
                                     <h:panelGrid columns="2" cellpadding="200" cellspacing="200">
                                         <h:outputText value="#{bundle.Creation} : " />
-                                        <h:outputText value="Creer le #{articleController.selected.dateCreationStringFr} par #{articleController.selected.libelleUserCreate}" style="margin-left: 20px; font: bold"/>
-                                        <h:outputText value="#{bundle.Modification} : " rendered="#{articleController.selected.idUserModif ne null}"/>
-                                        <h:outputText value="Modif le #{articleController.selected.dateSyncStringFr} par #{articleController.selected.libelleUserModif}" style="margin-left: 20px; font: bold" rendered="#{articleController.selected.idUserModif ne null}"/>
+                                        <h:outputText value="Creer le #{clientController.selected.dateCreationStringFr} par #{clientController.selected.libelleUserCreate}" style="margin-left: 20px; font: bold"/>
+                                        <h:outputText value="#{bundle.Modification} : " rendered="#{clientController.selected.idUserModif ne null}"/>
+                                        <h:outputText value="Modif le #{clientController.selected.dateSyncStringFr} par #{clientController.selected.libelleUserModif}" style="margin-left: 20px; font: bold" rendered="#{clientController.selected.idUserModif ne null}"/>
                                     </h:panelGrid>
 
 

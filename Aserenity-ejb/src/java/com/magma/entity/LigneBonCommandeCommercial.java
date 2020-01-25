@@ -27,9 +27,10 @@ import javax.persistence.Transient;
 public class LigneBonCommandeCommercial implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
-    @Column(name = "LCmd_Id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "LBCom_Id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "Art_Id")
@@ -44,32 +45,32 @@ public class LigneBonCommandeCommercial implements Serializable {
     @Column(name = "Art_Tva", precision = 28, scale = 3)
     private BigDecimal tvaArticle;
 
-    @Column(name = "LCom_Quantite", precision = 28, scale = 3)
+    @Column(name = "LBCom_Quantite", precision = 28, scale = 3)
     private BigDecimal quantite;
 
-    @Column(name = "LCom_PrixUnitaireHT", scale = 3, precision = 28)
+    @Column(name = "LBCom_PrixUnitaireHT", scale = 3, precision = 28)
     private BigDecimal prixUnitaireHT;
     
-    @Column(name = "LCom_Remise", precision = 28, scale = 3)
+    @Column(name = "LBCom_Remise", precision = 28, scale = 3)
     private BigDecimal remise;
 
-    @Column(name = "LCom_PrixUnitaireApresRemise", precision = 28, scale = 3)
+    @Column(name = "LBCom_PrixUnitaireApresRemise", precision = 28, scale = 3)
     private BigDecimal prixUnitaireApresRemise;
 
-    @Column(name = "LCom_TotalHT", scale = 3, precision = 28)
+    @Column(name = "LBCom_TotalHT", scale = 3, precision = 28)
     private BigDecimal totalHT;
     
-    @Column(name = "LCom_TotalTVA", scale = 3, precision = 28)
+    @Column(name = "LBCom_TotalTVA", scale = 3, precision = 28)
     private BigDecimal totalTVA;
 
-    @Column(name = "LCom_TotalTTC", scale = 3, precision = 28)
+    @Column(name = "LBCom_TotalTTC", scale = 3, precision = 28)
     private BigDecimal totalTTC;
 
     @ManyToOne
-    @JoinColumn(name = "Cmd_Id", referencedColumnName = "Cmd_Id", nullable = false)
+    @JoinColumn(name = "BCom_Id", referencedColumnName = "BCom_Id", nullable = false)
     private BonCommandeCommercial bonCommandeCommercial;
     
-    @Column(name = "LCom_QuantiteMax", precision = 28, scale = 3)
+    @Column(name = "LBCom_QuantiteMax", precision = 28, scale = 3)
     private BigDecimal quantiteMax;
     
     @Transient
@@ -82,16 +83,6 @@ public class LigneBonCommandeCommercial implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-
-    public BonCommandeCommercial getBonCommandeCommercial() {
-        return bonCommandeCommercial;
-    }
-
-    public void setBonCommandeCommercial(BonCommandeCommercial bonCommandeCommercial) {
-        this.bonCommandeCommercial = bonCommandeCommercial;
-    }
-
-
 
     public Long getIdArticle() {
         return idArticle;
@@ -127,7 +118,13 @@ public class LigneBonCommandeCommercial implements Serializable {
         this.prixUnitaireHT = prixUnitaireHT;
     }
 
+    public BonCommandeCommercial getBonCommandeCommercial() {
+        return bonCommandeCommercial;
+    }
 
+    public void setBonCommandeCommercial(BonCommandeCommercial bonCommandeCommercial) {
+        this.bonCommandeCommercial = bonCommandeCommercial;
+    }
 
     public BigDecimal getTotalHT() {
    

@@ -483,7 +483,12 @@ public class TraitementDate implements Serializable {
         return naissance.getTime();
     }
     
-    
+    public static Date moinsPlusMinute(Date dateTemp, int minute) {
+        Calendar naissance = new GregorianCalendar();
+        naissance.setTime(dateTemp);
+        naissance.add(Calendar.MINUTE, minute);
+        return naissance.getTime();
+    }
     
     public static Date plusHeurs(Date dateTemp) {
         Calendar naissance = new GregorianCalendar();
@@ -499,13 +504,27 @@ public class TraitementDate implements Serializable {
         return naissance.getTime();
     }
 
-    
-
     public static String debutJourneeString(Date debut) {
 
         String chaineDate = returnDate(debut) + " 00:00:00";
 //            SimpleDateFormat sdf = new SimpleDateFormat(dateFormat + " HH:mm:ss");
         return chaineDate;
 
+    }
+    
+    public static Date dateMinuit() {
+
+        // création du calendrier et initialisation à la date d'aujourd'hui :
+        GregorianCalendar calendar = new GregorianCalendar();
+        System.out.println("Nous sommes le : " + calendar.getTime());
+
+        // mise à la date de minuit :
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        Date minuit = calendar.getTime();
+        System.out.println("A 0h ce matin, il était : " + minuit);
+        return minuit;
     }
 }

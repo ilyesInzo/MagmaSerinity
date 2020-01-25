@@ -113,6 +113,19 @@
 
                                             </div>
                                         </div>
+                                        
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Classification} : *" for="ClassificationClient" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">                                       
+                                                <p:selectOneMenu id="ClassificationClient" value="#{clientController.selected.classificationClient}"   styleClass="form-control" style="width: 90%; min-width: 180px" required="true" filter="true" filterMatchMode="contains" effect="fade" var="l">                                                                                
+                                                    <f:selectItems value="#{classificationClientController.itemsAvailableSelectOne}" var="cl"  itemValue="#{cl}" />                                                                                                                     
+                                                    <p:column>
+                                                        <h:outputText value="#{l.libelle}" />
+                                                    </p:column>
+
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
 
                                         <div class="form-group" >
                                             <h:outputLabel value="#{bundle.CodePostal} : " for="codePostal" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
@@ -126,6 +139,29 @@
                                             <h:outputLabel value="#{bundle.Adresse} : "  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                             <div class="col-md-9 col-sm-9 col-xs-12">
                                                 <p:inputTextarea rows="5" id="adresse" value="#{clientController.selected.adresse}" title="#{bundle.Adresse}" required="false"  styleClass="form-control" style="width: 90%; min-width: 180px"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Type}: *"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectOneMenu id="transFormTo" value="#{clientController.selected.typeCommercial}" styleClass="form-control"  required="false" filter="true" filterMatchMode="contains" effect="fade" var="l" style="width: 90%; min-width: 180px">
+                                                    <f:selectItem itemValue="0" itemLabel="#{bundle.Commercial}" />
+                                                    <f:selectItem itemValue="1" itemLabel="#{bundle.Delegue}"/>
+                                                    <p:ajax update="Commercial"/>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Commercial} : *" for="Commercial" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">                                            
+                                                <p:selectOneMenu  id="Commercial" value="#{clientController.selected.commercial}" title="#{bundle.Commercial}" required="false"  styleClass="form-control" filter="true" filterMatchMode="startsWith" effect="fade" var="l" style="width: 90%; min-width: 180px">
+                                                    <f:selectItems value="#{clientController.itemsAvailableSelectOneCommercial}"  var="cl" itemLabel="#{cl.nomPrenom}" itemValue="#{cl}"  />
+                                                    <p:column>
+                                                        <h:outputText value="#{l.nomPrenom}" />
+                                                    </p:column>
+                                                </p:selectOneMenu>                                            
                                             </div>
                                         </div>
 

@@ -84,10 +84,10 @@ public class Client implements Serializable {
 
     @Column(name = "Cli_Description")
     private String description;
-    
+
     @Column(name = "Cli_AssujettiTVA")
     private boolean assujettiTVA;
-    
+
     @Transient
     private Gouvernorat gouvernorat;
 
@@ -98,20 +98,39 @@ public class Client implements Serializable {
     @JoinColumn(name = "CCl_Id", referencedColumnName = "CCl_Id", nullable = false)
     private CategorieClient categorieClient;
     
+    @ManyToOne
+    @JoinColumn(name = "CClt_Id", referencedColumnName = "CClt_Id", nullable = false)
+    private ClassificationClient classificationClient;
+
     @Column(name = "Tab_dateSynch")
     private Long dateSynch;
-    
+
     @Column(name = "Tab_IdUserCreate")
     private Long idUserCreate;
 
     @Column(name = "Tab_LibelleUserCreate")
     private String libelleUserCreate;
-    
+
     @Column(name = "Tab_IdUserModif")
     private Long idUserModif;
 
     @Column(name = "Tab_LibelleUserModif")
     private String libelleUserModif;
+
+    @Transient
+    private Commercial commercial;
+
+    @Column(name = "Com_Id")
+    private Long idCommercial;
+
+    @Column(name = "Com_TypeCommercial")
+    private int typeCommercial;
+
+    @Column(name = "Com_Nom")
+    private String nomCommercial;
+
+    @Column(name = "Com_Prenom")
+    private String prenomCommercial;
 
     public Long getIdUserCreate() {
         return idUserCreate;
@@ -144,7 +163,7 @@ public class Client implements Serializable {
     public void setLibelleUserModif(String libelleUserModif) {
         this.libelleUserModif = libelleUserModif;
     }
-    
+
     public Long getId() {
         return id;
     }
@@ -188,13 +207,12 @@ public class Client implements Serializable {
         this.libelleGouvernorat = libelleGouvernorat;
     }
 
-
     public String getLibelle() {
         return libelle;
     }
 
     public void setLibelle(String libelle) {
-            this.libelle = libelle; 
+        this.libelle = libelle;
     }
 
     public String getPassword() {
@@ -209,18 +227,17 @@ public class Client implements Serializable {
         this.password = password;
     }
 
-   /* public void setPassword(String password) {
-        try {
-            if (password != null && !password.equals("")) {
-                this.password = AlgorithmesCryptage.encoderEnMD5(password);
-            } else {
-                this.password = null;
-            }
-        } catch (Exception ex) {
-            System.out.println("--");
-        }
-    }*/
-
+    /* public void setPassword(String password) {
+     try {
+     if (password != null && !password.equals("")) {
+     this.password = AlgorithmesCryptage.encoderEnMD5(password);
+     } else {
+     this.password = null;
+     }
+     } catch (Exception ex) {
+     System.out.println("--");
+     }
+     }*/
     public String getGsmString() {
         if (gsm != null && !gsm.equals("")) {
             return gsm;
@@ -291,7 +308,6 @@ public class Client implements Serializable {
         this.photo = photo;
     }
 
-
     public String getDateCreationStringFr() {
         try {
             if (dateCreation != null) {
@@ -313,7 +329,7 @@ public class Client implements Serializable {
             return "---";
         }
     }
-    
+
     public String getDateSyncStringFr() {
         try {
             if (dateSynch != null) {
@@ -344,7 +360,6 @@ public class Client implements Serializable {
         this.supprimer = supprimer;
     }
 
-
     public Long getIdDelegation() {
         return idDelegation;
     }
@@ -363,7 +378,6 @@ public class Client implements Serializable {
     public void setLibelleDelegation(String libelleDelegation) {
         this.libelleDelegation = libelleDelegation;
     }
-
 
     public String getCodePostaleString() {
         if (codePostale != null && !codePostale.equals("")) {
@@ -407,7 +421,7 @@ public class Client implements Serializable {
     public void setAssujettiTVA(boolean assujettiTVA) {
         this.assujettiTVA = assujettiTVA;
     }
-    
+
     public String getDescriptionString() {
         if (description != null && !description.equals("")) {
             return description;
@@ -427,11 +441,70 @@ public class Client implements Serializable {
     public void setDateSynch(Long dateSynch) {
         this.dateSynch = dateSynch;
     }
-            @PreUpdate
+
+    public Long getIdCommercial() {
+        return idCommercial;
+    }
+
+    public void setIdCommercial(Long idCommercial) {
+        this.idCommercial = idCommercial;
+    }
+
+    public String getNomCommercial() {
+        return nomCommercial;
+    }
+
+    public void setNomCommercial(String nomCommercial) {
+        this.nomCommercial = nomCommercial;
+    }
+
+    public String getPrenomCommercial() {
+        return prenomCommercial;
+    }
+
+    public void setPrenomCommercial(String prenomCommercial) {
+        this.prenomCommercial = prenomCommercial;
+    }
+
+    public Commercial getCommercial() {
+        return commercial;
+    }
+
+    public String getNomPrenom() {
+        if (nomCommercial != null) {
+            return prenomCommercial + " " + nomCommercial;
+        } else {
+            return "---";
+        }
+
+    }
+
+    public void setCommercial(Commercial commercial) {
+        this.commercial = commercial;
+    }
+
+    public int getTypeCommercial() {
+        return typeCommercial;
+    }
+
+    public void setTypeCommercial(int typeCommercial) {
+        this.typeCommercial = typeCommercial;
+    }
+
+    public ClassificationClient getClassificationClient() {
+        return classificationClient;
+    }
+
+    public void setClassificationClient(ClassificationClient classificationClient) {
+        this.classificationClient = classificationClient;
+    }
+    
+    @PreUpdate
     void preupdate() {
         this.dateSynch = System.currentTimeMillis();
 
     }
+
     @PrePersist
     void prepersist() {
         this.dateCreation = new Date();

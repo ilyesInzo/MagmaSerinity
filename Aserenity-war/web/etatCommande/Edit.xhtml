@@ -74,11 +74,12 @@
                                         <h:panelGroup id="pgAcceptation" >
                                             <h:panelGroup rendered="#{etatCommandeController.selected.dernierRang}">
                                                 <div class="form-group"  >
-                                                    <h:outputLabel value="#{bundle.Accepter} : "   styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                    <h:outputLabel value="#{bundle.Acceptation} : " for="Acceptation"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                                     <div class="col-md-9 col-sm-9 col-xs-12">
-                                                        <p:selectBooleanButton id="synchronisationMFG" value="#{etatCommandeController.selected.acceptation}" onLabel="#{bundle.Oui}" offLabel="#{bundle.Non}"  style="width: 90%; min-width: 180px" >
-                                                            <p:ajax update="pg, pgcouleur" listener="#{etatCommandeController.changeCouleur()}"/>
+                                                        <p:selectBooleanButton id="Acceptation" value="#{etatCommandeController.selected.acceptation}" onLabel="#{bundle.Oui}" offLabel="#{bundle.Non}"  style="width: 90%; min-width: 180px" styleClass="form-control">
+                                                            <p:ajax update="pgcouleur" listener="#{etatCommandeController.changeCouleur()}"/>
                                                         </p:selectBooleanButton>
+                                                    
                                                     </div>
                                                 </div>
                                             </h:panelGroup>
@@ -110,7 +111,7 @@
                                                 <h:outputLabel value="#{bundle.Couleur} :" for="couleurEtatCommande" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                                 <div class="col-md-9 col-sm-9 col-xs-12" >
                                                     <p:colorPicker id="couleurEtatCommande" rendered="#{etatCommandeController.selected.dernierRang == false}"  value="#{etatCommandeController.selected.couleur}"   style="width: 90%; min-width: 180px"/>                            
-                                                    <p:outputLabel style="width: 25px; height: 25px; background-color: ##{etatCommandeController.selected.couleur}" rendered="#{etatCommandeController.selected.dernierRang == true}" value="" style="width: 90%; min-width: 180px"/>
+                                                    <p:outputLabel style="width: 25px; height: 25px; background-color: ##{etatCommandeController.selected.couleur}" rendered="#{etatCommandeController.selected.dernierRang == true}" value="" />
                                                 </div>
                                             </div>
                                         </h:panelGroup>

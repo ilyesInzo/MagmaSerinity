@@ -32,6 +32,9 @@
                                             </li>
 
                                             <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('bonCommandeCommercial').modification}" title="Modifier" id="addButton" action="#{bonCommandeCommercialController.prepareEdit()}" type="push" ajax="false"  icon="fa fa-pencil" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                            </li>
+                                            <li>
                                                 <p:commandButton rendered="#{user.profile.toPrivilege('bonCommandeCommercial').lecture}" title="Annuler"  id="updateButton" action="#{bonCommandeCommercialController.prepareList()}" ajax="false" immediate="true" icon="fa fa-reply"  style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
                                             </li>
 
@@ -40,42 +43,27 @@
                                     </div>         
 
 
-                                    <div class="x_content" >   
-
+                                    <div class="x_content" > 
 
                                         <div class="form-group" >
                                             <h:outputLabel value="#{bundle.Client}: " for="client"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                             <div class="col-md-9 col-sm-9 col-xs-12">
-                                                <p:outputLabel id="client" value="#{bonCommandeCommercialController.selected.libelleClient}" title="#{bundle.Client}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                                <p:outputLabel id="categorie" value="#{bonCommandeCommercialController.selected.libelleClient}" title="#{bundle.Client}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
                                             </div>
                                         </div>
-
-                                        <h:panelGroup id="pgClientLivraison" >
-                                            <h:panelGroup >  
-
-                                                <div class="form-group" >
-                                                    <h:outputLabel value="#{bundle.Client}: " for="clientLivraison"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
-                                                    <div class="col-md-9 col-sm-9 col-xs-12">
-                                                        <p:outputLabel id="clientLivraison" value="#{bonCommandeCommercialController.selected.libelleClientLivraison}" title="#{bundle.Client}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
-                                                    </div>
-                                                </div>
-
-                                            </h:panelGroup>
-                                        </h:panelGroup>
-
+                                        
                                         <div class="form-group" >
-                                            <h:outputLabel value="#{bundle.DateCommande} :" for="dateCommande" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
+                                            <h:outputLabel value="#{bundle.Client}: " for="clientLivraison"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                             <div class="col-md-9 col-sm-9 col-xs-12">
-                                                <p:outputLabel id="dateCommande" value="#{bonCommandeCommercialController.selected.dateCommandeStringFr}" title="#{bundle.DateCommande}"   styleClass="form-control"/>
+                                                <p:outputLabel id="clientLivraison" value="#{bonCommandeCommercialController.selected.libelleClientLivraison}" title="#{bundle.Client}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
                                             </div>
                                         </div>
-
+                                        
                                         <div class="form-group" >
-                                            <h:outputLabel value="#{bundle.EtatCommande} :" for="etatCommande" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
+                                            <h:outputLabel value="#{bundle.Etat}: " for="Etat"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                             <div class="col-md-9 col-sm-9 col-xs-12">
-                                                <p:outputLabel id="etatCommande" value="#{bonCommandeCommercialController.selected.etatCommande.libelle}" title="#{bundle.EtatCommande}"   styleClass="form-control"/>
-
-                                            </div>    
+                                                <p:outputLabel id="Etat" value="#{bonCommandeCommercialController.selected.etatCommande.libelle}" title="#{bundle.Etat}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
                                         </div>
 
                                         <div class="form-group" >
@@ -84,7 +72,7 @@
                                                 <p:outputLabel id="montantHT" value="#{bonCommandeCommercialController.selected.montantHT}" title="#{bundle.TotaleHT}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
                                             </div>
                                         </div>
-
+                                        
                                         <div class="form-group" >
                                             <h:outputLabel value="#{bundle.TotaleTVA}: " styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                             <div class="col-md-9 col-sm-9 col-xs-12">
@@ -95,13 +83,17 @@
                                         <div class="form-group" >
                                             <h:outputLabel value="#{bundle.TotaleTTC} :" for="montantTTC" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
                                             <div class="col-md-9 col-sm-9 col-xs-12">
-                                                <p:outputLabel id="montantTTC" value="#{bonCommandeCommercialController.selected.montantTTC}" title="#{bundle.MontantTTC}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                                <p:outputLabel id="montantTTC" value="#{bonCommandeCommercialController.selected.totalTTC}" title="#{bundle.MontantTTC}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
                                             </div>
                                         </div>
 
 
-
                                     </div> 
+
+                                    <div class="x_title">
+                                        <h2 style="color: #1a8ea5">#{bundle.Details}</h2>
+                                        <div class="clearfix"></div>
+                                    </div>
                                     <div class="x_content" >
                                         <p:dataTable  value="#{bonCommandeCommercialController.selected.listeLigneBonCommandeCommercials}"  var="item"  selection="#{bonCommandeCommercialController.selectedLigneBonCommandeCommercialSingle}" rowKey="#{item.id}" liveResize="true"     >
 
@@ -172,8 +164,9 @@
                                         </p:dataTable>
 
                                     </div>
+ 
 
-                                </h:form>
+                                </h:form>       
 
                                 <p:dialog id="Info"  header="Info"   widgetVar="dlgInfo" height="50%" width="35%" modal="true" resizable="false">
 
@@ -187,8 +180,6 @@
 
 
                                 </p:dialog>
-
-
                             </div>
                         </div>
                     </div>

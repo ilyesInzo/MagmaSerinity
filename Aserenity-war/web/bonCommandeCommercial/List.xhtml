@@ -31,6 +31,9 @@
                                         <h2 style="color: #607D8B">#{bundle.GCommande}</h2>
                                         <ul class="nav navbar-right panel_toolbox">  
                                             <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('bonCommandeCommercial').lecture}" title="PDF" id="pdfButton"   action="#{bonCommandeCommercialController.generationSelectedPDF()}" ajax="false" icon="fa fa-file-pdf-o" style=" float: right; width: 50px; height: 50px; margin: 3px; " styleClass="btn btn-primary"/>
+                                            </li>
+                                            <li>
                                                 <p:commandButton rendered="#{user.profile.toPrivilege('bonCommandeCommercial').creation}" title="Nouveau" action="#{bonCommandeCommercialController.prepareCreate()}" id="addButton"  type="push" ajax="false"  icon="fa fa-plus" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
                                             </li>
                                             <li>
@@ -58,15 +61,21 @@
                                                      >
 
                                             <p:column selectionMode="single" style="width:35px;text-align:center;">
-                                            </p:column>
-                                            
+                                            </p:column>   
 
-
-                                            <p:column filterBy="#{item.libelleCommercial}" sortBy="#{item.libelleCommercial}" style="width: 15%" filterMatchMode="contains" filterStyle="width:98%">
+                                            <p:column toggleable="false" style="width:45px;">
                                                 <f:facet name="header">
-                                                    <h:outputText value="#{bundle.Commercial}"/>
+                                                    <h:outputText value=""/>
                                                 </f:facet>
-                                                <h:outputText value="#{item.libelleCommercial}"/>
+                                                <h:outputText value=""/>
+                                                <div style="border-radius:90%;width:25px;height:25px; border:2px solid ##{item.etatCommande.couleur}; background:##{item.etatCommande.couleur};"></div>
+                                            </p:column>
+
+                                            <p:column sortBy="#{item.etatCommande.libelle}" style="width:20%" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Etat}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.etatCommande.libelle}" style="color: ##{item.etatCommande.couleur}"/>
                                             </p:column>
 
                                             <p:column filterBy="#{item.libelleClient}" sortBy="#{item.libelleClient}" style="width: 15%" filterMatchMode="contains" filterStyle="width:98%">
@@ -75,26 +84,33 @@
                                                 </f:facet>
                                                 <h:outputText value="#{item.libelleClient}"/>
                                             </p:column>
-
-                                            <p:column filterBy="#{item.dateCommandeStringFr}" sortBy="#{item.dateCommandeStringFr}" style="width: 20%" filterMatchMode="contains" filterStyle="width:98%">
+                                            
+                                            <p:column filterBy="#{item.nomPrenom}" sortBy="#{item.nomPrenom}" style="width: 15%" filterMatchMode="contains" filterStyle="width:98%">
                                                 <f:facet name="header">
-                                                    <h:outputText value="#{bundle.DateCommande}"/>
+                                                    <h:outputText value="#{bundle.Commercial}"/>
                                                 </f:facet>
-                                                <h:outputText value="#{item.dateCommandeStringFr}"/>
+                                                <h:outputText value="#{item.nomPrenom}"/>
                                             </p:column>
 
-                                            <p:column filterBy="#{item.montantHT}" sortBy="#{item.montantHT}" filterMatchMode="contains" filterStyle="width:98%" style="width: 10%; text-align:right">
+                                            <p:column filterBy="#{item.dateBonCommandeCommercialStringFr}" sortBy="#{item.dateBonCommandeCommercialStringFr}" style="width: 20%" filterMatchMode="contains" filterStyle="width:98%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Date}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.dateBonCommandeCommercialStringFr}"/>
+                                            </p:column>
+
+                                            <p:column filterBy="#{item.montantHT}" sortBy="#{item.montantTTC}" filterMatchMode="contains" filterStyle="width:98%" style="width: 10%; text-align:right">
                                                 <f:facet name="header">
                                                     <h:outputText value="#{bundle.TotaleHT}"/>
                                                 </f:facet>
                                                 <h:outputText value="#{item.montantHT}"/>
                                             </p:column>
-                                            
-                                            <p:column filterBy="#{item.montantTTC}" filterMatchMode="contains" filterStyle="width:98%" sortBy="#{item.montantTTC}" style="width: 10%; text-align:center">
+
+                                            <p:column filterBy="#{item.totalTTC}" filterMatchMode="contains" filterStyle="width:98%" sortBy="#{item.totalTTC}" style="width: 10%; text-align:center">
                                                 <f:facet name="header">
                                                     <h:outputText value="#{bundle.TotaleTTC}"/>
                                                 </f:facet>
-                                                <h:outputText value="#{item.montantTTC}"/>
+                                                <h:outputText value="#{item.totalTTC}"/>
                                             </p:column>
 
                                             <p:column toggleable="false" style="width:50px" >
@@ -166,12 +182,12 @@
                                                         </f:facet>
                                                         <h:outputText value="#{itemLF.totalHT}"/>
                                                     </p:column>
-                                                    
-                                                    <p:column  style="width: 7%" >
+
+                                                    <p:column style="width: 7%">
                                                         <f:facet name="header">
-                                                            <h:outputText value="#{bundle.MontantTTC}"/>
+                                                            <h:outputText value="#{bundle.MontantTTC}" />
                                                         </f:facet>
-                                                        <h:outputText value="#{itemLF.totalTTC}"/>
+                                                        <h:outputText value="#{itemLF.totalTTC} " /> 
                                                     </p:column>
 
                                                 </p:dataTable>
@@ -193,8 +209,52 @@
 
                                     <p:dialog id="confirmDialogRecherche"  header="#{bundle.TitreDialogRecherche}"   widgetVar="rechercheDetaille" height="50%" width="35%" modal="true" resizable="false">
 
+                                        <div class="form-group" >
+                                            <h:outputLabel  value="#{bundle.Client}: " styleClass="control-label col-md-3 col-sm-3 col-xs-12"/> 
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectOneMenu id="client" value="#{bonCommandeCommercialController.client}" styleClass="form-control" style="width: 90%; min-width: 180px" filter="true" filterMatchMode="startsWith" effect="fade" var="l">
+                                                    <f:selectItems value="#{clientController.itemsAvailableSelectOne}" var="cl" itemLabel="#{cl.libelle}" itemValue="#{cl.code} - #{cl}" />
+                                                    <p:column>
+                                                        <h:outputText value="#{l.toString()}" />
+                                                    </p:column>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
 
-                                    </p:dialog>                      
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Etat} : " styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectOneMenu  value="#{bonCommandeCommercialController.etatBonCommandeCommercial}" title="#{bundle.Etat}" filter="true" style="width: 90%; min-width: 180px" filterMatchMode="contains"  effect="fade" var="l"  styleClass="form-control" >
+                                                    <f:selectItem itemLabel="---" itemValue="" />
+                                                    <f:selectItem itemValue="0" itemLabel="#{bundle.EnPreparation}" />
+                                                    <f:selectItem itemValue="1" itemLabel="#{bundle.Opportunite}"/>
+                                                    <f:selectItem itemValue="2" itemLabel="#{bundle.Modifie}" />
+                                                    <f:selectItem itemValue="3" itemLabel="#{bundle.Rejete}"/>
+                                                    <f:selectItem itemValue="4" itemLabel="#{bundle.Approuve}" />
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group" >
+                                            <h:outputLabel for="HDebut2" value="#{bundle.DateDebut} : "  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+
+                                                <p:calendar pattern="dd/MM/yyyy" id="HDebut2" value="#{bonCommandeCommercialController.dateDebut}" navigator="true" title="#{bundle.DateDebut}" required="true" size="32" showOn="button" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel styleClass="control-label col-md-3 col-sm-3 col-xs-12" for="HFin2" value="#{bundle.DateFin} : " />
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+
+                                                <p:calendar pattern="dd/MM/yyyy" id="HFin2" value="#{bonCommandeCommercialController.dateFin}" navigator="true" title="#{bundle.DateFin}" required="true" size="32" showOn="button" />
+                                            </div>
+                                        </div>
+                                        <p:separator style="width:90%;height:1px;background:#d8d8d8;"/>
+
+                                        <p:commandButton update="dataTable" icon="ui-icon-check" style="float: right" value="#{bundle.Valider}" title="#{bundle.Valider}" ajax="true" actionListener="#{bonCommandeCommercialController.rechercher()}" global="true" onclick="dlgRechercher.hid();" />
+                                    </p:dialog>   
 
 
                                 </h:form>

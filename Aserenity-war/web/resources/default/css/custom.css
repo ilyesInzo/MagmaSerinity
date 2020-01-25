@@ -4252,3 +4252,49 @@ ul.notifications {
     background-color:#fff;
 }
 
+.visteRouge { background: #D0525D !important; border-color: #932c39!important; } 
+
+.visteVerte { background: #1fb78a !important; border-color: #168e6b!important; } 
+
+.visiteOrange { background: #ec9f31 !important; border-color: #c8831f!important; } 
+
+.rowRouge { background: #f1bbc0 !important; } /*border-color: #de939a!important; } */
+
+.rowVerte { background: #b3dcd0 !important; } /*border-color: #7bbdaa!important; }*/ 
+
+.rowOrange { background: #f8dfbb !important; } /*border-color: #edc996!important; } */
+
+
+.ensigneRed { background: #F7230C !important; border-color: #F7230C!important; } 
+
+.ensigneGray { background: #CECECE !important; border-color: #CECECE!important; } 
+
+.ensigneMarron { background: #E67E30 !important; border-color: #E67E30!important; } 
+.ensigneVert { background: #1FA055 !important; border-color: #1FA055!important; } 
+
+.ensigneYello { background: #FFFF6B !important; border-color: #FFFF6B!important; } 
+
+.ensigneBlue { background: #77B5FE !important; border-color: #77B5FE!important; } 
+.ensigneOlive { background: #708D23 !important; border-color: #708D23!important; } 
+
+.ensigneFuchia { background: #F400A1 !important; border-color: #F400A1!important; } 
+
+.ensignePech { background: #FDBFB7 !important; border-color: #FDBFB7!important; } 
+
+.etatCongesRouge { background: #FF0000 !important; border-color: #FF0000!important; } 
+.etatCongesBleu { background: #1E7FCB !important; border-color: #1E7FCB!important; } 
+.etatCongesVertAmande { background: #82C46C !important; border-color: #82C46C!important; } 
+.etatCongesBleuCiel { background: #77B5FE !important; border-color: #77B5FE!important; } 
+.etatCongesJauneClair { background: #FFFF6B !important; border-color: #FFFF6B!important; } 
+.etatCongesMagenta { background: #DB0073 !important; border-color: #DB0073!important; } 
+.etatCongesCyan { background: #80D0D0 !important; border-color: #80D0D0!important; } 
+.etatCongesNoistte { background: #955628 !important; border-color: #955628!important; } 
+.etatCongesRose { background: #FD6C9E !important; border-color: #FD6C9E!important; } 
+.etatCongesMarron { background: #582900 !important; border-color: #582900!important; } 
+.etatCongesViolet { background: #660099 !important; border-color: #660099!important; } 
+.etatCongesCourail { background: #E73E01 !important; border-color: #E73E01!important; } 
+.etatCongesSaummon { background: #F88E55 !important; border-color: #F88E55!important; } 
+.etatCongesLavande { background: #9683EC !important; border-color: #9683EC!important; } 
+.etatCongesBle { background: #E8D630 !important; border-color: #E8D630!important; } 
+.etatCongesIvoire { background: #FFFFD4 !important; border-color: #FFFFD4!important; } 
+.etatCongesAnnuler { background: #CECECE !important; border-color: #CECECE!important; } 

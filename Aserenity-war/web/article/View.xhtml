@@ -85,6 +85,14 @@
                                                 </div>
                                             </div>
 
+                                            <div class="form-group" >
+                                                <h:outputLabel value="#{bundle.Catalogue} #{bundle.Produits}: "  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:selectBooleanButton id="Catalogue" value="#{articleController.selected.catalogue}" onLabel="#{bundle.Oui}" offLabel="#{bundle.Non}" style="width: 90%; min-width: 180px">
+
+                                                    </p:selectBooleanButton>
+                                                </div>
+                                            </div>
 
                                             <div class="form-group" >
                                                 <h:outputLabel value="#{bundle.PrixRevendeur} : " for="prixRevendeur" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>

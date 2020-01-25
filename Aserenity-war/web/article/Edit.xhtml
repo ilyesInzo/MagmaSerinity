@@ -10,7 +10,7 @@
 
         <ui:define name="pageContent">
 
-            
+
 
             <h:panelGroup id="messagePanel" layout="block">
                 <p:messages closable="true" globalOnly="true" showDetail="true"><p:autoUpdate />
@@ -73,6 +73,15 @@
                                         </div>
 
                                         <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Catalogue} #{bundle.Produits}: "  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectBooleanButton id="Catalogue" value="#{articleController.selected.catalogue}" onLabel="#{bundle.Oui}" offLabel="#{bundle.Non}" style="width: 90%; min-width: 180px">
+
+                                                </p:selectBooleanButton>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
                                             <h:outputLabel value="#{bundle.PrixRevendeur} : *" for="prixRevendeur" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                             <div class="col-md-9 col-sm-9 col-xs-12">
                                                 <p:inputText id="prixRevendeur" value="#{articleController.selected.prixRevendeur}"  title="#{bundle.PrixRevendeur}" required="true" style="width: 90%; min-width: 180px"  styleClass="form-control" >
@@ -80,7 +89,7 @@
                                                 </p:inputText>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="form-group" >
                                             <h:outputLabel value="#{bundle.PrixRetour} : *" for="prixRetour" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                             <div class="col-md-9 col-sm-9 col-xs-12">
@@ -89,7 +98,7 @@
                                                 </p:inputText>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="form-group" >
                                             <h:outputLabel value="#{bundle.QuantiteStock}: *" for="QuantiteStock" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                             <div class="col-md-9 col-sm-9 col-xs-12">
@@ -99,7 +108,7 @@
                                                 </p:inputText>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="form-group" >
                                             <h:outputLabel value="#{bundle.QuantiteMinimal}: *" for="QuantiteMinimal" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                             <div class="col-md-9 col-sm-9 col-xs-12">
@@ -125,63 +134,63 @@
                                                 <p:inputTextarea id="Description" value="#{articleController.selected.description}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
                                             </div>
                                         </div>  
-                                        
-                        <div class="form-group">
-                            <h:outputLabel value="#{bundle.Photo}: " for="Photo1" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
-                            <div class="col-md-9 col-sm-9 col-xs-12">
+
+                                        <div class="form-group">
+                                            <h:outputLabel value="#{bundle.Photo}: " for="Photo1" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
 
 
-                                <p:fileUpload id="Photo1" skinSimple="true"  update="gPhoto1" fileUploadListener="#{articleController.uploadRegistre1}" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" sizeLimit="10000000"  disabled="#{articleController.boolFichier}"
-                                              invalidFileMessage="erreur!" invalidSizeMessage="bundle.MsgSizeFichier" auto="true" multiple="false"  style="width: 90%; min-width: 180px; background-color: #ffffff; border-color: #ffffff; padding: 0px "
-                                              required="false" requiredMessage=""  label="#{bundle.Upload}" styleClass="btn btn-primary" />
-                                <p:graphicImage cache="false" id="gPhoto1" value="#{articleController.dynamicPhoto()}"  style="padding: 0px; width: 7%; min-width: 35px; margin-bottom: 10px" />
+                                                <p:fileUpload id="Photo1" skinSimple="true"  update="gPhoto1" fileUploadListener="#{articleController.uploadRegistre1}" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" sizeLimit="10000000"  disabled="#{articleController.boolFichier}"
+                                                              invalidFileMessage="erreur!" invalidSizeMessage="bundle.MsgSizeFichier" auto="true" multiple="false"  style="width: 90%; min-width: 180px; background-color: #ffffff; border-color: #ffffff; padding: 0px "
+                                                              required="false" requiredMessage=""  label="#{bundle.Upload}" styleClass="btn btn-primary" />
+                                                <p:graphicImage cache="false" id="gPhoto1" value="#{articleController.dynamicPhoto()}"  style="padding: 0px; width: 7%; min-width: 35px; margin-bottom: 10px" />
 
-                            </div>
-                        </div>
+                                            </div>
+                                        </div>
 
-                        <div class="form-group">
-                            <h:outputLabel value="#{bundle.Photo}: " for="Photo2" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
-                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                <p:fileUpload id="Photo2" skinSimple="true" update="gPhoto2"  fileUploadListener="#{articleController.uploadRegistre2}" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" sizeLimit="10000000"  disabled="#{articleController.boolFichier}"
-                                              invalidFileMessage="erreur!" invalidSizeMessage="bundle.MsgSizeFichier" auto="true" multiple="false"  style="width: 90%; min-width: 180px; background-color: #ffffff; border-color: #ffffff; padding: 0px "
-                                              required="false" requiredMessage=""  label="#{bundle.Upload}" styleClass="btn btn-primary" />
-                                <p:graphicImage cache="false" id="gPhoto2" value="#{articleController.dynamicPhoto2()}"  style="padding: 0px; width: 7%; min-width: 35px; margin-bottom: 10px" />
+                                        <div class="form-group">
+                                            <h:outputLabel value="#{bundle.Photo}: " for="Photo2" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:fileUpload id="Photo2" skinSimple="true" update="gPhoto2"  fileUploadListener="#{articleController.uploadRegistre2}" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" sizeLimit="10000000"  disabled="#{articleController.boolFichier}"
+                                                              invalidFileMessage="erreur!" invalidSizeMessage="bundle.MsgSizeFichier" auto="true" multiple="false"  style="width: 90%; min-width: 180px; background-color: #ffffff; border-color: #ffffff; padding: 0px "
+                                                              required="false" requiredMessage=""  label="#{bundle.Upload}" styleClass="btn btn-primary" />
+                                                <p:graphicImage cache="false" id="gPhoto2" value="#{articleController.dynamicPhoto2()}"  style="padding: 0px; width: 7%; min-width: 35px; margin-bottom: 10px" />
 
-                            </div>
-                        </div>
+                                            </div>
+                                        </div>
 
-                        <div class="form-group">
-                            <h:outputLabel value="#{bundle.Photo}: " for="Photo3" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
-                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                <p:fileUpload id="Photo3" skinSimple="true" update="gPhoto3"  fileUploadListener="#{articleController.uploadRegistre3}" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" sizeLimit="10000000"  disabled="#{articleController.boolFichier}"
-                                              invalidFileMessage="erreur!" invalidSizeMessage="bundle.MsgSizeFichier" auto="true" multiple="false"  style="width: 90%; min-width: 180px; background-color: #ffffff; border-color: #ffffff; padding: 0px "
-                                              required="false" requiredMessage=""  label="#{bundle.Upload}" styleClass="btn btn-primary" />
-                                <p:graphicImage cache="false" id="gPhoto3" value="#{articleController.dynamicPhoto3()}"  style="padding: 0px; width: 7%; min-width: 35px; margin-bottom: 10px" />
+                                        <div class="form-group">
+                                            <h:outputLabel value="#{bundle.Photo}: " for="Photo3" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:fileUpload id="Photo3" skinSimple="true" update="gPhoto3"  fileUploadListener="#{articleController.uploadRegistre3}" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" sizeLimit="10000000"  disabled="#{articleController.boolFichier}"
+                                                              invalidFileMessage="erreur!" invalidSizeMessage="bundle.MsgSizeFichier" auto="true" multiple="false"  style="width: 90%; min-width: 180px; background-color: #ffffff; border-color: #ffffff; padding: 0px "
+                                                              required="false" requiredMessage=""  label="#{bundle.Upload}" styleClass="btn btn-primary" />
+                                                <p:graphicImage cache="false" id="gPhoto3" value="#{articleController.dynamicPhoto3()}"  style="padding: 0px; width: 7%; min-width: 35px; margin-bottom: 10px" />
 
-                            </div>
-                        </div>
+                                            </div>
+                                        </div>
 
-                        <div class="form-group">
-                            <h:outputLabel value="#{bundle.Photo}: " for="Photo4" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
-                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                <p:fileUpload id="Photo4" skinSimple="true" update="gPhoto4"  fileUploadListener="#{articleController.uploadRegistre4}" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" sizeLimit="10000000"  disabled="#{articleController.boolFichier}"
-                                              invalidFileMessage="erreur!" invalidSizeMessage="bundle.MsgSizeFichier" auto="true" multiple="false"  style="width: 90%; min-width: 180px; background-color: #ffffff; border-color: #ffffff; padding: 0px "
-                                              required="false" requiredMessage=""  label="#{bundle.Upload}" styleClass="btn btn-primary" />
-                                <p:graphicImage cache="false" id="gPhoto4" value="#{articleController.dynamicPhoto4()}"  style="padding: 0px; width: 7%; min-width: 35px; margin-bottom: 10px" />
+                                        <div class="form-group">
+                                            <h:outputLabel value="#{bundle.Photo}: " for="Photo4" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:fileUpload id="Photo4" skinSimple="true" update="gPhoto4"  fileUploadListener="#{articleController.uploadRegistre4}" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" sizeLimit="10000000"  disabled="#{articleController.boolFichier}"
+                                                              invalidFileMessage="erreur!" invalidSizeMessage="bundle.MsgSizeFichier" auto="true" multiple="false"  style="width: 90%; min-width: 180px; background-color: #ffffff; border-color: #ffffff; padding: 0px "
+                                                              required="false" requiredMessage=""  label="#{bundle.Upload}" styleClass="btn btn-primary" />
+                                                <p:graphicImage cache="false" id="gPhoto4" value="#{articleController.dynamicPhoto4()}"  style="padding: 0px; width: 7%; min-width: 35px; margin-bottom: 10px" />
 
-                            </div>
-                        </div>
+                                            </div>
+                                        </div>
 
-                        <div class="form-group">
-                            <h:outputLabel value="#{bundle.Photo}: " for="Photo5" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
-                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                <p:fileUpload id="Photo5" skinSimple="true" update="gPhoto5" fileUploadListener="#{articleController.uploadRegistre5}" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" sizeLimit="10000000"  disabled="#{articleController.boolFichier}"
-                                              invalidFileMessage="erreur!" invalidSizeMessage="bundle.MsgSizeFichier" auto="true" multiple="false"  style="width: 90%; min-width: 180px; background-color: #ffffff; border-color: #ffffff; padding: 0px "
-                                              required="false" requiredMessage=""  label="#{bundle.Upload}" styleClass="btn btn-primary" />
-                                <p:graphicImage cache="false" id="gPhoto5" value="#{articleController.dynamicPhoto5()}"  style="padding: 0px; width: 7%; min-width: 35px; margin-bottom: 10px" />
+                                        <div class="form-group">
+                                            <h:outputLabel value="#{bundle.Photo}: " for="Photo5" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:fileUpload id="Photo5" skinSimple="true" update="gPhoto5" fileUploadListener="#{articleController.uploadRegistre5}" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" sizeLimit="10000000"  disabled="#{articleController.boolFichier}"
+                                                              invalidFileMessage="erreur!" invalidSizeMessage="bundle.MsgSizeFichier" auto="true" multiple="false"  style="width: 90%; min-width: 180px; background-color: #ffffff; border-color: #ffffff; padding: 0px "
+                                                              required="false" requiredMessage=""  label="#{bundle.Upload}" styleClass="btn btn-primary" />
+                                                <p:graphicImage cache="false" id="gPhoto5" value="#{articleController.dynamicPhoto5()}"  style="padding: 0px; width: 7%; min-width: 35px; margin-bottom: 10px" />
 
-                            </div>
-                        </div> 
+                                            </div>
+                                        </div> 
 
 
                                     </div> 
