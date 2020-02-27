@@ -295,13 +295,14 @@ public class ProfileController implements Serializable {
         listPrivileges.add(privileges);*/
 
         
-        //MCommerciale
+        //MCommerciale Viste
         
         privileges = new Privileges("GCommercial","commercial", false, false, false, false, false, 123400700, 60120, "MCommercial", 6, false, false, false, true);
         listPrivileges.add(privileges);
         privileges = new Privileges("GPlanificationVisite","planificationVisite", false, false, false, false, false, 123400000, 60130, "MCommercial", 6, false, false, false, true);
         listPrivileges.add(privileges);
-        
+        privileges = new Privileges("GTemplateArticleVisite","templateArticleVisite", false, false, false, false, false, 123400000, 60160, "MCommerciale", 6, false, false, true, true);
+        listPrivileges.add(privileges);
         
         //Parametrage
         privileges = new Privileges("GUtilisateur","utilisateur", false, false, false, false, false, 123456700, 900010, "MParametrage", 90, false, false, false, true);

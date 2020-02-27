@@ -112,10 +112,10 @@ public class TraitementRetour {
                 listLigneRetourTemps.add(ligneRetour);
             }
 
-            if (facture.getOrigineFacture() == 2) {
+            if (facture.getOrigine() == 2) {
 
                 // si la BL
-                listSelectedBonLivraison = ejbFacadeBonLivraison.findAllNative(" where o.BLiv_idFacture = " + facture.getId() + " and o.Ret_Id is null");
+                listSelectedBonLivraison = ejbFacadeBonLivraison.findAllNative(" where o.BLiv_IdDocumentTransform = " + facture.getId() + " and o.Ret_Id is null");
                 System.out.println("listSelectedBonLivraison : " + listSelectedBonLivraison.size());
                 for (BonLivraison bonLivraison : listSelectedBonLivraison) {
 

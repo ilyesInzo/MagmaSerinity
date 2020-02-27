@@ -85,9 +85,6 @@ public class Facture implements Serializable {
     @Column(name = "Fct_Synchroniser")
     private boolean synchroniser;
 
-    @Column(name = "Fct_IdFact")
-    private Long idFact;
-
     @Column(name = "Usr_Id")
     private Long idUtilisateur;
 
@@ -96,9 +93,6 @@ public class Facture implements Serializable {
 
     @Column(name = "Usr_Prenom")
     private String prenom;
-    
-    @Column(name = "Dev_Id")
-    private Long idDevis;
 
     @Column(name = "Fct_TotalTaxe", precision = 28, scale = 3)
     private BigDecimal totalTaxe;
@@ -114,9 +108,15 @@ public class Facture implements Serializable {
     @OneToMany(mappedBy = "facture", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<TaxesFacture> listsTaxe;
 
-    // 0 : Devis , 1 : Commande , 2 : BonLivraison , 3 : VenteDirecte 
-    @Column(name = "Fct_OrigineFacture")
-    private Integer origineFacture;
+    //  0 : VenteDirecte,  1 : Devis , 2 : Commande , 3 : BonLivraison 
+    @Column(name = "Fct_Origine")
+    private Integer origine;
+    
+    @Column(name = "Fct_IdDocumentOrigine")
+    private Long idDocumentOrigine;
+    
+    @Column(name = "Fct_NumeroDocumentOrigine")
+    private String numeroDocumentOrigine;
 
     // 0: client / 1: Livreur
     @Column(name = "Fct_TypeVente")
@@ -143,6 +143,7 @@ public class Facture implements Serializable {
     
     @Column(name = "Ret_Id")
     private Long idRetour;
+    
     @Column(name = "Tab_dateSynch")
     private Long dateSynch;
     @Transient
@@ -150,6 +151,9 @@ public class Facture implements Serializable {
 
     @Transient
     private Devis devis;
+    
+    @Transient
+    private BonCommandeVente bonCommande;
 
     @Transient
     private Utilisateur utilisateur;
@@ -252,16 +256,26 @@ public class Facture implements Serializable {
         return "---";
     }
 
+    public Integer getOrigine() {
+        return origine;
+    }
+
+    public void setOrigine(Integer origine) {
+        this.origine = origine;
+    }
+
+    
+    
     public String getOrigineFactureString() {
         try {
 
-            if (origineFacture == 0) {
+            if (origine == 0) {
                 return "Devis";
-            } else if (origineFacture == 1) {
+            } else if (origine == 1) {
                 return "Bon commande";
-            } else if (origineFacture == 2) {
+            } else if (origine == 2) {
                 return "Bons livraison";
-            } else if (origineFacture == 3) {
+            } else if (origine == 3) {
                 return "Vente directe";
             } else {
                 return "---";
@@ -399,14 +413,6 @@ public class Facture implements Serializable {
         this.libelleClient = libelleClient;
     }
 
-    public Long getIdFact() {
-        return idFact;
-    }
-
-    public void setIdFact(Long idFact) {
-        this.idFact = idFact;
-    }
-
     public BigDecimal getTotalHT() {
         return FonctionsMathematiques.arrondiBigDecimal(totalHT, 3);
     }
@@ -477,14 +483,6 @@ public class Facture implements Serializable {
 
     public void setReste(BigDecimal reste) {
         this.reste = reste;
-    }
-
-    public Integer getOrigineFacture() {
-        return origineFacture;
-    }
-
-    public void setOrigineFacture(Integer origineFacture) {
-        this.origineFacture = origineFacture;
     }
 
     public Integer getTypeVente() {
@@ -622,14 +620,6 @@ public class Facture implements Serializable {
         this.devis = devis;
     }
 
-    public Long getIdDevis() {
-        return idDevis;
-    }
-
-    public void setIdDevis(Long idDevis) {
-        this.idDevis = idDevis;
-    }
-
     public Date getDateFacture() {
         return dateFacture;
     }
@@ -661,7 +651,34 @@ public class Facture implements Serializable {
     public void setDateSynch(Long dateSynch) {
         this.dateSynch = dateSynch;
     }
-        @PreUpdate
+
+    public Long getIdDocumentOrigine() {
+        return idDocumentOrigine;
+    }
+
+    public void setIdDocumentOrigine(Long idDocumentOrigine) {
+        this.idDocumentOrigine = idDocumentOrigine;
+    }
+
+    public String getNumeroDocumentOrigine() {
+        return numeroDocumentOrigine;
+    }
+
+    public void setNumeroDocumentOrigine(String numeroDocumentOrigine) {
+        this.numeroDocumentOrigine = numeroDocumentOrigine;
+    }
+
+    public BonCommandeVente getBonCommande() {
+        return bonCommande;
+    }
+
+    public void setBonCommande(BonCommandeVente bonCommande) {
+        this.bonCommande = bonCommande;
+    }
+    
+    
+    
+    @PreUpdate
     void preupdate() {
         this.dateSynch = System.currentTimeMillis();
 

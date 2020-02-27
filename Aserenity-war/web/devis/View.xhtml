@@ -257,8 +257,9 @@
                                             <div class="col-md-9 col-sm-9 col-xs-12">
                                                 <p:selectOneMenu id="transFormTo" value="#{devisController.selected.transFormTo}" styleClass="form-control"  required="true" filter="true" filterMatchMode="contains" effect="fade" var="l" style="width: 90%; min-width: 180px">
                                                     <f:selectItem itemValue="null" itemLabel="---" />
-                                                    <f:selectItem itemValue="0" itemLabel="#{bundle.BonLivraison}" />
-                                                    <f:selectItem itemValue="1" itemLabel="#{bundle.Facture}"/>
+                                                    <f:selectItem itemValue="0" itemLabel="#{bundle.Commande}" />
+                                                    <f:selectItem itemValue="1" itemLabel="#{bundle.BonLivraison}" />
+                                                    <f:selectItem itemValue="2" itemLabel="#{bundle.Facture}"/>
                                                 </p:selectOneMenu>
                                             </div>
                                         </div>

@@ -84,9 +84,6 @@ public class Devis implements Serializable {
     @Column(name = "Dev_Reste", scale = 3, precision = 28)
     private BigDecimal reste;
 
-    @Column(name = "Dev_IdFact")
-    private Long idFact;
-
     @Column(name = "Usr_Id")
     private Long idUtilisateur;
 
@@ -121,17 +118,21 @@ public class Devis implements Serializable {
     @Column(name = "Dev_Etat")
     private int etat;
     
-    // 0: En Bon Livraison // 1: Facture 
+    //  0:Bon commande // 1: En Bon Livraison // 2: Facture 
     @Column(name = "Dev_TransformTo")
-    private int transFormTo;
+    private Integer transFormTo;
+    
+    @Column(name = "Dev_IdDocumentTransform")
+    private Long idDocumentTransform;
+    
+    @Column(name = "Dev_NumeroDocumentTransform")
+    private String numeroDocumentTransform;
+    
+    @Column(name = "Tab_dateSynch")
+    private Long dateSynch;
     
     @Column(name = "Cli_AssujettiTVA")
     private boolean assujettiTVA;
-    
-    @Column(name = "BLiv_IdBl")
-    private Long idBl;
-        @Column(name = "Tab_dateSynch")
-    private Long dateSynch;
         
     @Transient
     private Client client;
@@ -343,16 +344,6 @@ public class Devis implements Serializable {
         this.libelleClient = libelleClient;
     }
 
-
-
-    public Long getIdFact() {
-        return idFact;
-    }
-
-    public void setIdFact(Long idFact) {
-        this.idFact = idFact;
-    }
-
     public BigDecimal getTotalHT() {
         return FonctionsMathematiques.arrondiBigDecimal(totalHT, 3);
     }
@@ -522,11 +513,11 @@ public class Devis implements Serializable {
         this.motifRejetDevisVente = motifRejetDevisVente;
     }
 
-    public int getTransFormTo() {
+    public Integer getTransFormTo() {
         return transFormTo;
     }
 
-    public void setTransFormTo(int transFormTo) {
+    public void setTransFormTo(Integer transFormTo) {
         this.transFormTo = transFormTo;
     }
 
@@ -536,14 +527,6 @@ public class Devis implements Serializable {
 
     public void setAssujettiTVA(boolean assujettiTVA) {
         this.assujettiTVA = assujettiTVA;
-    }
-
-    public Long getIdBl() {
-        return idBl;
-    }
-
-    public void setIdBl(Long idBl) {
-        this.idBl = idBl;
     }
 
     public String getDescriptionMotifAnnulation() {
@@ -585,11 +568,31 @@ public class Devis implements Serializable {
     public void setDateSynch(Long dateSynch) {
         this.dateSynch = dateSynch;
     }
-            @PreUpdate
+
+    public Long getIdDocumentTransform() {
+        return idDocumentTransform;
+    }
+
+    public void setIdDocumentTransform(Long idDocumentTransform) {
+        this.idDocumentTransform = idDocumentTransform;
+    }
+
+    public String getNumeroDocumentTransform() {
+        return numeroDocumentTransform;
+    }
+
+    public void setNumeroDocumentTransform(String numeroDocumentTransform) {
+        this.numeroDocumentTransform = numeroDocumentTransform;
+    }
+    
+    
+    
+    @PreUpdate
     void preupdate() {
         this.dateSynch = System.currentTimeMillis();
 
     }
+    
     @PrePersist
     void prepersist() {
         this.dateCreation = new Date();

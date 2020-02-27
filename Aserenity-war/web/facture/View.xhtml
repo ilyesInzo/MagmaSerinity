@@ -179,7 +179,7 @@
 
 
                                     <h:panelGroup id="PanelBonLivraison">
-                                        <h:panelGroup rendered="#{factureController.selected.origineFacture eq 2}">
+                                        <h:panelGroup rendered="#{factureController.selected.origineFacture eq 3}">
 
                                             <div class="x_title">
                                                 <h2 style="color: #1a8ea5">#{bundle.BonLivraisons}</h2>                        
@@ -380,14 +380,14 @@
                                                 <div class="col-md-9 col-sm-9 col-xs-12">
                                                     <p:selectOneMenu  value="#{factureController.selectedAvoirVente.typeAvoir}" title="#{bundle.TypeAvoir}" filter="true" filterMatchMode="contains"  effect="fade" var="l"  styleClass="form-control" required ="true" style="width: 90%; min-width: 180px">
                                                         <f:selectItem itemLabel="---" itemValue="" />
-                                                        
+
                                                         <f:selectItem itemLabel="#{bundle.AvoirRetourMarchandise}" itemValue="1" />
                                                         <f:selectItem itemLabel="#{bundle.AvoirCorrectionErreur}" itemValue="2" />
                                                         <p:ajax update="pgRemise,pgArticle,Montant"  listener="#{factureController.initParametre()}"/>
                                                     </p:selectOneMenu>
                                                 </div>
                                             </div>
-<!--f:selectItem itemLabel="{bundle.AvoirCommercial}" itemValue="0" /-->
+                                            <!--f:selectItem itemLabel="{bundle.AvoirCommercial}" itemValue="0" /-->
                                             <h:panelGroup id="pgRemise" >
                                                 <h:panelGroup rendered="#{factureController.selectedAvoirVente.typeAvoir eq 0}">
 
@@ -477,13 +477,13 @@
                                                 </h:panelGroup>
                                             </h:panelGroup>
 
-                                        <p:separator style="width:90%;height:1px;background:#d8d8d8;"/>
-                                            
-                                            
+                                            <p:separator style="width:90%;height:1px;background:#d8d8d8;"/>
 
-                                                    <p:commandButton value="#{bundle.Valider}" title="#{bundle.Valider}" id="addButtonRejete" action="#{factureController.creerAvoir()}" type="push"  icon="ui-icon-check" style="float: right;"  ajax="false" />
 
-                                            
+
+                                            <p:commandButton value="#{bundle.Valider}" title="#{bundle.Valider}" id="addButtonRejete" action="#{factureController.creerAvoir()}" type="push"  icon="ui-icon-check" style="float: right;"  ajax="false" />
+
+
 
 
                                         </div>

@@ -8,38 +8,46 @@ import com.magma.bibliotheque.LireParametrage;
 import com.magma.bibliotheque.TraitementDate;
 import com.magma.controller.util.JsfUtil;
 import com.magma.entity.Article;
+import com.magma.entity.BonCommandeVente;
 import com.magma.entity.BonLivraison;
 import com.magma.entity.Devis;
 import com.magma.entity.Categorie;
 import com.magma.entity.CategorieClient;
 import com.magma.entity.Client;
 import com.magma.entity.Facture;
+import com.magma.entity.LigneBonCommandeVente;
 import com.magma.entity.LigneBonLivraison;
 import com.magma.entity.LigneDevis;
 import com.magma.entity.LigneFacture;
 import com.magma.entity.LigneRetour;
 import com.magma.entity.ParametrageTaxe;
+import com.magma.entity.PrefixBonCommandeVente;
 import com.magma.entity.PrefixBonLivraison;
 import com.magma.entity.PrefixDevis;
 import com.magma.entity.PrefixFacture;
 import com.magma.entity.Retour;
+import com.magma.entity.TaxesBonCommandeVente;
 import com.magma.entity.TaxesDevis;
 import com.magma.entity.TaxesFacture;
 import com.magma.entity.Utilisateur;
+import com.magma.session.BonCommandeVenteFacadeLocal;
 import com.magma.session.BonLivraisonFacadeLocal;
 import com.magma.session.DevisFacadeLocal;
 import com.magma.session.CategorieClientFacadeLocal;
 import com.magma.session.ClientFacadeLocal;
 import com.magma.session.FactureFacadeLocal;
+import com.magma.session.LigneBonCommandeVenteFacadeLocal;
 import com.magma.session.LigneBonLivraisonFacadeLocal;
 import com.magma.session.LigneDevisFacadeLocal;
 import com.magma.session.LigneFactureFacadeLocal;
 import com.magma.session.LigneRetourFacadeLocal;
 import com.magma.session.ParametrageTaxeFacadeLocal;
+import com.magma.session.PrefixBonCommandeVenteFacadeLocal;
 import com.magma.session.PrefixBonLivraisonFacadeLocal;
 import com.magma.session.PrefixDevisFacadeLocal;
 import com.magma.session.PrefixFactureFacadeLocal;
 import com.magma.session.RetourFacadeLocal;
+import com.magma.session.TaxesBonCommandeVenteFacadeLocal;
 import com.magma.session.TaxesDevisFacadeLocal;
 import com.magma.session.TaxesFactureFacadeLocal;
 import com.magma.util.MenuTemplate;
@@ -96,8 +104,13 @@ public class DevisController implements Serializable {
 
     @EJB
     private BonLivraisonFacadeLocal ejbFacadeBonLivraison;
+    
+    @EJB
+    private LigneBonLivraisonFacadeLocal ejbFacadeLigneBonLivraison;
+    
     @EJB
     private PrefixBonLivraisonFacadeLocal ejbFacadePrefixBonLivraison;
+    
     @EJB
     private LigneFactureFacadeLocal ejbFacadeLigneFacture;
 
@@ -106,13 +119,23 @@ public class DevisController implements Serializable {
     @EJB
     private PrefixFactureFacadeLocal ejbFacadePrefixFacture;
     @EJB
-    private LigneBonLivraisonFacadeLocal ejbFacadeLigneBonLivraison;
-    @EJB
     private TaxesFactureFacadeLocal ejbFacadeTaxeFacture;
     @EJB
     private RetourFacadeLocal ejbFacadeRetour;
     @EJB
     private LigneRetourFacadeLocal ejbFacadeLigneRetour;
+    
+    @EJB
+    private BonCommandeVenteFacadeLocal ejbFacadeBonCommandeVente;
+    
+    @EJB
+    private LigneBonCommandeVenteFacadeLocal ejbFacadeLigneBonCommandeVente;
+    
+    @EJB
+    private PrefixBonCommandeVenteFacadeLocal ejbFacadePrefixBonCommandeVente;
+    @EJB
+    private TaxesBonCommandeVenteFacadeLocal ejbFacadeTaxeBonCommandeVente;
+    
     private List<Client> listClient = null;
 
     private Categorie categorie;
@@ -633,8 +656,40 @@ public class DevisController implements Serializable {
 
     public String approuverDevis() {
 
-        //BL
+        
         if (selected.getTransFormTo() == 0) {
+
+            List<PrefixBonCommandeVente> listPrefixBonCommandeVentes = null;
+            PrefixBonCommandeVente prefixBonCommandeVente = null;
+            listPrefixBonCommandeVentes = ejbFacadePrefixBonCommandeVente.findAll(" where o.supprimer = 0 ");
+            String compteur = "";
+            if (listPrefixBonCommandeVentes != null && !listPrefixBonCommandeVentes.isEmpty()) {
+                prefixBonCommandeVente = listPrefixBonCommandeVentes.get(0);
+                compteur = prefixBonCommandeVente.getLibellePrefixe() + FonctionsString.retourMotSelonLongeur(prefixBonCommandeVente.getCompteur() + "", 6);
+
+            } else {
+                FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), compteur + " " + ResourceBundle.getBundle("/Bundle").getString("CreerUnPrefixe")));
+                return null;
+            }
+
+            if (!ejbFacadeBonCommandeVente.verifierUniqueNumero(compteur)) {
+                BonCommandeVente BonCommandeVente = createCommande(compteur);
+                selected.setEtat(4);
+
+                selected.setIdDocumentTransform(BonCommandeVente.getId());
+                selected.setNumeroDocumentTransform(BonCommandeVente.getNumero());
+                getFacade().edit(selected);
+                prefixBonCommandeVente.setCompteur(prefixBonCommandeVente.getCompteur() + 1);
+                ejbFacadePrefixBonCommandeVente.edit(prefixBonCommandeVente);
+            } else {
+                FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), compteur + " " + ResourceBundle.getBundle("/Bundle").getString("CeChampExist")));
+                return null;
+            }
+
+        }//BL
+        else if (selected.getTransFormTo() == 1) {
 
             List<PrefixBonLivraison> listPrefixBonLivraisons = null;
             PrefixBonLivraison prefixBonLivraison = null;
@@ -653,7 +708,8 @@ public class DevisController implements Serializable {
             if (!ejbFacadeBonLivraison.verifierUniqueNumero(compteur)) {
                 BonLivraison bonLivraison = createBonLivraison(compteur);
                 selected.setEtat(4);
-                selected.setIdFact(bonLivraison.getId());
+                selected.setIdDocumentTransform(bonLivraison.getId());
+                selected.setNumeroDocumentTransform(bonLivraison.getNumero());
                 getFacade().edit(selected);
                 prefixBonLivraison.setCompteur(prefixBonLivraison.getCompteur() + 1);
                 ejbFacadePrefixBonLivraison.edit(prefixBonLivraison);
@@ -664,7 +720,7 @@ public class DevisController implements Serializable {
             }
 
         }//Facture
-        else if (selected.getTransFormTo() == 1) {
+        else if (selected.getTransFormTo() == 2) {
 
             List<PrefixFacture> listPrefixFactures = null;
             PrefixFacture prefixFacture = null;
@@ -683,7 +739,9 @@ public class DevisController implements Serializable {
             if (!ejbFacadeFacture.verifierUniqueNumero(compteur)) {
                 Facture facture = createFacture(compteur);
                 selected.setEtat(4);
-                selected.setIdFact(facture.getId());
+
+                selected.setIdDocumentTransform(facture.getId());
+                selected.setNumeroDocumentTransform(facture.getNumero());
                 getFacade().edit(selected);
                 prefixFacture.setCompteur(prefixFacture.getCompteur() + 1);
                 ejbFacadePrefixFacture.edit(prefixFacture);
@@ -697,6 +755,71 @@ public class DevisController implements Serializable {
 
         return prepareList();
     }
+    
+    public BonCommandeVente createCommande(String numero) {
+
+        BonCommandeVente bonCommandeVente = new BonCommandeVente();
+        bonCommandeVente.setNumero(numero);
+        bonCommandeVente.setCodeClient(selected.getCodeClient());
+        bonCommandeVente.setLibelleClient(selected.getLibelleClient());
+        bonCommandeVente.setIdClient(selected.getIdClient());
+        bonCommandeVente.setDateBonCommandeVente(TraitementDate.debutJournee(new Date()));
+        bonCommandeVente.setEtat(0);
+        bonCommandeVente.setDateCreation(new Date());
+        bonCommandeVente.setOrigine(1);
+        bonCommandeVente.setIdDocumentOrigine(selected.getId());
+        bonCommandeVente.setNumeroDocumentOrigine(selected.getNumero());
+        bonCommandeVente.setTypeVente(0);
+        bonCommandeVente.setMontantHT(selected.getMontantHT());
+        bonCommandeVente.setMontantTVA(selected.getMontantTVA());
+        bonCommandeVente.setMontantTTC(selected.getMontantTTC());
+        bonCommandeVente.setTotalHT(selected.getTotalHT());
+        bonCommandeVente.setTotalTVA(selected.getTotalTVA());
+        bonCommandeVente.setTotalTTC(selected.getTotalTTC());
+        bonCommandeVente.setTotalTaxe(selected.getTotalTaxe());
+        bonCommandeVente.setReste(selected.getTotalTTC());
+        ejbFacadeBonCommandeVente.create(bonCommandeVente);
+
+        List<LigneBonCommandeVente> listLignebonCommandeVentes = new ArrayList<>();
+
+        for (LigneDevis ligneDevis : selected.getListeLigneDeviss()) {
+            LigneBonCommandeVente lignebonCommandeVente = new LigneBonCommandeVente();
+            lignebonCommandeVente.setCodeArticle(ligneDevis.getCodeArticle());
+            lignebonCommandeVente.setLibelleArticle(ligneDevis.getLibelleArticle());
+            lignebonCommandeVente.setIdArticle(ligneDevis.getIdArticle());
+
+            lignebonCommandeVente.setTvaArticle(ligneDevis.getTvaArticle());
+            lignebonCommandeVente.setPrixUnitaireHT(ligneDevis.getPrixUnitaireHT());
+            lignebonCommandeVente.setPrixUnitaireApresRemise(ligneDevis.getPrixUnitaireApresRemise());
+            lignebonCommandeVente.setRemise(ligneDevis.getRemise());
+            lignebonCommandeVente.setQuantite(ligneDevis.getQuantite());
+            lignebonCommandeVente.setQuantiteMax(ligneDevis.getQuantiteMax());
+            lignebonCommandeVente.setTotalTVA(ligneDevis.getTotalTVA());
+            lignebonCommandeVente.setTotalHT(ligneDevis.getTotalHT());
+            lignebonCommandeVente.setTotalTTC(ligneDevis.getTotalTTC());
+            lignebonCommandeVente.setBonCommandeVente(bonCommandeVente);
+            listLignebonCommandeVentes.add(lignebonCommandeVente);
+        }
+        ejbFacadeLigneBonCommandeVente.create(listLignebonCommandeVentes);
+
+        List<TaxesBonCommandeVente> listTaxesbonCommandeVentes = new ArrayList<>();
+        for (TaxesDevis taxesDevis : selected.getListsTaxe()) {
+            TaxesBonCommandeVente taxesbonCommandeVente = new TaxesBonCommandeVente();
+            taxesbonCommandeVente.setBonCommandeVente(bonCommandeVente);
+            taxesbonCommandeVente.setApresTva(taxesDevis.isApresTva());
+            taxesbonCommandeVente.setValeur(taxesDevis.getValeur());
+            taxesbonCommandeVente.setMontant(taxesDevis.getMontant());
+            taxesbonCommandeVente.setTypeTaxe(taxesDevis.getTypeTaxe());
+            taxesbonCommandeVente.setOperation(taxesDevis.getOperation());
+            taxesbonCommandeVente.setParametrageTaxe(taxesDevis.getParametrageTaxe());
+            listTaxesbonCommandeVentes.add(taxesbonCommandeVente);
+        }
+
+        ejbFacadeTaxeBonCommandeVente.create(listTaxesbonCommandeVentes);
+
+        //createRetour(listLignebonCommandeVentes,bonCommandeVente);
+        return bonCommandeVente;
+    }
 
     public BonLivraison createBonLivraison(String numero) {
 
@@ -705,17 +828,17 @@ public class DevisController implements Serializable {
         //bonLivraison.setCodeClient(selected.getCodeClient());
         bonLivraison.setLibelleClient(selected.getLibelleClient());
         bonLivraison.setIdClient(selected.getIdClient());
-        bonLivraison.setOrigineBonLivraison(1);
+        bonLivraison.setOrigine(1);
+        bonLivraison.setIdDocumentOrigine(selected.getId());
+        bonLivraison.setNumeroDocumentOrigine(selected.getNumero());
         bonLivraison.setEtat(0);
         bonLivraison.setDateCreation(new Date());
         bonLivraison.setTypeVente(0);
-
         bonLivraison.setMontantHT(selected.getMontantHT());
         bonLivraison.setMontantTVA(selected.getMontantTVA());
         bonLivraison.setMontantTTC(selected.getMontantTTC());
         bonLivraison.setDateSynch(System.currentTimeMillis());
         bonLivraison.setReste(selected.getMontantHT());
-        bonLivraison.setIdDevis(selected.getId());
         ejbFacadeBonLivraison.create(bonLivraison);
 
         List<LigneBonLivraison> listLigneBonLivraisons = new ArrayList<>();
@@ -754,7 +877,9 @@ public class DevisController implements Serializable {
         facture.setDateFacture(TraitementDate.debutJournee(new Date()));
         facture.setEtat(0);
         facture.setDateCreation(new Date());
-        facture.setOrigineFacture(0);
+        facture.setOrigine(1);
+        facture.setIdDocumentOrigine(selected.getId());
+        facture.setNumeroDocumentOrigine(selected.getNumero());
         facture.setTypeVente(0);
         facture.setMontantHT(selected.getMontantHT());
         facture.setMontantTVA(selected.getMontantTVA());
@@ -764,7 +889,6 @@ public class DevisController implements Serializable {
         facture.setTotalTTC(selected.getTotalTTC());
         facture.setTotalTaxe(selected.getTotalTaxe());
         facture.setReste(selected.getTotalTTC());
-        facture.setIdDevis(selected.getId());
         ejbFacadeFacture.create(facture);
 
         List<LigneFacture> listLigneFactures = new ArrayList<>();

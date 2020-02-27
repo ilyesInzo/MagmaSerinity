@@ -53,7 +53,8 @@ public class MenuTemplate {
             "GDelegation",
             "GBanque",
             "GTicket",
-            "GClassificationClient"
+            "GClassificationClient",
+            "GTemplateArticleVisite"
     ));
 
     private static List<String> ListFonctionaliteModule = new ArrayList<String>(Arrays.asList(
@@ -62,7 +63,8 @@ public class MenuTemplate {
             "MClient",
             "MVente",
             "MStock",
-            "MCommande"));
+            "MCommande",
+            "Mcommercial"));
 
     public static void menuFonctionnalitesModules(String fonctionnalite, String fonctionnaliteModule, String fonctionnaliteSousModule, Utilisateur utilisateur) {
         FacesContext context = FacesContext.getCurrentInstance();

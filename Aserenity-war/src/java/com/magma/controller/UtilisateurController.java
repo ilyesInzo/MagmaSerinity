@@ -9,11 +9,13 @@ import com.magma.bibliotheque.TraitementImage;
 import com.magma.entity.Utilisateur;
 import com.magma.session.UtilisateurFacadeLocal;
 import com.magma.controller.util.JsfUtil;
+import com.magma.entity.Commercial;
 import com.magma.entity.Delegation;
 import com.magma.entity.Departement;
 import com.magma.entity.Entreprise;
 import com.magma.entity.Gouvernorat;
 import com.magma.entity.Poste;
+import com.magma.session.CommercialFacadeLocal;
 import com.magma.session.DelegationFacadeLocal;
 import com.magma.session.EntrepriseFacadeLocal;
 import com.magma.session.PosteFacadeLocal;
@@ -46,7 +48,7 @@ import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
-@ManagedBean(name= "utilisateurController")
+@ManagedBean(name = "utilisateurController")
 @SessionScoped
 public class UtilisateurController implements Serializable {
 
@@ -61,6 +63,8 @@ public class UtilisateurController implements Serializable {
     private PosteFacadeLocal ejbFacadePoste;
     @EJB
     private EntrepriseFacadeLocal ejbFacadeEntreprise;
+    @EJB
+    private CommercialFacadeLocal ejbFacadeCommercial;
 
     private List<Delegation> listeDelegations = null;
     private List<Poste> listePostes = null;
@@ -86,10 +90,10 @@ public class UtilisateurController implements Serializable {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
         /*if (utilisateur.getIdEntrepriseSuivi() != null && utilisateur.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = utilisateur.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = utilisateur.getEntreprise().getId();
-            }*/
+         idEntreprise = utilisateur.getIdEntrepriseSuivi();
+         } else {
+         idEntreprise = utilisateur.getEntreprise().getId();
+         }*/
     }
 
     public String initPage() {
@@ -98,14 +102,14 @@ public class UtilisateurController implements Serializable {
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
             utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
 
-            MenuTemplate.menuFonctionnalitesModules("GUtilisateur", "MParametrage", null,utilisateur);
+            MenuTemplate.menuFonctionnalitesModules("GUtilisateur", "MParametrage", null, utilisateur);
 
             //MenuTemplate.menuFonctionnalitesModules("GUtilisateur", utilisateur);
             /*if (utilisateur.getIdEntrepriseSuivi() != null && utilisateur.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = utilisateur.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = utilisateur.getEntreprise().getId();
-            }*/
+             idEntreprise = utilisateur.getIdEntrepriseSuivi();
+             } else {
+             idEntreprise = utilisateur.getEntreprise().getId();
+             }*/
             recreateModel();
             FacesContext.getCurrentInstance().getExternalContext().redirect("../utilisateur/List.xhtml");
         } catch (IOException ex) {
@@ -245,12 +249,12 @@ public class UtilisateurController implements Serializable {
                     }
                 } else {
                     if (selected.getStatut().equals("Mme")) {
-                         selected.setPhoto("../resources/images/femme.png");
+                        selected.setPhoto("../resources/images/femme.png");
                     } else {
                         selected.setPhoto("../resources/images/homme.png");
                     }
                 }
-                
+
                 String motpasse = FonctionsString.genereUnMot(8);
                 selected.setPasswd(motpasse);
                 getFacade().create(selected);
@@ -327,7 +331,7 @@ public class UtilisateurController implements Serializable {
     }
 
     public String update() {
-        try {
+        //try {
             errorMsg = getFacade().verifierUnique(selected.getEmail().trim(), selected.getId());
 
             if (errorMsg == false) {
@@ -405,11 +409,11 @@ public class UtilisateurController implements Serializable {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), selected.getEmail() + " " + ResourceBundle.getBundle("/Bundle").getString("CeChampExist")));
                 return null;
             }
-        } catch (Exception e) {
+       /* } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("EchecOperation")));
             System.out.println("Erreur- UtilisateurController - update: " + e.getMessage());
             return null;
-        }
+        }*/
     }
 
     public String destroy() {
@@ -595,10 +599,10 @@ public class UtilisateurController implements Serializable {
         if (oldPwd.equals(selected.getPasswd())) {
             if (newPwd.equals(confirmeNewPwd)) {
                 /*selected.setPasswd(pwdClaire);
-                getFacade().edit(selected);*/
+                 getFacade().edit(selected);*/
                 prepareListApresReinitialiserMP(pwdClaire, selected);
                 FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-                FacesContext.getCurrentInstance().addMessage("growlShow", new FacesMessage( "Success", ResourceBundle.getBundle("/Bundle").getString("MDPUpdate")));  
+                FacesContext.getCurrentInstance().addMessage("growlShow", new FacesMessage("Success", ResourceBundle.getBundle("/Bundle").getString("MDPUpdate")));
                 return null;
             } else {
                 oldPwd = "";
@@ -618,7 +622,7 @@ public class UtilisateurController implements Serializable {
         }
 
     }
-    
+
     public String prepareListApresCreation(String motGenerer, Utilisateur userTemp) {
         String sujet = ResourceBundle.getBundle("/Bundle").getString("SubjectNouvCompte");
         String body = userTemp.getNomPrenom() + " " + ResourceBundle.getBundle("/Bundle").getString("MsgBienvenu") + ".\n\n";
@@ -651,6 +655,12 @@ public class UtilisateurController implements Serializable {
         operationEmail.envoieEmailNotification(userTemp.getEmail(), sujet, body);
         userTemp.setPasswd(motGenerer);
         ejbFacade.edit(userTemp);
+        Commercial commercial = ejbFacadeCommercial.find(userTemp.getId());
+
+        if (commercial != null) {
+            commercial.setPasswd(userTemp.getPasswd());
+            ejbFacadeCommercial.edit(commercial);
+        }
         //return prepareList();
     }
 
@@ -660,7 +670,7 @@ public class UtilisateurController implements Serializable {
             if (selectedSingle.isEtatUsr() == true) {
                 String motpasse = FonctionsString.genereUnMot(8);
 
-                 prepareListApresReinitialiserMP(motpasse, selectedSingle);
+                prepareListApresReinitialiserMP(motpasse, selectedSingle);
                 return prepareList();
             } else {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("CeCompteDesactiver")));
@@ -854,7 +864,7 @@ public class UtilisateurController implements Serializable {
         listePostes = new ArrayList<>();
         listePostes = selected.getDepartement().getPostes();
     }
-    
+
     public SelectItem[] getItemsAvailableSelectOneCommercial() {
         return JsfUtil.getSelectItems(getFacade().findAllNative(" where o.Usr_Id not in (select e.Com_Id from T_Commercial as e) and o.Usr_EstEmploye = 1 "), true);
     }

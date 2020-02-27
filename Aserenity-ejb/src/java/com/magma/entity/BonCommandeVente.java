@@ -107,18 +107,24 @@ public class BonCommandeVente implements Serializable {
     private int etat;
     
     // 0: vente Directe , 1: Devis
-    @Column(name = "BCVnt_OrigineBonLivraison")
-    private Integer origineBonCommandeVente;
+    @Column(name = "BCVnt_Origine")
+    private Integer origine;
+    
+    @Column(name = "BCVnt_IdDocumentOrigine")
+    private Long idDocumentOrigine;
+    
+    @Column(name = "BCVnt_NumeroDocumentOrigine")
+    private String numeroDocumentOrigine;
     
     // 0: En Bon Livraison // 1: Facture 
     @Column(name = "BCVnt_TransformTo")
-    private int transFormTo;
+    private Integer transFormTo;
     
-    @Column(name = "BCVnt_IdDocument")
-    private Long idDocument;
+    @Column(name = "BCVnt_IdDocumentTransform")
+    private Long idDocumentTransform;
     
-    @Column(name = "BCVnt_NumeroDocument")
-    private String numeroDocument;
+    @Column(name = "BCVnt_NumeroDocumentTransform")
+    private String numeroDocumentTransform;
     
     @Column(name = "Tab_dateSynch")
     private Long dateSynch;
@@ -313,29 +319,47 @@ public class BonCommandeVente implements Serializable {
         this.etat = etat;
     }
 
-    public int getTransFormTo() {
+    public Integer getTransFormTo() {
         return transFormTo;
     }
 
-    public void setTransFormTo(int transFormTo) {
+    public void setTransFormTo(Integer transFormTo) {
         this.transFormTo = transFormTo;
     }
 
-    public Long getIdDocument() {
-        return idDocument;
+    public Long getIdDocumentTransform() {
+        return idDocumentTransform;
     }
 
-    public void setIdDocument(Long idDocument) {
-        this.idDocument = idDocument;
+    public void setIdDocumentTransform(Long idDocumentTransform) {
+        this.idDocumentTransform = idDocumentTransform;
     }
 
-    public String getNumeroDocument() {
-        return numeroDocument;
+    public String getNumeroDocumentTransform() {
+        return numeroDocumentTransform;
     }
 
-    public void setNumeroDocument(String numeroDocument) {
-        this.numeroDocument = numeroDocument;
+    public void setNumeroDocumentTransform(String numeroDocumentTransform) {
+        this.numeroDocumentTransform = numeroDocumentTransform;
     }
+
+    public Long getIdDocumentOrigine() {
+        return idDocumentOrigine;
+    }
+
+    public void setIdDocumentOrigine(Long idDocumentOrigine) {
+        this.idDocumentOrigine = idDocumentOrigine;
+    }
+
+    public String getNumeroDocumentOrigine() {
+        return numeroDocumentOrigine;
+    }
+
+    public void setNumeroDocumentOrigine(String numeroDocumentOrigine) {
+        this.numeroDocumentOrigine = numeroDocumentOrigine;
+    }
+
+
 
     public Long getDateSynch() {
         return dateSynch;
@@ -393,13 +417,15 @@ public class BonCommandeVente implements Serializable {
         this.libelleUserModif = libelleUserModif;
     }
 
-    public Integer getOrigineBonCommandeVente() {
-        return origineBonCommandeVente;
+    public Integer getOrigine() {
+        return origine;
     }
 
-    public void setOrigineBonCommandeVente(Integer origineBonCommandeVente) {
-        this.origineBonCommandeVente = origineBonCommandeVente;
+    public void setOrigine(Integer origine) {
+        this.origine = origine;
     }
+
+
 
     public Devis getDevis() {
         return devis;

@@ -105,9 +105,16 @@ public class BonLivraison implements Serializable {
 
     @Column(name = "BLiv_AppVersion")
     private String appVersion;*/
-    // 0 : bonCommande , 1: Devis , 2: vente Directe
-    @Column(name = "BLiv_OrigineBonLivraison")
-    private Integer origineBonLivraison;
+    
+    //   0 : vente Directe, 1 : Devis , 2 : bonCommande
+    @Column(name = "BLiv_Origine")
+    private Integer origine;
+    
+    @Column(name = "BLiv_IdDocumentOrigine")
+    private Long idDocumentOrigine;
+    
+    @Column(name = "BLiv_NumeroDocumentOrigine")
+    private String numeroDocumentOrigine;
 
     @Column(name = "Usr_Id")
     private Long idUtilisateur;
@@ -129,8 +136,6 @@ public class BonLivraison implements Serializable {
     @OneToMany(mappedBy = "bonLivraison", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<LigneBonLivraison> listeLigneBonLivraisons;
 
-    @Column(name = "BLiv_idFacture")
-    private Long idFacture;
 
     @Column(name = "BLiv_Supprimer")
     private boolean supprimer;
@@ -139,12 +144,19 @@ public class BonLivraison implements Serializable {
     @Column(name = "BLiv_Etat")
     private int etat;
 
-    @Column(name = "Dev_Libelle")
+    @Column(name = "BLiv_Libelle")
     private String libelleDevis;
 
-    @Column(name = "Dev_Id")
-    private Long idDevis;
-
+    // 0: Facture 
+    @Column(name = "BLiv_TransformTo")
+    private Integer transFormTo;
+    
+    @Column(name = "BLiv_IdDocumentTransform")
+    private Long idDocumentTransform;
+    
+    @Column(name = "Dev_NumeroDocumentTransform")
+    private String numeroDocumentTransform;
+    
     // 0: client / 1: Livreur
     @Column(name = "BLiv_TypeVente")
     private Integer typeVente;
@@ -157,6 +169,10 @@ public class BonLivraison implements Serializable {
 
     @Transient
     private Devis devis;
+    
+    @Transient
+    private BonCommandeVente bonCommande;
+    
     @Transient
     private Client client;
 
@@ -218,14 +234,40 @@ public class BonLivraison implements Serializable {
         this.id = id;
     }
 
+    public Integer getOrigine() {
+        return origine;
+    }
+
+    public void setOrigine(Integer origine) {
+        this.origine = origine;
+    }
+
+    public Long getIdDocumentOrigine() {
+        return idDocumentOrigine;
+    }
+
+    public void setIdDocumentOrigine(Long idDocumentOrigine) {
+        this.idDocumentOrigine = idDocumentOrigine;
+    }
+
+    public String getNumeroDocumentOrigine() {
+        return numeroDocumentOrigine;
+    }
+
+    public void setNumeroDocumentOrigine(String numeroDocumentOrigine) {
+        this.numeroDocumentOrigine = numeroDocumentOrigine;
+    }
+
+    
+    
     public String getOrigineBonLivraisonString() {
         try {
 
-            if (origineBonLivraison == 0) {
+            if (origine == 0) {
                 return "Bon commande";
-            } else if (origineBonLivraison == 1) {
+            } else if (origine == 1) {
                 return "Devis";
-            } else if (origineBonLivraison == 2) {
+            } else if (origine == 2) {
                 return "Vente directe";
             } else {
                 return "---";
@@ -391,13 +433,6 @@ public class BonLivraison implements Serializable {
         this.listeLigneBonLivraisons = listeLigneBonLivraisons;
     }
 
-    public Long getIdFacture() {
-        return idFacture;
-    }
-
-    public void setIdFacture(Long idFacture) {
-        this.idFacture = idFacture;
-    }
 
     public String getDateCreationStringFr() {
         try {
@@ -529,7 +564,7 @@ public class BonLivraison implements Serializable {
     }
 
     public boolean isNePeutApprouverBonLivraison() {
-        if (idFacture != null) {
+        if (idDocumentOrigine != null) {
             return true;
         } else {
             return false;
@@ -544,21 +579,7 @@ public class BonLivraison implements Serializable {
         this.libelleDevis = libelleDevis;
     }
 
-    public Long getIdDevis() {
-        return idDevis;
-    }
 
-    public void setIdDevis(Long idDevis) {
-        this.idDevis = idDevis;
-    }
-
-    public Integer getOrigineBonLivraison() {
-        return origineBonLivraison;
-    }
-
-    public void setOrigineBonLivraison(Integer origineBonLivraison) {
-        this.origineBonLivraison = origineBonLivraison;
-    }
 
     public List<EncaissementBonLivraison> getListEncaissementBonLivraisons() {
         return listEncaissementBonLivraisons;
@@ -663,6 +684,40 @@ public class BonLivraison implements Serializable {
     public void setIdRetour(Long idRetour) {
         this.idRetour = idRetour;
     }
+
+    public Integer getTransFormTo() {
+        return transFormTo;
+    }
+
+    public void setTransFormTo(Integer transFormTo) {
+        this.transFormTo = transFormTo;
+    }
+
+    public Long getIdDocumentTransform() {
+        return idDocumentTransform;
+    }
+
+    public void setIdDocumentTransform(Long idDocumentTransform) {
+        this.idDocumentTransform = idDocumentTransform;
+    }
+
+    public String getNumeroDocumentTransform() {
+        return numeroDocumentTransform;
+    }
+
+    public void setNumeroDocumentTransform(String numeroDocumentTransform) {
+        this.numeroDocumentTransform = numeroDocumentTransform;
+    }
+
+    public BonCommandeVente getBonCommande() {
+        return bonCommande;
+    }
+
+    public void setBonCommande(BonCommandeVente bonCommande) {
+        this.bonCommande = bonCommande;
+    }
+    
+    
 
     @PrePersist
     void prepersist() {

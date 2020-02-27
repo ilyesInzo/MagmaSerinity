@@ -22,6 +22,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -62,7 +63,7 @@ public class Article implements Serializable {
     private boolean supprimer;
     
     @Column(name = "Tab_DateCreation")
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreation;
     
     @Column(name = "Art_Photo1")

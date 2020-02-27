@@ -9,6 +9,7 @@ import com.magma.bibliotheque.TraitementDate;
 import com.magma.controller.util.JsfUtil;
 import com.magma.entity.Article;
 import com.magma.entity.AvoirVente;
+import com.magma.entity.BonCommandeVente;
 import com.magma.entity.BonLivraison;
 import com.magma.entity.Facture;
 import com.magma.entity.Categorie;
@@ -18,6 +19,7 @@ import com.magma.entity.Devis;
 import com.magma.entity.Encaissement;
 import com.magma.entity.EncaissementBonLivraison;
 import com.magma.entity.LigneAvoirVente;
+import com.magma.entity.LigneBonCommandeVente;
 import com.magma.entity.LigneBonLivraison;
 import com.magma.entity.LigneDevis;
 import com.magma.entity.LigneFacture;
@@ -26,12 +28,14 @@ import com.magma.entity.ParametrageTaxe;
 import com.magma.entity.PrefixAvoirVente;
 import com.magma.entity.PrefixFacture;
 import com.magma.entity.Retour;
+import com.magma.entity.TaxesBonCommandeVente;
 import com.magma.entity.TaxesDevis;
 import com.magma.entity.TaxesFacture;
 import com.magma.entity.Utilisateur;
 import com.magma.schedule.TraitementRetour;
 import com.magma.session.ArticleFacadeLocal;
 import com.magma.session.AvoirVenteFacadeLocal;
+import com.magma.session.BonCommandeVenteFacadeLocal;
 import com.magma.session.BonLivraisonFacadeLocal;
 import com.magma.session.FactureFacadeLocal;
 import com.magma.session.CategorieClientFacadeLocal;
@@ -39,6 +43,7 @@ import com.magma.session.ClientFacadeLocal;
 import com.magma.session.DevisFacadeLocal;
 import com.magma.session.EncaissementFacadeLocal;
 import com.magma.session.LigneAvoirVenteFacadeLocal;
+import com.magma.session.LigneBonCommandeVenteFacadeLocal;
 import com.magma.session.LigneBonLivraisonFacadeLocal;
 import com.magma.session.LigneDevisFacadeLocal;
 import com.magma.session.LigneFactureFacadeLocal;
@@ -127,7 +132,10 @@ public class FactureController implements Serializable {
     private RetourFacadeLocal ejbFacadeRetour;
     @EJB
     private LigneRetourFacadeLocal ejbFacadeLigneRetour;
-
+    @EJB
+    private LigneBonCommandeVenteFacadeLocal ejbFacadeLigneBonCommande;
+    @EJB
+    private BonCommandeVenteFacadeLocal ejbFacadeBonCommande;
     private List<BonLivraison> listSelectedBonLivraison = null;
     private List<BonLivraison> listBonLivraison = null;
     private List<Client> listClient = null;
@@ -162,6 +170,7 @@ public class FactureController implements Serializable {
     private PrefixFacture prefixeFacture;
     private List<PrefixFacture> listPrefixFacture = new ArrayList<>();
     private List<Devis> listDeviss = new ArrayList();
+    private List<BonCommandeVente> listCommandes = new ArrayList();
     private Utilisateur utilisateur;
 
     private Date dateDebut = new Date();
@@ -301,8 +310,8 @@ public class FactureController implements Serializable {
                 selectedAvoirVente.getListLigneAvoirVentes().add(ligneAvoirVente);
             }
 
-            if (selected.getOrigineFacture() == 2) {
-                listSelectedBonLivraison = ejbFacadeBonLivraison.findAllNative(" where o.BLiv_idFacture = " + selected.getId());
+            if (selected.getOrigine() == 2) {
+                listSelectedBonLivraison = ejbFacadeBonLivraison.findAllNative(" where o.BLiv_IdDocumentTransform = " + selected.getId());
 
                 for (BonLivraison bonLivraison : listSelectedBonLivraison) {
 
@@ -399,7 +408,7 @@ public class FactureController implements Serializable {
     public String create() {
 
         /*try {*/
-        if (selected.getOrigineFacture() == 2) {
+        if (selected.getOrigine() == 3) {
             if (listSelectedBonLivraison != null && !listSelectedBonLivraison.isEmpty()) {
                 //recalculer les taxes
                 changedFactureBL();
@@ -416,35 +425,14 @@ public class FactureController implements Serializable {
                     selected.setLibelleClient(selected.getClient().getLibelle());
                 }
                 selected.setAvoir(false);
-                /*selected.setIdDomaine(selected.getDomaine().getId());
-                selected.setLibelleDomaine(selected.getDomaine().getLibelle());
-                selected.setCodeDomaine(selected.getDomaine().getCode());*/
 
- /*selected.setIdEntreprise(idEntreprise);
-                selected.setLibelleEntreprise(selected.getDomaine().getEntreprise().getLibelle());
-                selected.setCodeEntreprise(selected.getDomaine().getEntreprise().getCode());*/
- /* selected.setCodeCommercialVendeur(listSelectedBonLivraison.get(0).getCodeCommercialVendeur());
-
-                if (selected.getLivreur() != null) {
-                    selected.setCodeVendeur(selected.getLivreur().getCode());
-                    selected.setVendeur(selected.getLivreur().getNomPrenom());
-                    selected.setIdVendeur(selected.getLivreur().getId());
-                }*/
                 selected.setSynchroniser(false);
 
-                /*selected.setAppVersion(listSelectedBonLivraison.get(0).getAppVersion());
-                selected.setLatitude(listSelectedBonLivraison.get(0).getLatitude() + "");
-                selected.setLongitude(listSelectedBonLivraison.get(0).getLongitude() + "");
-                selected.setPrecision(listSelectedBonLivraison.get(0).getPrecision() + "");
-                selected.setIdFactMobile(null);*/
                 selected.setListeEncaissements(new ArrayList<Encaissement>());
                 //selected.setListePaquetVendus(new ArrayList<PaquetVendu>());
                 selected.setListeLigneFactures(new ArrayList<LigneFacture>());
 
-                /*selected.setIdUtilisateur(utilisateur.getId());
-                selected.setNom(utilisateur.getNom());
-                selected.setPrenom(utilisateur.getPrenom());
-                selected.setUtilisateur(utilisateur);*/
+
                 if (selected.getListsTaxe() != null && !selected.getListsTaxe().isEmpty()) {
 
                     listTaxesTemps = selected.getListsTaxe();
@@ -499,21 +487,14 @@ public class FactureController implements Serializable {
                             for (EncaissementBonLivraison encaissementBonLivraison : bonLivraison.getListEncaissementBonLivraisons()) {
 
                                 Encaissement encaissement = new Encaissement();
-                                /*encaissement.setCodeClient(encaissementBonLivraison.getCodeClient());
-                                encaissement.setCodeCommercialVendeur(encaissementBonLivraison.getCodeCommercialVendeur());
-                                encaissement.setCodeEntreprise(encaissementBonLivraison.getCodeEntreprise());
-                                encaissement.setCodeVendeur(encaissementBonLivraison.getCodeVendeur());*/
+
                                 encaissement.setDateCheque(encaissementBonLivraison.getDateCheque());
                                 encaissement.setDateEncaissement(encaissementBonLivraison.getDateEncaissement());
                                 encaissement.setDeductionPourcentageTicket(encaissementBonLivraison.getDeductionPourcentageTicket());
                                 encaissement.setFacture(selected);
                                 encaissement.setIdBanque(encaissementBonLivraison.getIdBanque());
                                 encaissement.setIdClient(encaissementBonLivraison.getIdClient());
-                                /*encaissement.setIdEntreprise(encaissementBonLivraison.getIdEntreprise());
-                                encaissement.setIdDomaine(encaissementBonLivraison.getIdDomaine());
-                                encaissement.setLibelleDomaine(encaissementBonLivraison.getLibelleDomaine());
-                                encaissement.setCodeDomaine(encaissementBonLivraison.getCodeDomaine());
-                                encaissement.setIdVendeur(encaissementBonLivraison.getIdVendeur());*/
+
                                 encaissement.setLibelleBanque(encaissementBonLivraison.getLibelleBanque());
                                 encaissement.setLibelleClient(encaissementBonLivraison.getLibelleClient());
                                 encaissement.setVille(encaissementBonLivraison.getVille());
@@ -531,19 +512,7 @@ public class FactureController implements Serializable {
                                 encaissement.setVendeur(encaissementBonLivraison.getVendeur());*/
                                 selected.setReste(selected.getReste().subtract(encaissement.getMontant()));
 
-                                /*if (encaissement.getTypeEncaissementVente().isTauxRetenu()) {
-                                    RetenuSourceVente retenuSourceVente = new RetenuSourceVente();
-                                    retenuSourceVente.setDateCreation(new Date());
-                                    retenuSourceVente.setCodeClient(selected.getCodeClient());
-                                    retenuSourceVente.setIdClient(selected.getIdClient());
-                                    retenuSourceVente.setLibelleClient(selected.getLibelleClient());
-                                    retenuSourceVente.setIdEntreprise(selected.getIdEntreprise());
-                                    retenuSourceVente.setMontant(encaissement.getMontant());
-                                    retenuSourceVente.setNumeroFacture(selected.getNumero());
-                                    retenuSourceVente.setOrigine(1);
-                                    ejbFacadeRetenuSourceVente.create(retenuSourceVente);
 
-                                }*/
                                 listEncaissements.add(encaissement);
                             }
 
@@ -558,78 +527,7 @@ public class FactureController implements Serializable {
                             selected.setEtat(3);
                         }
 
-                        /*   creer des ligne factures depuis la BL => a vérifié si c'est logique
-                        for (LigneBonLivraison ligneBonLivraison : bonLivraison.getListeLigneBonLivraisons()) {
-                            int index = -1;
-
-                            for (int i = 0; i < selected.getListeLigneFactures().size(); i++) {
-                                // si l'article est le méme avec le méme prix alors j'augmante la quantite et les taxes sinon creation d'une nouvelle ligne
-                                if (Objects.equals(selected.getListeLigneFactures().get(i).getIdArticle(), ligneBonLivraison.getIdArticle())) {
-                                    // && selected.getListeLigneFactures().get(i).getPrixUnitaireHT().compareTo(ligneBonLivraison.getPrixUnitaireHT()) == 0
-                                    index = i;
-
-                                    break;
-
-                                }
-
-                            }
-                            if (index > -1) {
-
-                                BigDecimal TotalHTC = ligneBonLivraison.getQuantite().multiply(selected.getListeLigneFactures().get(index).getPrixUnitaireHT());
-
-                                selected.getListeLigneFactures().get(index).setTotalHT(selected.getListeLigneFactures().get(index).getTotalHT().add(TotalHTC));
-
-                                BigDecimal TotalTTC = TotalHTC.add(TotalHTC.multiply(selected.getListeLigneFactures().get(index).getTvaArticle()).divide(BigDecimal.valueOf(100)));
-
-                                selected.getListeLigneFactures().get(index).setTotalTTC(selected.getListeLigneFactures().get(index).getTotalTTC().add(TotalTTC));
-
-                                selected.getListeLigneFactures().get(index).setQuantite(selected.getListeLigneFactures().get(index).getQuantite().add(ligneBonLivraison.getQuantite()));
-
-                            } else {
-                                LigneFacture ligneFacture = new LigneFacture();
-                                //   ligneFacture.setId(ligneBonLivraison.getId());
-                                ligneFacture.setIdArticle(ligneBonLivraison.getIdArticle());
-                                ligneFacture.setCodeArticle(ligneBonLivraison.getCodeArticle());
-                                ligneFacture.setLibelleArticle(ligneBonLivraison.getLibelleArticle());
-                                ligneFacture.setQuantite(ligneBonLivraison.getQuantite());
-                                ligneFacture.setTvaArticle(ligneBonLivraison.getTvaArticle());
-
-                                ligneFacture.setPrixUnitaireHT(ligneBonLivraison.getPrixUnitaireHT());
-                                ligneFacture.setRemise(ligneBonLivraison.getRemise());
-                                ligneFacture.setPrixUnitaireApresRemise(ligneBonLivraison.getPrixUnitaireApresRemise());
-
-                                // si la tva s'applique a ce client on va appliqer les nouvelle TVA
-                                // ce ci peut changer => demander si on applique les nouvelles tva
-                                if (selected.getClient().isAssujettiTVA()) {
-                                    Article articleTemp = new Article();
-                                    articleTemp.setId(ligneBonLivraison.getIdArticle());
-                                    int i = listArticleTemps.indexOf(articleTemp);
-                                    if (i > -1) {
-                                        if (selected.getTypeVente() == 0) {
-                                            ligneFacture.setTotalHT(ligneBonLivraison.getQuantite().multiply(listArticleTemps.get(i).getPrixRevendeur()));
-                                            ligneFacture.setPrixUnitaireHT(listArticleTemps.get(i).getPrixRevendeur());
-                                        } else {
-                                            ligneFacture.setTotalHT(ligneBonLivraison.getTotalHT());
-                                        }
-
-                                        ligneFacture.setTotalTTC(ligneFacture.getTotalHT().add(((ligneFacture.getTotalHT().multiply(BigDecimal.valueOf(listArticleTemps.get(i).getTva().getValeur())))).divide(BigDecimal.valueOf(100))));
-                                        ligneFacture.setTvaArticle(new BigDecimal(listArticleTemps.get(i).getTva().getValeur()));
-                                    } else {
-                                        ligneFacture.setTotalHT(ligneBonLivraison.getTotalHT());
-                                        ligneFacture.setTotalTTC(ligneBonLivraison.getTotalTTC());
-                                    }
-                                } else {
-                                    ligneFacture.setTotalHT(ligneBonLivraison.getTotalHT());
-                                    ligneFacture.setTotalTTC(ligneBonLivraison.getTotalTTC());
-                                }
-
-                                //selected.setMontantTTC(selected.getMontantTTC().add(ligneFacture.getTotalTTC()));
-                                ligneFacture.setFacture(selected);
-                                selected.getListeLigneFactures().add(ligneFacture);
-                            }
-
-                        }*/
-                        bonLivraison.setIdFacture(selected.getId());
+                        bonLivraison.setIdDocumentTransform(selected.getId());
                         ejbFacadeBonLivraison.edit(bonLivraison);
                     }
 
@@ -651,7 +549,7 @@ public class FactureController implements Serializable {
             }
 
             // origine vente directe
-        } else if (selected.getOrigineFacture() == 3) {
+        } else if (selected.getOrigine() == 0) {
             if (selected.getListeLigneFactures() != null && !selected.getListeLigneFactures().isEmpty()) {
                 List<TaxesFacture> listTaxesTemps = new ArrayList<>();
 
@@ -662,22 +560,7 @@ public class FactureController implements Serializable {
                     selected.setAssujettiTVA(selected.getClient().isAssujettiTVA());
                 }
                 selected.setAvoir(false);
-                /*selected.setIdDomaine(selected.getDomaine().getId());
-                selected.setLibelleDomaine(selected.getDomaine().getLibelle());
-                selected.setCodeDomaine(selected.getDomaine().getCode());
-                selected.setIdEntreprise(idEntreprise);
-                selected.setLibelleEntreprise(selected.getDomaine().getEntreprise().getLibelle());
-                selected.setCodeEntreprise(selected.getDomaine().getEntreprise().getCode());*/
- /*if (selected.getVendeur() != null) {
-                    selected.setIdVendeur(selected.getLivreur().getId());
-                    selected.setCodeVendeur(selected.getLivreur().getCode());
-                    selected.setCodeCommercialVendeur(selected.getLivreur().getCodeCommercial());
-                    selected.setVendeur(selected.getLivreur().getNomPrenom());
-                }*/
- /*selected.setIdUtilisateur(utilisateur.getId());
-                selected.setNom(utilisateur.getNom());
-                selected.setPrenom(utilisateur.getPrenom());
-                selected.setUtilisateur(utilisateur);*/
+
                 selected.setReste(selected.getTotalTTC());
 
                 List<LigneFacture> tempsList = new ArrayList<>();
@@ -702,90 +585,12 @@ public class FactureController implements Serializable {
                     String compteur = FonctionsString.retourMotSelonLongeur(prefixeFacture.getCompteur() + "", 6);
                     selected.setNumero(prefixeFacture.getLibellePrefixe() + compteur);
 
-                    /*List<PrefixBonLivraison> listPrefixBonLivraisons = null;
-                    PrefixBonLivraison prefixBonLivraison = null;
-                    listPrefixBonLivraisons = ejbFacadePrefixBonLivraison.findAll("");
-                    if (listPrefixBonLivraisons != null && !listPrefixBonLivraisons.isEmpty()) {
-                        prefixBonLivraison = listPrefixBonLivraisons.get(0);
-                    }*/
-                    //je vérifie prefix bonLivraison
-                    //if (prefixBonLivraison != null) {
-                    //creation de la bonLivraison associée
-                    /* String compteurBL = FonctionsString.retourMotSelonLongeur(prefixBonLivraison.getCompteur() + "", 6);
-                        BonLivraison bonLivraison = new BonLivraison();
-                        bonLivraison.setNumero(prefixBonLivraison.getLibellePrefixe() + compteurBL);*/
-                    //vérifier numéro facture
-                    //if (ejbFacade.verifierUniqueNumero(selected.getNumero()) == false) {
-                    //vérification numéro BonLivraison
-                    //if (ejbFacadeBonLivraison.verifierUniqueNumero(bonLivraison.getNumero()) == false) {
+
                     selected.setEtat(0);
                     getFacade().create(selected);
                     prefixeFacture.setCompteur(prefixeFacture.getCompteur() + 1);
                     ejbFacadePrefixFacture.edit(prefixeFacture);
 
-                    //bonLivraison.setAvImpot(selected.isAvImpot());
-                    //bonLivraison.setCodeClient(selected.getCodeClient());
-                    /*bonLivraison.setIdClient(selected.getIdClient());
-                                bonLivraison.setLibelleClient(selected.getLibelleClient());*/
-
- /* bonLivraison.setCodeClientLivraison(selected.getCodeClient());
-                                bonLivraison.setIdClientLivraison(selected.getIdClient());
-                                bonLivraison.setLibelleClientLivraison(selected.getLibelleClient());*/
- /*bonLivraison.setMontantHT(selected.getMontantHT());
-                                bonLivraison.setDateSynch(new Date().getTime());
-                                bonLivraison.setDateCreation(new Date());
-                                bonLivraison.setEtat(0);
-                                bonLivraison.setOrigineBonLivraison(2);*/
- /*bonLivraison.setIdEntreprise(selected.getIdEntreprise());
-                                bonLivraison.setLibelleEntreprise(selected.getLibelleEntreprise());
-                                bonLivraison.setCodeEntreprise(selected.getCodeEntreprise());
-                                bonLivraison.setIdDomaine(selected.getIdDomaine());
-                                bonLivraison.setLibelleDomaine(selected.getLibelleDomaine());
-                                bonLivraison.setCodeDomaine(selected.getCodeDomaine());*/
- /*bonLivraison.setReste(selected.getTotalHT());
-                                bonLivraison.setSupprimer(false);
-                                bonLivraison.setIdFacture(selected.getId());*/
-
- /*bonLivraison.setIdUtilisateur(utilisateur.getId());
-                                bonLivraison.setNom(utilisateur.getNom());
-                                bonLivraison.setPrenom(utilisateur.getPrenom());
-                                bonLivraison.setUtilisateur(utilisateur);*/
- /*ejbFacadeBonLivraison.create(bonLivraison);
-                                prefixBonLivraison.setCompteur(prefixBonLivraison.getCompteur() + 1);
-                                ejbFacadePrefixBonLivraison.edit(prefixBonLivraison);
-                     */
- /*List<LigneBonLivraison> listLigneBonLivraisonTemps = new ArrayList<>();
-                                for (LigneFacture ligneFacture : tempsList) {
-                                    LigneBonLivraison ligneBonLivraison = new LigneBonLivraison();
-                                    ligneBonLivraison.setCodeArticle(ligneFacture.getCodeArticle());
-                                    ligneBonLivraison.setIdArticle(ligneFacture.getIdArticle());
-                                    ligneBonLivraison.setLibelleArticle(ligneFacture.getLibelleArticle());
-                                    ligneBonLivraison.setPrixUnitaireApresRemise(ligneFacture.getPrixUnitaireApresRemise());
-                                    ligneBonLivraison.setPrixUnitaireHT(ligneFacture.getPrixUnitaireHT());
-                                    ligneBonLivraison.setRemise(ligneFacture.getRemise());
-                                    ligneBonLivraison.setQuantite(ligneFacture.getQuantite());
-                                    ligneBonLivraison.setQuantiteMax(ligneFacture.getQuantite());
-                                    ligneBonLivraison.setTotalHT(ligneFacture.getTotalHT());
-                                    ligneBonLivraison.setTvaArticle(ligneFacture.getTvaArticle());
-                                    ligneBonLivraison.setBonLivraison(bonLivraison);
-
-                                    listLigneBonLivraisonTemps.add(ligneBonLivraison);
-                                }*/
-                    // ejbFacadeLigneBonLivraison.create(listLigneBonLivraisonTemps);
-
-                    /*} else {
-                                selected.setListeLigneFactures(tempsList);
-                                FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-                                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), bonLivraison.getNumero() + " " + ResourceBundle.getBundle("/Bundle").getString("CeChampExist")));
-                                return null;
-                            }*/
-
- /*} else {
-                            selected.setListeLigneFactures(tempsList);
-                            FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), selected.getNumero() + " " + ResourceBundle.getBundle("/Bundle").getString("CeChampExist")));
-                            return null;
-                        }*/
                     for (LigneFacture tempsList1 : tempsList) {
                         tempsList1.setFacture(selected);
                         ejbFacadeLigneFacture.create(tempsList1);
@@ -817,7 +622,7 @@ public class FactureController implements Serializable {
                 return null;
             }
 
-        } else if (selected.getOrigineFacture() == 0) {
+        } else if (selected.getOrigine() == 1) {
 
             List<TaxesFacture> listTaxesTemps = new ArrayList<>();
 
@@ -855,10 +660,76 @@ public class FactureController implements Serializable {
                             ejbFacadeTaxeFacture.create(taxesTemp);
                         }
                     }
-                    selected.getDevis().setIdFact(selected.getId());
+                    selected.getDevis().setIdDocumentTransform(selected.getId());
+                    selected.getDevis().setNumeroDocumentTransform(selected.getNumero());
                     selected.getDevis().setTransFormTo(1);
                     selected.getDevis().setEtat(4);
                     ejbFacadeDevis.edit(selected.getDevis());
+
+                    /*selected.setReste(selected.getTotalTTC());
+                    selected.setEtat(0);
+                    getFacade().create(selected);*/
+                    prefixeFacture.setCompteur(prefixeFacture.getCompteur() + 1);
+                    ejbFacadePrefixFacture.edit(prefixeFacture);
+                    //createRetour(tempsList, selected);
+                } else {
+                    FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), selected.getNumero() + " " + ResourceBundle.getBundle("/Bundle").getString("CeChampExist")));
+                    return null;
+                }
+
+                return prepareList();
+
+            } else {
+
+                FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), " " + ResourceBundle.getBundle("/Bundle").getString("CreerUnPrefixe")));
+                return null;
+            }
+
+        } else if (selected.getOrigine() == 2) {
+
+            List<TaxesFacture> listTaxesTemps = new ArrayList<>();
+
+            selected.setAvoir(false);
+            selected.setSynchroniser(false);
+            //selected.setListeLigneFactures(new ArrayList<LigneFacture>());
+
+            if (selected.getListsTaxe() != null && !selected.getListsTaxe().isEmpty()) {
+
+                listTaxesTemps = selected.getListsTaxe();
+                selected.setListsTaxe(null);
+
+            }
+
+            listPrefixFacture = ejbFacadePrefixFacture.findAll("where o.supprimer = 0");
+            if (listPrefixFacture != null && !listPrefixFacture.isEmpty()) {
+                prefixeFacture = listPrefixFacture.get(0);
+            }
+
+            if (prefixeFacture != null) {
+                String compteur = FonctionsString.retourMotSelonLongeur(prefixeFacture.getCompteur() + "", 6);
+                selected.setNumero(prefixeFacture.getLibellePrefixe() + compteur);
+
+                if (ejbFacade.verifierUniqueNumero(selected.getNumero()) == false) {
+
+                    List<LigneFacture> tempsList = new ArrayList<>();
+                    tempsList = selected.getListeLigneFactures();
+                    selected.setListeLigneFactures(null);
+
+                    createFactureFromCommandes(tempsList);
+
+                    if (!listTaxesTemps.isEmpty()) {
+                        for (TaxesFacture taxesTemp : listTaxesTemps) {
+                            taxesTemp.setFacture(selected);
+                            ejbFacadeTaxeFacture.create(taxesTemp);
+                        }
+                    }
+                    selected.getBonCommande().setIdDocumentTransform(selected.getId());
+                    selected.getBonCommande().setNumeroDocumentTransform(selected.getNumero());
+                    selected.getBonCommande().setTransFormTo(1);
+                    selected.getBonCommande().setEtat(4);
+                    ejbFacadeBonCommande.edit(selected.getBonCommande());
 
                     /*selected.setReste(selected.getTotalTTC());
                     selected.setEtat(0);
@@ -903,7 +774,9 @@ public class FactureController implements Serializable {
 
         selected.setEtat(0);
         selected.setDateCreation(new Date());
-        selected.setOrigineFacture(1);
+        selected.setOrigine(1);
+        selected.setIdDocumentOrigine(selected.getDevis().getId());
+        selected.setNumeroDocumentOrigine(selected.getDevis().getNumero());
         selected.setTypeVente(0);
         selected.setMontantHT(selected.getDevis().getMontantHT());
         selected.setMontantTVA(selected.getDevis().getMontantTVA());
@@ -913,6 +786,40 @@ public class FactureController implements Serializable {
         selected.setTotalTTC(selected.getDevis().getTotalTTC());
         selected.setTotalTaxe(selected.getDevis().getTotalTaxe());
         selected.setReste(selected.getDevis().getTotalTTC());
+
+        ejbFacade.create(selected);
+
+        //List<LigneFacture> listLigneFactures = new ArrayList<>();
+        for (LigneFacture tempsList1 : tempsList) {
+            tempsList1.setFacture(selected);
+
+        }
+        ejbFacadeLigneFacture.create(tempsList);
+
+    }
+    
+    public void createFactureFromCommandes(List<LigneFacture> tempsList) {
+
+        //selected.setNumero(numero);
+        selected.setCodeClient(selected.getBonCommande().getCodeClient());
+        selected.setLibelleClient(selected.getBonCommande().getLibelleClient());
+        selected.setAssujettiTVA(selected.getBonCommande().isAssujettiTVA());
+        selected.setIdClient(selected.getBonCommande().getIdClient());
+
+        selected.setEtat(0);
+        selected.setDateCreation(new Date());
+        selected.setOrigine(2);
+        selected.setIdDocumentOrigine(selected.getBonCommande().getId());
+        selected.setNumeroDocumentOrigine(selected.getBonCommande().getNumero());
+        selected.setTypeVente(0);
+        selected.setMontantHT(selected.getBonCommande().getMontantHT());
+        selected.setMontantTVA(selected.getBonCommande().getMontantTVA());
+        selected.setMontantTTC(selected.getBonCommande().getMontantTTC());
+        selected.setTotalHT(selected.getBonCommande().getTotalHT());
+        selected.setTotalTVA(selected.getBonCommande().getTotalTVA());
+        selected.setTotalTTC(selected.getBonCommande().getTotalTTC());
+        selected.setTotalTaxe(selected.getBonCommande().getTotalTaxe());
+        selected.setReste(selected.getBonCommande().getTotalTTC());
 
         ejbFacade.create(selected);
 
@@ -1107,21 +1014,7 @@ public class FactureController implements Serializable {
     }*/
     public void deleteFromListLigneFacture() {
 
-        /*if (selectedLigneFactureSingle != null) {
-            int index = -1, i = 0;
-            for (i = 0; i < selected.getListeLigneFactures().size(); i++) {
-                if (selectedLigneFactureSingle.getArticle().getId().equals(selected.getListeLigneFactures().get(i).getArticle().getId())) {
-                    index = i;
-                }
-            }
-            System.out.println("index article a suuprimer= " + index);
-            if (index > -1) {
-                selected.getListeLigneFactures().remove(index);
-                //recalculerTotal();
-                changedFactureBL();
-                updateListTaxe(selected.getListsTaxe());
-            }
-        }*/
+
         if (selectedLigneFactureSingle != null) {
             selected.getListeLigneFactures().remove(selectedLigneFactureSingle);
             changedFactureBL();
@@ -1135,7 +1028,7 @@ public class FactureController implements Serializable {
 
     public void validerDetailArticle() {
 
-        if (selected.getOrigineFacture() != null && selectedLigneFacture.getArticle() != null) {
+        if (selected.getOrigine() != null && selectedLigneFacture.getArticle() != null) {
 
             selectedLigneFacture.setIdArticle(selectedLigneFacture.getArticle().getId());
             int index = selected.getListeLigneFactures().indexOf(selectedLigneFacture);
@@ -1255,54 +1148,22 @@ public class FactureController implements Serializable {
         }
     }
 
-    public BigDecimal getTotaleHT() {
-        BigDecimal totalHT = new BigDecimal(0);
-        if (selectedLigneFacture.getLibelleArticle() == null) {
-            return new BigDecimal(0);
-        }
-        BigDecimal prixRevendeur = selectedLigneFacture.getPrixUnitaireHT();
-        totalHT = prixRevendeur.multiply(selectedLigneFacture.getQuantite());
-        if (totalHT != new BigDecimal(0)) {
-            return FonctionsMathematiques.arrondiBigDecimal(totalHT, 3);
-        } else {
-            return FonctionsMathematiques.arrondiBigDecimal(new BigDecimal(0), 3);
-        }
-
-    }
-
-    public BigDecimal getTotaleTTC() {
-        BigDecimal totalTTC = new BigDecimal(0);
-        if (selectedLigneFacture.getLibelleArticle() == null) {
-            return new BigDecimal(0);
-        }
-        BigDecimal prixRevendeur = selectedLigneFacture.getPrixUnitaireHT();
-
-        BigDecimal totaleHT = (prixRevendeur).multiply(selectedLigneFacture.getQuantite());
-        totalTTC = totaleHT.add(totaleHT.multiply(selectedLigneFacture.getTvaArticle().divide(BigDecimal.valueOf(100))));
-
-        if (totalTTC != new BigDecimal(0)) {
-            return FonctionsMathematiques.arrondiBigDecimal(totalTTC, 3);
-        } else {
-            return FonctionsMathematiques.arrondiBigDecimal(new BigDecimal(0), 3);
-        }
-    }
-
     public void changedBonLivraison() {
 
         //Cas bon de livraison
-        if (selected.getOrigineFacture() == 2) {
+        if (selected.getOrigine() == 3) {
             /*if (selected.getLivreur() != null && selected.getTypeVente() == 1 && selected.getDomaine() != null) {
 
                 System.err.println("getLivreur " + selected.getLivreur().getId());
-                listBonLivraison = ejbFacadeBonLivraison.findAllNative(" where o.Ent_Id = " + idEntreprise + " and o.Liv_Id = " + selected.getLivreur().getId() + " and o.BLiv_idFacture is null and o.BLiv_OrigineBonLivraison = 2 and o.Dom_Id = '" + selected.getDomaine().getId() + "'");
+                listBonLivraison = ejbFacadeBonLivraison.findAllNative(" where o.Ent_Id = " + idEntreprise + " and o.Liv_Id = " + selected.getLivreur().getId() + " and o.BLiv_IdDocumentTransform is null and o.BLiv_OrigineBonLivraison = 2 and o.Dom_Id = '" + selected.getDomaine().getId() + "'");
 
             } else*/ if (selected.getClient() != null) {
-                listBonLivraison = ejbFacadeBonLivraison.findAllNative(" where o.Cli_Id = " + selected.getClient().getId() + " and o.BLiv_idFacture is null and o.BLiv_OrigineBonLivraison = 2 ");
+                listBonLivraison = ejbFacadeBonLivraison.findAllNative(" where o.Cli_Id = " + selected.getClient().getId() + " and o.BLiv_IdDocumentTransform is null and o.BLiv_OrigineBonLivraison = 3 ");
 
             } else {
                 listBonLivraison = new ArrayList<>();
             }
-        } else if (selected.getOrigineFacture() == 0) {
+        } else if (selected.getOrigine() == 1) {
 
             if (selected.getClient() != null) {
                 listDeviss = ejbFacadeDevis.findAllNative(" where o.Cli_Id = " + selected.getClient().getId() + " and o.Dev_Etat = 1 ");
@@ -1311,35 +1172,17 @@ public class FactureController implements Serializable {
                 listDeviss = new ArrayList<>();
             }
 
+        }else if (selected.getOrigine() == 2) {
+
+            if (selected.getClient() != null) {
+                listCommandes = ejbFacadeBonCommande.findAllNative(" where o.Cli_Id = " + selected.getClient().getId() + " and o.BCVnt_Etat = 1 ");
+
+            } else {
+                listCommandes = new ArrayList<>();
+            }
+
         }
 
-//les bon de livraison liée à une commande
-        /*else if (selected.getClient() != null && selected.getDomaine() != null) {
-            if (selected.getOrigineFacture() == 1) {
-                listBonCommandeVentes = new ArrayList();
-                listBonCommandeVentes = ejbFacadeBonCommandeVente.findAllNative(" where o.BCVen_RestantHT > 0 and o.BCVen_Etat = 0 and o.Cli_Id = " + selected.getClient().getId() + " and o.Dom_Id = '" + selected.getDomaine().getId() + "' and o.Ent_Id = " + idEntreprise);
-            }
-
-            if (selected.getOrigineFacture() == 0) {
-                listDeviss = new ArrayList();
-                listDeviss = ejbFacadeDevis.findAllNative(" where o.Dev_RestantHT > 0 and o.Dev_Etat = 1 and o.Cli_Id = " + selected.getClient().getId() + " and o.Dom_Id = '" + selected.getDomaine().getId() + "' and o.Ent_Id = " + idEntreprise);
-
-            }
-
-        } else if (selected.getLivreur() != null && selected.getDomaine() != null) {
-            if (selected.getOrigineFacture() == 1) {
-                listBonCommandeVentes = new ArrayList();
-                listBonCommandeVentes = ejbFacadeBonCommandeVente.findAllNative(" where o.BCVen_RestantHT > 0 and o.BCVen_Etat = 0 and o.BCVen_IdVendeur = " + selected.getLivreur().getId() + " and o.Dom_Id = '" + selected.getDomaine().getId() + "' and o.Ent_Id = " + idEntreprise);
-
-            }
-
-            if (selected.getOrigineFacture() == 0) {
-                listDeviss = new ArrayList();
-                listDeviss = ejbFacadeDevis.findAllNative(" where o.Dev_RestantHT > 0 and o.Dev_Etat = 1 and o.Dev_IdVendeur = " + selected.getLivreur().getId() + " and o.Dom_Id = '" + selected.getDomaine().getId() + "' and o.Ent_Id = " + idEntreprise);
-
-            }
-
-        }*/
     }
 
     public void changeDevis() {
@@ -1377,20 +1220,7 @@ public class FactureController implements Serializable {
             ligneFacture.setTotalTTC(detailDevis.getTotalTTC());
             // if recalculer taxe
 
-            /*Article articleTemp = new Article();
-            articleTemp.setId(ligneFacture.getIdArticle());
-            int i = listArticleTemps.indexOf(articleTemp);
 
-            if (i > -1) {
-                ligneFacture.setTotalTTC(ligneFacture.getTotalHT().add(((ligneFacture.getTotalHT().multiply(BigDecimal.valueOf(listArticleTemps.get(i).getTva().getValeur())))).divide(BigDecimal.valueOf(100))));
-
-            } else {
-                ligneFacture.setTotalTTC(ligneFacture.getTotalTTC());
-            }
-
-            selected.setMontantTTC(selected.getMontantTTC().add(ligneFacture.getTotalTTC()));
-            selected.setTotalTTC(selected.getMontantTTC());
-             */
             selected.getListeLigneFactures().add(ligneFacture);
 
             //List<TaxesFacture> listTaxesFactures = new ArrayList<>();
@@ -1409,59 +1239,66 @@ public class FactureController implements Serializable {
             //ejbFacadeTaxeFacture.create(listTaxesFactures);
         }
 
-        //récupération des bons de livraison
-        /*List<BonLivraison> listBonLivraisonTemp = ejbFacadeBonLivraison.findAllNative(" where o.BLiv_OrigineBonLivraison = 1 and o.BLiv_Etat = 0 and o.Dev_Id = " + selected.getDevis().getId());
+    }
+    
+    public void changeCommande() {
 
-        //soustraction des lignes de bon de livraison et la taxe pour chaque ligne
-        if (listBonLivraisonTemp != null && !listBonLivraisonTemp.isEmpty()) {
-            //Probléme les bons de livraisons sont importer sans leurs lignes
-            //ejbFacadeLigneBonLivraison.findAll("where o.bonLivraison.id = " + listBonLivraison.get(0).getId());
+        selected.setListeLigneFactures(new ArrayList<LigneFacture>());
 
-            for (LigneFacture ligneFacture : selected.getListeLigneFactures()) {
-                for (BonLivraison bonLivraison : listBonLivraisonTemp) {
-                    bonLivraison.setListeLigneBonLivraisons(ejbFacadeLigneBonLivraison.findAll("where o.bonLivraison.id = " + bonLivraison.getId()));
-                    LigneBonLivraison ligneBonLivraison = new LigneBonLivraison();
-                    ligneBonLivraison.setIdArticle(ligneFacture.getIdArticle());
+        if (selected.getBonCommande().getListeLigneBonCommandeVentes().isEmpty()) {
+            selected.getBonCommande().setListeLigneBonCommandeVentes(ejbFacadeLigneBonCommande.findAll(" where o.bonCommandeVente.id = " + selected.getBonCommande().getId()));
 
-                    int index = bonLivraison.getListeLigneBonLivraisons().indexOf(ligneBonLivraison);
+        }
+        selected.setTotalTaxe(selected.getBonCommande().getTotalTaxe());
+        selected.setMontantHT(selected.getBonCommande().getTotalHT());
+        selected.setMontantTVA(selected.getBonCommande().getTotalTVA());
+        selected.setMontantTTC(selected.getBonCommande().getTotalTTC());
 
-                    if (index > -1) {
+        selected.setTotalHT(selected.getMontantHT());
+        selected.setTotalTVA(selected.getMontantTVA());
+        selected.setTotalTTC(selected.getMontantTTC());
 
-                        ligneFacture.setQuantite(ligneFacture.getQuantite() - Double.parseDouble("" + bonLivraison.getListeLigneBonLivraisons().get(index).getQuantite()));
-                        ligneFacture.setQuantiteMax(BigDecimal.valueOf(ligneFacture.getQuantite()));
+        // nous allons calculer la taxe
+        for (LigneBonCommandeVente ligneBonCommandeVente : selected.getBonCommande().getListeLigneBonCommandeVentes()) {
 
-                        BigDecimal TotalTVA = bonLivraison.getListeLigneBonLivraisons().get(index).getTotalHT().multiply(BigDecimal.valueOf(ligneFacture.getTvaArticle())).divide(BigDecimal.valueOf(100));
+            LigneFacture ligneFacture = new LigneFacture();
+            ligneFacture.setIdArticle(ligneBonCommandeVente.getIdArticle());
+            ligneFacture.setCodeArticle(ligneBonCommandeVente.getCodeArticle());
+            ligneFacture.setLibelleArticle(ligneBonCommandeVente.getLibelleArticle());
+            ligneFacture.setPrixUnitaireApresRemise(ligneBonCommandeVente.getPrixUnitaireApresRemise());
+            ligneFacture.setRemise(ligneBonCommandeVente.getRemise());
+            ligneFacture.setQuantite(ligneBonCommandeVente.getQuantite());
+            ligneFacture.setQuantiteMax(ligneBonCommandeVente.getQuantite());
+            ligneFacture.setPrixUnitaireHT(ligneBonCommandeVente.getPrixUnitaireHT());
+            ligneFacture.setTvaArticle(ligneBonCommandeVente.getTvaArticle());
+            ligneFacture.setTotalHT(ligneBonCommandeVente.getTotalHT());
+            ligneFacture.setTotalTVA(ligneBonCommandeVente.getTotalTVA());
+            ligneFacture.setTotalTTC(ligneBonCommandeVente.getTotalTTC());
+            // if recalculer taxe
 
-                        selected.setMontantHT(selected.getMontantHT().subtract(bonLivraison.getListeLigneBonLivraisons().get(index).getTotalHT()));
-                        selected.setMontantTTC(selected.getMontantTTC().subtract(bonLivraison.getListeLigneBonLivraisons().get(index).getTotalHT().add(TotalTVA)));
-                        selected.setTotalHT(selected.getMontantHT());
-                        selected.setTotalTTC(selected.getMontantTTC());
 
-                        ligneFacture.setTotalHT(ligneFacture.getTotalHT().subtract(bonLivraison.getListeLigneBonLivraisons().get(index).getTotalHT()));
+            selected.getListeLigneFactures().add(ligneFacture);
 
-                        // la tva est déjà actualiser en haut
-                        ligneFacture.setTotalTTC(ligneFacture.getTotalTTC().subtract(bonLivraison.getListeLigneBonLivraisons().get(index).getTotalHT().add(TotalTVA)));
-
-                    }
-
-                }
+            //List<TaxesFacture> listTaxesFactures = new ArrayList<>();
+            for (TaxesBonCommandeVente taxesBonCommandeVente : selected.getBonCommande().getListsTaxe()) {
+                TaxesFacture taxesFacture = new TaxesFacture();
+                //taxesFacture.setFacture(facture);
+                taxesFacture.setApresTva(taxesBonCommandeVente.isApresTva());
+                taxesFacture.setValeur(taxesBonCommandeVente.getValeur());
+                taxesFacture.setMontant(taxesBonCommandeVente.getMontant());
+                taxesFacture.setTypeTaxe(taxesBonCommandeVente.getTypeTaxe());
+                taxesFacture.setOperation(taxesBonCommandeVente.getOperation());
+                taxesFacture.setParametrageTaxe(taxesBonCommandeVente.getParametrageTaxe());
+                selected.getListsTaxe().add(taxesFacture);
             }
 
-            // aprés avoir enlever les ligne déja saisites dans les anciennes bonDelivraison
-            // je vais filter la liste de bon de livraison listBonLivraison de maniére à garder les
-            // les bon de livraison non ajouter dans une ancienne facture liée a ce bon de commande
-            listBonLivraison = new ArrayList<>();
-            for (BonLivraison bonLivraison : listBonLivraisonTemp) {
-                if (bonLivraison.getIdFacture() == null) {
-                    listBonLivraison.add(bonLivraison);
-                }
-            }
+            //ejbFacadeTaxeFacture.create(listTaxesFactures);
+        }
 
-        }*/
     }
 
     public void changedFactureBL() {
-        System.out.println("com" + listSelectedBonLivraison.size());
+
         recalculerTotal();
         //selected.setListeLigneFactures(new ArrayList<LigneFacture>());
         if (listSelectedBonLivraison != null && !listSelectedBonLivraison.isEmpty()) {
@@ -1475,35 +1312,11 @@ public class FactureController implements Serializable {
                  selected.setTotalTTC(selected.getMontantTTC());*/
                 for (LigneBonLivraison ligneBonLivraison : bonLivraison.getListeLigneBonLivraisons()) {
 
-                    /*     int index = -1;
 
-                     for (int i = 0; i < selected.getListeLigneFactures().size(); i++) {
-                     // si l'article est le méme avec le méme prix alors j'augmante la quantite et les taxes sinon creation d'une nouvelle ligne
-                     if (selected.getListeLigneFactures().get(i).getIdArticle() == ligneBonLivraison.getIdArticle() && selected.getListeLigneFactures().get(i).getPrixUnitaireHT().compareTo(ligneBonLivraison.getPrixUnitaireHT()) == 0) {
-
-                     index = i;
-
-                     break;
-
-                     }
-
-                     }
-
-                     if (index > -1) {
-
-                     selected.getListeLigneFactures().get(index).setTotalHT(selected.getListeLigneFactures().get(index).getTotalHT().add(ligneBonLivraison.getTotalHT()));
-                     selected.getListeLigneFactures().get(index).setTotalTTC(selected.getListeLigneFactures().get(index).getTotalTTC().add(ligneBonLivraison.getTotalTTC()));
-                     selected.getListeLigneFactures().get(index).setQuantite(selected.getListeLigneFactures().get(index).getQuantite() + Float.parseFloat(ligneBonLivraison.getQuantite() + ""));
-                     } else {*/
                     LigneFacture ligneFacture = new LigneFacture();
                     //exprés pour différencier les lignes provenons d'un BL et les lignes qui peuvent étre ajouter récament
                     //ligneFacture.setId(ligneBonLivraison.getId());
                     ligneFacture.setIdArticle(ligneBonLivraison.getIdArticle());
-//                    ligneFacture.setCodeArticle(ligneBonLivraison.getCodeArticle());
-//                    ligneFacture.setLibelleArticle(ligneBonLivraison.getLibelleArticle());
-//                    ligneFacture.setQuantite(Float.parseFloat(ligneBonLivraison.getQuantite() + ""));
-//                    ligneFacture.setTvaArticle(Float.parseFloat(ligneBonLivraison.getTvaArticle() + ""));
-//                    ligneFacture.setPrixUnitaireHT(ligneBonLivraison.getPrixUnitaireHT());
 
 // si la tva s'applique a ce client on va appliqer les nouvelle TVA
 // ce ci peut changer => demander si on applique les nouvelles tva
@@ -1549,16 +1362,6 @@ public class FactureController implements Serializable {
                 /* }*/
             }
 
-            /*} else {
-
-             //recalculerTotal();
-
-             selected.setMontantHT(BigDecimal.ZERO);
-             selected.setMontantTTC(BigDecimal.ZERO);
-             selected.setTotalHT(selected.getMontantHT());
-             selected.setTotalTTC(selected.getMontantTTC());
-
-             }*/
         }
 
         updateListTaxe(selected.getListsTaxe());
@@ -1598,7 +1401,7 @@ public class FactureController implements Serializable {
             selected.setTotalHT(selected.getMontantHT());
             selected.setTotalTTC(selected.getMontantTTC());
         }
-        System.err.println("selectedListParametrageTaxe.size() : " + selectedListParametrageTaxe.size());
+
         if (selectedListParametrageTaxe != null && !selectedListParametrageTaxe.isEmpty()) {
 
             for (ParametrageTaxe selectedTaxe : selectedListParametrageTaxe) {
@@ -1703,7 +1506,7 @@ public class FactureController implements Serializable {
                     }
                 }
                 if (index > -1) {
-                    System.out.println("taxe existe");
+
                 } else {
                     if ((selectTaxe.getTypeTaxe().trim().equals("0")) && (!selectTaxe.isApresTva())) {
                         TaxesFacture taxe = new TaxesFacture();
@@ -1864,12 +1667,11 @@ public class FactureController implements Serializable {
 
     public void updateListTaxe(List<TaxesFacture> list) {
         selected.setTotalTTC(selected.getMontantTTC());
-        System.err.println("list : " + list.size());
+
 
         if (!list.isEmpty()) {
             for (TaxesFacture item : list) {
 
-                System.err.println("getTypeTaxe : " + item.getTypeTaxe().trim() + " isApresTva : " + item.isApresTva());
 
                 if ((item.getTypeTaxe().trim().equals("0")) && (!item.isApresTva())) {
                     if (item.getOperation().trim().equals("+")) {
@@ -2260,7 +2062,7 @@ public class FactureController implements Serializable {
             listLigneRetourTemps.add(ligneRetour);
         }
 
-        if (facture.getOrigineFacture() == 2) {
+        if (facture.getOrigine() == 2) {
 
             for (BonLivraison bonLivraison : listSelectedBonLivraison) {
 
@@ -2371,9 +2173,9 @@ public class FactureController implements Serializable {
             }
 
             //bonLivraison
-            if (selectedSingle.getOrigineFacture() == 2) {
+            if (selectedSingle.getOrigine() == 2) {
 
-                listSelectedBonLivraison = ejbFacadeBonLivraison.findAllNative(" where o.BLiv_idFacture = " + selectedSingle.getId());
+                listSelectedBonLivraison = ejbFacadeBonLivraison.findAllNative(" where o.BLiv_IdDocumentTransform = " + selectedSingle.getId());
                 int i = selectedSingle.getListeLigneFactures().size();
                 for (BonLivraison bonLivraison : listSelectedBonLivraison) {
 
@@ -2670,6 +2472,12 @@ public class FactureController implements Serializable {
         return JsfUtil.getSelectItems(listDeviss, true);
 
     }
+    
+        public SelectItem[] getItemsAvailableSelectOneCommande() {
+
+        return JsfUtil.getSelectItems(listCommandes, true);
+        }
+    
 
     public SelectItem[] getItemsAvailableSelectOneClient() {
         listClient = new ArrayList<>();
