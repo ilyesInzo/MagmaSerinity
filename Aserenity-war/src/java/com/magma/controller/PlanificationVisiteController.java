@@ -8,6 +8,7 @@ import com.magma.entity.Client;
 import com.magma.entity.Commercial;
 import com.magma.entity.Utilisateur;
 import com.magma.session.ClientFacadeLocal;
+import com.magma.session.CommercialFacadeLocal;
 import com.magma.session.PlanificationVisiteFacade;
 import com.magma.session.PlanificationVisiteFacadeLocal;
 import com.magma.util.MenuTemplate;
@@ -50,11 +51,11 @@ public class PlanificationVisiteController implements Serializable {
     private PlanificationVisite planificationVisite;
 
     private Utilisateur utilisateur;
-    
+
     @EJB
     private PlanificationVisiteFacadeLocal ejbFacade;
-    
-    
+    @EJB
+    private CommercialFacadeLocal ejbFacadeCommercial;
     @EJB
     private ClientFacadeLocal ejbFacadeClient;
 
@@ -67,7 +68,7 @@ public class PlanificationVisiteController implements Serializable {
     private Date dateCalender = new Date();
     private Date demain = null;
     private Commercial commercial = null;
-
+    private boolean isCommercial = false;
     private List<PlanificationVisite> listePlanificationVisites = new ArrayList<PlanificationVisite>();
     private Date dateJour = new Date();
 
@@ -101,11 +102,22 @@ public class PlanificationVisiteController implements Serializable {
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
             utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
 
-            MenuTemplate.menuFonctionnalitesModules("GPlanificationVisite", "MCommercial", null,utilisateur);
+            MenuTemplate.menuFonctionnalitesModules("GPlanificationVisite", "MCommercial", null, utilisateur);
 
             recreateModel();
             dateCalender = new Date();
             selected = new PlanificationVisite();
+
+            if (utilisateur != null) {
+
+                List<Commercial> listCommercial = ejbFacadeCommercial.findAllNative("where o.Com_Id = " + utilisateur.getId());
+                if (listCommercial != null && !listCommercial.isEmpty()) {
+                    commercial = listCommercial.get(0);
+                    isCommercial = true;
+                }
+
+            }
+
             lazyEventModel = new LazyScheduleModel() {
                 @Override
                 public void loadEvents(Date start, Date end) {
@@ -141,14 +153,13 @@ public class PlanificationVisiteController implements Serializable {
         }
         return null;
     }
-    
 
     public void addEvent(ActionEvent actionEvent) {
         if (commercial != null && commercial.getId() != null) {
             if (getFacade().chefDeZoneNonDisponible(commercial.getId(), selected.getDateDebut(), selected.getDateFin()) == false) {
-                    if (client != null && client.getId() != null) {
+                if (client != null && client.getId() != null) {
                     if (selected.getDateDebut() != null && selected.getDateFin() != null && selected.getDateDebut().getTime() < selected.getDateFin().getTime()) {
-                       // selected.setUtilisateur(commercial);
+                        // selected.setUtilisateur(commercial);
 
                         selected.setIdCommercial(commercial.getId());
                         selected.setNom(commercial.getNom());
@@ -390,7 +401,6 @@ public class PlanificationVisiteController implements Serializable {
 
             @Override
             public void loadEvents(Date start, Date end) {
-                System.out.println(TraitementDate.returnDateHeure(start) + " ## " + TraitementDate.returnDateHeure(end) + " ## " + TraitementDate.returnDateHeure(dateCalender));
                 startDate = start;
                 endDate = end;
                 startAujourdhui = start;
@@ -507,7 +517,6 @@ public class PlanificationVisiteController implements Serializable {
 
             @Override
             public void loadEvents(Date start, Date end) {
-                System.out.println(TraitementDate.returnDateHeure(start) + " ## " + TraitementDate.returnDateHeure(end) + " ## " + TraitementDate.returnDateHeure(dateCalender));
                 startDate = start;
                 endDate = end;
                 startAujourdhui = start;
@@ -535,9 +544,6 @@ public class PlanificationVisiteController implements Serializable {
         };
         return "List";
     }
-
-
-
 
     public void changedCommercial() {
         listClient = null;
@@ -571,7 +577,6 @@ public class PlanificationVisiteController implements Serializable {
             }
         };
     }
-
 
     public boolean isErrorMsg() {
         return errorMsg;
@@ -626,7 +631,6 @@ public class PlanificationVisiteController implements Serializable {
         return items;
     }
 
-    
     public String getOptionAfficheCalendrier() {
         return optionAfficheCalendrier;
     }
@@ -747,6 +751,14 @@ public class PlanificationVisiteController implements Serializable {
         this.commercial = commercial;
     }
 
+    public boolean isIsCommercial() {
+        return isCommercial;
+    }
+
+    public void setIsCommercial(boolean isCommercial) {
+        this.isCommercial = isCommercial;
+    }
+
     public Date getDateCalender() {
         return dateCalender;
     }
@@ -783,7 +795,6 @@ public class PlanificationVisiteController implements Serializable {
         this.event = event;
     }
 
-
     public String getConditionAffichageEventDialog() {
         return conditionAffichageEventDialog;
     }
@@ -791,7 +802,7 @@ public class PlanificationVisiteController implements Serializable {
     public void setConditionAffichageEventDialog(String conditionAffichageEventDialog) {
         this.conditionAffichageEventDialog = conditionAffichageEventDialog;
     }
-    
+
     private void recreateModel() {
         items = null;
         errorMsg = false;
@@ -799,6 +810,7 @@ public class PlanificationVisiteController implements Serializable {
         client = null;
         typeClient = -1;
     }
+
     public SelectItem[] getItemsAvailableSelectMany() {
         return JsfUtil.getSelectItems(ejbFacade.findAll(), false);
     }

@@ -1,27 +1,36 @@
 package com.magma.controller;
 
 import com.magma.controller.util.JsfUtil;
+import com.magma.entity.Article;
+import com.magma.entity.Categorie;
 import com.magma.entity.TemplateArticleVisite;
 import com.magma.entity.Utilisateur;
+import com.magma.session.CategorieFacadeLocal;
 import com.magma.session.TemplateArticleVisiteFacadeLocal;
+import com.magma.util.Document;
 import com.magma.util.MenuTemplate;
 import java.io.IOException;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
+import org.primefaces.model.CheckboxTreeNode;
+import org.primefaces.model.TreeNode;
 
 @ManagedBean(name = "templateArticleVisiteController")
-@javax.faces.bean.SessionScoped
+@SessionScoped
 public class TemplateArticleVisiteController implements Serializable {
 
     private TemplateArticleVisite selected;
@@ -29,12 +38,20 @@ public class TemplateArticleVisiteController implements Serializable {
     private List<TemplateArticleVisite> items = null;
     @EJB
     private TemplateArticleVisiteFacadeLocal ejbFacade;
+    @EJB
+    private CategorieFacadeLocal ejbCategorie;
     private boolean errorMsg;
     private Long idTemp;
     private TemplateArticleVisite templateArticleVisite;
     private long idEntreprise = 0;
     private Utilisateur utilisateur;
-
+    private TreeNode[] selectedNodes;
+    private TreeNode root;
+    private List<String> listeLibelleArticles = null;
+    private List<Article> listArticlesPhare = null;
+    private List<TemplateArticleVisite> listeTemplateArticleVistes = null;
+    private List<Categorie> listeCategories = null;
+    
     public TemplateArticleVisiteController() {
         items = null;
         errorMsg = false;
@@ -54,7 +71,7 @@ public class TemplateArticleVisiteController implements Serializable {
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
             utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
 
-            MenuTemplate.menuFonctionnalitesModules("GTemplateArticleVisite", "MParametrage", null,utilisateur);
+            MenuTemplate.menuFonctionnalitesModules("GTemplateArticleVisite", "MCommercial", "MCommercial",utilisateur);
 
             //MenuTemplate.menuFonctionnalitesModules("GTemplateArticleVisite", utilisateur);
             /*if (templateArticleVisite.getIdEntrepriseSuivi() != null && templateArticleVisite.getIdEntrepriseSuivi() != 0) {
@@ -73,6 +90,7 @@ public class TemplateArticleVisiteController implements Serializable {
     private void recreateModel() {
         items = null;
         errorMsg = false;
+        selectedNodes = null;
     }
 
     public List<TemplateArticleVisite> getItems() {
@@ -120,15 +138,107 @@ public class TemplateArticleVisiteController implements Serializable {
 
     public String prepareView() {
         if (selected != null) {
+            listeLibelleArticles = new ArrayList<>();
+            viewCheckboxArborescence();
             return "View";
         }
         return "List";
     }
+    
+    public TreeNode viewCheckboxArborescence() {
+        listeCategories = ejbCategorie.findAll();
+        List<String> listId = new ArrayList<>();
+        List<TreeNode> listTreeNode = new ArrayList<>();
+        listArticlesPhare = new ArrayList<>();
+        root = new CheckboxTreeNode(new Document("Files", Long.parseLong("0"), "Folder", ""), null);
+        if (listeCategories != null && !listeCategories.isEmpty()) {
+            int i = 0;
+            for (Categorie categorie : listeCategories) {
+                if (categorie.getParent() != null) {
+                    if (listId.contains(categorie.getParent().getId() + "")) {
+                        TreeNode documentParent = listTreeNode.get(listId.indexOf(categorie.getParent().getId() + ""));
+                        TreeNode document = new CheckboxTreeNode(new Document(categorie.getLibelle(), categorie.getId(), "Categorie", ""), documentParent);
+                        if (categorie.isDernierRang() == true) {
+                            if (categorie.getArticles() != null && !categorie.getArticles().isEmpty()) {
+                                for (Article article : categorie.getArticles()) {
+                                    TreeNode articleTree = new CheckboxTreeNode(new Document(article.getLibelle(), article.getId(), "Article", article.getCode()), document);
+                                    if (selected.getSelection().contains(article.getId() + "")) {
+                                        articleTree.setSelected(true);
+                                        listeLibelleArticles.add(article.getCode() + " - " + article.getLibelle());
+                                        listArticlesPhare.add(article);
+                                    }
+                                }
+                            }
+                        }
+                        listId.add(categorie.getId() + "");
+                        listTreeNode.add(document);
+                    }
+                } else {
+                    TreeNode document = new CheckboxTreeNode(new Document(categorie.getLibelle(), categorie.getId(), "Categorie", ""), root);
+                    if (categorie.isDernierRang() == true) {
+                        if (categorie.getArticles() != null && !categorie.getArticles().isEmpty()) {
+                            for (Article article : categorie.getArticles()) {
+                                TreeNode articleTree = new CheckboxTreeNode(new Document(article.getLibelle(), article.getId(), "Article", article.getCode()), document);
+                                if (selected.getSelection().contains(article.getId() + "")) {
+                                    articleTree.setSelected(true);
+                                    listeLibelleArticles.add(article.getCode() + " - " + article.getLibelle());
+                                    listArticlesPhare.add(article);
+                                }
+                            }
+                        }
+                    }
+                    listId.add(categorie.getId() + "");
+                    listTreeNode.add(document);
+                }
+            }
+        }
+        return root;
+    }
+
 
     public String prepareCreate() {
+        createCheckboxArborescence();
         selected = new TemplateArticleVisite();
         errorMsg = false;
         return "Create";
+    }
+    
+    public TreeNode createCheckboxArborescence() {
+        listeCategories = ejbCategorie.findAll();
+        List<String> listId = new ArrayList<>();
+        List<TreeNode> listTreeNode = new ArrayList<>();
+        root = new CheckboxTreeNode(new Document("Files", Long.parseLong("0"), "Folder", ""), null);
+        if (listeCategories != null && !listeCategories.isEmpty()) {
+            for (Categorie categorie : listeCategories) {
+                if (categorie.getParent() != null) {
+                    if (listId.contains(categorie.getParent().getId() + "")) {
+                        TreeNode documentParent = listTreeNode.get(listId.indexOf(categorie.getParent().getId() + ""));
+                        TreeNode document = new CheckboxTreeNode(new Document(categorie.getLibelle(), categorie.getId(), "Categorie", ""), documentParent);
+                        if (categorie.isDernierRang() == true) {
+                            if (categorie.getArticles() != null && !categorie.getArticles().isEmpty()) {
+                                for (Article article : categorie.getArticles()) {
+                                    TreeNode articleTree = new CheckboxTreeNode(new Document(article.getLibelle(), article.getId(), "Article", article.getCode()), document);
+                                }
+                            }
+                        }
+                        listId.add(categorie.getId() + "");
+                        listTreeNode.add(document);
+                    }
+                } else {
+                    TreeNode document = new CheckboxTreeNode(new Document(categorie.getLibelle(), categorie.getId(), "Categorie", ""), root);
+                    if (categorie.isDernierRang() == true) {
+                        if (categorie.getArticles() != null && !categorie.getArticles().isEmpty()) {
+                            for (Article article : categorie.getArticles()) {
+                                TreeNode articleTree = new CheckboxTreeNode(new Document(article.getLibelle(), article.getId(), "Article", article.getCode()), document);
+                            }
+                        }
+                    }
+                    listId.add(categorie.getId() + "");
+                    listTreeNode.add(document);
+                }
+            }
+        }
+        return root;
     }
 
     public String create() {
@@ -137,9 +247,31 @@ public class TemplateArticleVisiteController implements Serializable {
             errorMsg = getFacade().verifierUnique(selected.getLibelle().trim());
 
             if (errorMsg == false) {
-                selected.setSupprimer(false);
-                getFacade().create(selected);
-                return prepareList();
+
+                
+                    if (selectedNodes.length >= 1) {
+                    String selection = "", selectionLibelleArticle = "";
+                    for (TreeNode selectedNode : selectedNodes) {
+                        if (((Document) selectedNode.getData()).getType().equals("Article")) {
+                            selection = selection + ((Document) selectedNode.getData()).getId() + ";";
+                            selectionLibelleArticle = selectionLibelleArticle + ((Document) selectedNode.getData()).getCode() + " - " + ((Document) selectedNode.getData()).getName() + ";";
+                        }
+                    }
+                    selected.setSelection(selection);
+                    selected.setLibelleArticle(selectionLibelleArticle);
+                    selected.setSupprimer(false);
+                    selected.setDateSynchro(new Date().getTime());
+
+
+                    getFacade().create(selected);
+                    return prepareList();
+                } else {
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("ErreurListeArticle")));
+                    return null;
+                }                
+                
+                
+                
 
             } else {
                 FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
@@ -177,10 +309,24 @@ public class TemplateArticleVisiteController implements Serializable {
 
             if (errorMsg == false) {
 
-                selected.setSupprimer(false);
-                getFacade().edit(selected);
-                return prepareList();
-                //}
+                if (selectedNodes.length >= 1) {
+                    String selection = "", selectionLibelleArticle = "";
+                    for (TreeNode selectedNode : selectedNodes) {
+                        if (((Document) selectedNode.getData()).getType().equals("Article")) {
+                            selection = selection + ((Document) selectedNode.getData()).getId() + ";";
+                            selectionLibelleArticle = selectionLibelleArticle + ((Document) selectedNode.getData()).getCode() + " - " + ((Document) selectedNode.getData()).getName() + ";";
+                        }
+                    }
+                    selected.setSelection(selection);
+                    selected.setLibelleArticle(selectionLibelleArticle);
+                    selected.setSupprimer(false);
+                    selected.setDateSynchro(new Date().getTime());
+                    getFacade().edit(selected);
+                    return prepareList();
+                } else {
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("ErreurListeArticle")));
+                    return null;
+                }
             } else {
                 FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), selected.getLibelle() + " " + ResourceBundle.getBundle("/Bundle").getString("CeChampExist")));
@@ -209,6 +355,34 @@ public class TemplateArticleVisiteController implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("EchecOperation")));
             System.out.println("Erreur- TemplateArticleVisiteController - performDestroy: " + e.getMessage());
         }
+    }
+    
+    public TreeNode getRoot() {
+        return root;
+    }
+    
+    public TreeNode[] getSelectedNodes() {
+        return selectedNodes;
+    }
+
+    public void setSelectedNodes(TreeNode[] selectedNodes) {
+        this.selectedNodes = selectedNodes;
+    }
+    
+    public List<String> getListeLibelleArticles() {
+        return listeLibelleArticles;
+    }
+
+    public void setListeLibelleArticles(List<String> listeLibelleArticles) {
+        this.listeLibelleArticles = listeLibelleArticles;
+    }
+
+    public List<Article> getListArticlesPhare() {
+        return listArticlesPhare;
+    }
+
+    public void setListArticlesPhare(List<Article> listArticlesPhare) {
+        this.listArticlesPhare = listArticlesPhare;
     }
 
     public boolean isErrorMsg() {

@@ -21,7 +21,7 @@
                     <div class="ui-g-12">
                         <div class="shadow-box ui-shadow-5">
                             <div class="card">
-                                
+
                                 <h:form id="f1">
 
                                     <div class="x_title">
@@ -53,7 +53,7 @@
                                         </div>
 
 
-                                        
+
                                         <div class="form-group" >
                                             <h:outputLabel value="#{bundle.Description} : " for="Description"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                             <div class="col-md-9 col-sm-9 col-xs-12">
@@ -64,10 +64,65 @@
 
 
                                     </div> 
+                                    <div class="x_title">
+                                        <h2 style="color: #1a8ea5">#{bundle.Articles}</h2>                        
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div class="x_content" >
+                                        <p:dataTable multiViewState="true" liveResize="true"  value="#{templateArticleVisiteController.listArticlesPhare}"   var="item"  
+                                                     rowKey="#{item.id}"  id="idTable"
+                                                     paginator="false" sortBy="#{item.categorie.libelle}" emptyMessage="#{bundle.TableauVide}"  >
+
+
+                                            <p:columnGroup type="header">
+                                                <p:row>
+                                                    <p:column colspan="4"  headerText="#{bundle.Article}" />                                    
+                                                </p:row>
+                                                <p:row>
+                                                    <p:column headerText="#{bundle.Categorie}" />
+                                                    <p:column headerText="#{bundle.Code}" />
+                                                    <p:column headerText="#{bundle.Article}" />
+                                                    <p:column headerText="#{bundle.PrixRevendeur}" />                                    
+                                                </p:row>                                   
+
+
+                                            </p:columnGroup>
+
+
+                                            <p:column headerText="#{bundle.Categorie}" style="width: 20%;" groupRow="true">
+                                                <h:outputText value="#{item.categorie.libelle}" />
+                                            </p:column>
+
+                                            <p:column style="width: 10%;text-align: center" filterBy="#{item.code}" filterMatchMode="contains" filterStyle="width:98%" sortBy="#{item.code}"  >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Code}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.code}"/>
+                                            </p:column>
+
+                                            <p:column style="text-align: center" filterBy="#{item.libelle}" filterMatchMode="contains" filterStyle="width:98%" sortBy="#{item.libelle}" >
+                                                <f:facet name="header" >
+                                                    <h:outputText value="#{bundle.Libelle}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.libelle}"/>
+                                            </p:column>
+
+
+                                            <p:column style="text-align: center" filterBy="#{item.prixRevendeur}" filterMatchMode="contains" filterStyle="width:98%" sortBy="#{item.prixRevendeur}" >
+                                                <f:facet name="header" >
+                                                    <h:outputText value="#{bundle.PrixRevendeur}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.prixRevendeur}" />
+                                            </p:column>
+                                        </p:dataTable>   
+
+
+
+                                    </div>  
 
 
                                 </h:form>       
-                                
+
                                 <p:dialog id="Info"  header="Info"   widgetVar="dlgInfo" height="50%" width="35%" modal="true" resizable="false">
 
 

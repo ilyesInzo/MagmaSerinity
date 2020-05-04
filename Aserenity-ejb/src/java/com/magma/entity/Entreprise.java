@@ -15,7 +15,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -89,6 +91,10 @@ public class Entreprise implements Serializable {
 
     @OneToMany(mappedBy = "entreprise", fetch = FetchType.LAZY)
     private List<Utilisateur> utilisateurs;
+    
+    @OneToOne
+    @JoinColumn(name = "PEnt_Id", nullable = true)
+    private ParametrageEntreprise parametrageEntreprise;
 
     public Long getId() {
         return id;
@@ -327,6 +333,16 @@ public class Entreprise implements Serializable {
             return "---";
         }
     }
+
+    public ParametrageEntreprise getParametrageEntreprise() {
+        return parametrageEntreprise;
+    }
+
+    public void setParametrageEntreprise(ParametrageEntreprise parametrageEntreprise) {
+        this.parametrageEntreprise = parametrageEntreprise;
+    }
+    
+    
 
     @PrePersist
     void prepersist() {

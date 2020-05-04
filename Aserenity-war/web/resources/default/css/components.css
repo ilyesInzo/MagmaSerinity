@@ -78,3 +78,35 @@
 .ui-treetable table{border-collapse:collapse;width:100%;table-layout:fixed}.ui-treetable .ui-treetable-header,.ui-treetable .ui-treetable-footer{text-align:center;padding:4px 10px}.ui-treetable .ui-treetable-header{border-bottom:0 none}.ui-treetable .ui-treetable-footer{border-top:0 none}.ui-treetable th,.ui-treetable tfoot td{text-align:center}.ui-treetable thead th,.ui-treetable tbody td,.ui-treetable tfoot td{padding:4px 10px;overflow:hidden;white-space:nowrap;border-width:1px;border-style:solid}.ui-treetable tbody td{border-color:inherit}.ui-treetable .ui-treetable-toggler{display:inline-block;vertical-align:middle;cursor:pointer;margin-top:-5px}.ui-treetable .ui-treetable-data tr.ui-state-highlight,.ui-treetable .ui-treetable-data tr.ui-state-hover{cursor:pointer}.ui-treetable-scrollable-body{overflow:auto}.ui-treetable-scrollable-header,.ui-treetable-scrollable-footer{overflow:hidden;border:0 none}.ui-treetable.ui-treetable-scrollable table{table-layout:fixed}.ui-treetable-scrollable .ui-treetable-scrollable-header,.ui-treetable-scrollable .ui-treetable-scrollable-footer{position:relative}.ui-treetable .ui-treetable-data tr.ui-state-hover{border-color:inherit;font-weight:inherit}.ui-treetable-resizable{padding-bottom:1px;overflow:auto}.ui-treetable.ui-treetable-resizable table{table-layout:fixed}.ui-treetable .ui-column-resizer{width:8px;height:20px;padding:0;cursor:col-resize;background-image:url("spacer/dot_clear.gif47a8.gif?ln=primefaces&amp;v=6.1");margin:-4px -10px -4px 0;float:right}.ui-treetable .ui-column-resizer-helper{width:1px;position:absolute;z-index:10;display:none}.ui-treetable .ui-chkbox{margin-right:3px}.ui-treetable .ui-treetable-indent{width:16px;height:16px;float:left}.ui-treetable-scrollable-body::-webkit-scrollbar{-webkit-appearance:none;width:15px;background-color:transparent}.ui-treetable-scrollable-body::-webkit-scrollbar-thumb{border-radius:8px;border:1px solid white;background-color:rgba(194,194,194,.5)}.ui-treetable .ui-sortable-column{cursor:pointer}.ui-treetable .ui-sortable-column-icon{display:inline-block;margin:-3px 0 -3px 2px}.ui-treetable .ui-chkbox.ui-selection{display:none}.ui-treetable .ui-treetable-selectable-node .ui-chkbox.ui-selection{display:inline-block}.ui-treetable.ui-treetable-checkbox-all .ui-chkbox.ui-selection{display:inline-block}.ui-treetable-scrollable-theadclone{height:0}.ui-treetable-scrollable-theadclone tr{height:0}.ui-treetable-scrollable-theadclone th.ui-state-default{height:0;border-bottom-width:0;border-top-width:0;padding-top:0;padding-bottom:0;outline:0 none}.ui-treetable-scrollable-theadclone th span{display:block;height:0}.ui-treetable-reflow .ui-treetable-data td .ui-column-title{display:none}@media(max-width:640px){.ui-treetable-reflow thead th,.ui-treetable-reflow tfoot td{display:none}.ui-treetable-reflow .ui-treetable-data td{text-align:left;display:block;border:0 none;width:100%;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;float:left;clear:left}.ui-treetable-reflow .ui-treetable-data.ui-widget-content{border:0 none}.ui-treetable-reflow .ui-treetable-data tr.ui-widget-content{border-left:0 none;border-right:0 none}.ui-treetable-reflow .ui-treetable-data td .ui-column-title{padding:.4em;min-width:30%;display:inline-block;margin:-.4em 1em -.4em -.4em}}.ui-treetable .ui-editable-column .ui-cell-editor{display:inline-block;vertical-align:middle}.ui-treetable .ui-editable-column .ui-treetable-toggler{margin-top:0}.ui-treetable .ui-cell-editor-input{display:none}.ui-treetable .ui-row-editing .ui-cell-editor .ui-cell-editor-output{display:none}.ui-treetable .ui-row-editing .ui-cell-editor .ui-cell-editor-input{display:block}.ui-treetable .ui-row-editor span{cursor:pointer;float:left}.ui-treetable .ui-row-editor .ui-icon-pencil{display:inline-block}.ui-treetable .ui-row-editing .ui-row-editor .ui-icon-pencil{display:none}.ui-treetable .ui-row-editor .ui-icon-check,.ui-treetable .ui-row-editor .ui-icon-close{display:none}.ui-treetable .ui-row-editing .ui-row-editor .ui-icon-check,.ui-treetable .ui-row-editing .ui-row-editor .ui-icon-close{display:inline-block}.ui-treetable .ui-treetable-data tr.ui-row-editing td.ui-editable-column,.ui-treetable .ui-treetable-data td.ui-cell-editing{padding:0;margin:0}.ui-treetable .ui-treetable-data tr.ui-row-editing td.ui-editable-column:first-child,.ui-treetable .ui-treetable-data td.ui-cell-editing:first-child{padding-left:10px}
 .ui-wizard{margin:0;padding:0}.ui-wizard-content{margin:3px 0}.ui-wizard-navbar{text-align:right}.ui-wizard-nav-back,.ui-wizard-nav-next{cursor:pointer}.ui-wizard-nav-back{float:left}.ui-wizard-nav-next{float:right}.ui-wizard-step-title{font-size:18px;margin:0 3px 0 0;padding:.4em;float:left}
 .ui-chips{box-shadow:none;cursor:pointer;display:inline-block;position:relative;width:auto}.ui-chips-container{padding:0;clear:left;cursor:text;list-style-type:none;margin:0;min-height:1px;overflow:hidden;width:400px}.ui-chips-token{cursor:default;display:inline-block;vertical-align:middle;overflow:hidden;padding:1px 3px;white-space:nowrap;position:relative;margin:2px}.ui-chips-token .ui-chips-token-label{display:block;padding:0 2.1em 0 .5em}.ui-chips-token .ui-chips-token-icon{cursor:pointer;margin-top:-9px;position:absolute;right:.2em;top:50%}.ui-chips-input-token{display:inline-block;vertical-align:middle;list-style-type:none;margin:1px;padding:0}.ui-chips-input-token input{background-color:transparent;border:0 none;margin:2px;outline:medium none;width:140px}
+    .ui-toggleswitch .ui-toggleswitch-slider {
+        transition: background-color .3s;
+        border-radius:30px;
+        background:#ccc;
+    }
+    .ui-toggleswitch-slider{
+        position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+        
+    }
+    .ui-toggleswitch .ui-toggleswitch-slider:before{ 
+        background-color:#fff;
+        height:1.250em;
+        width:1.250em;
+        left:.25em;
+        bottom:.25em;
+        border-radius:50%;
+        transition:.3s
+    }
+    .ui-toggleswitch-slider:before{
+        
+        position:absolute;
+        content:"";
+    }
+    .ui-toggleswitch.ui-toggleswitch-checked .ui-toggleswitch-slider{
+        
+        background-color: #007ad9;
+    }

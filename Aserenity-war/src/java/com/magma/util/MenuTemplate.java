@@ -64,7 +64,7 @@ public class MenuTemplate {
             "MVente",
             "MStock",
             "MCommande",
-            "Mcommercial"));
+            "MCommercial"));
 
     public static void menuFonctionnalitesModules(String fonctionnalite, String fonctionnaliteModule, String fonctionnaliteSousModule, Utilisateur utilisateur) {
         FacesContext context = FacesContext.getCurrentInstance();

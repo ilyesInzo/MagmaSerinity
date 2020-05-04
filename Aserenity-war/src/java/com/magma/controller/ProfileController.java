@@ -167,23 +167,26 @@ public class ProfileController implements Serializable {
         Privileges privileges = null;
         //GCommande
 
-        privileges = new Privileges("GCommande","bonCommandeCommercial" ,false, false, false, false, false, 123400700, 10020, "MCommande", 1, false, false, false, true);
+        
+        boolean visibiliteModule = utilisateur.getProfile().isSuperAdmin() || utilisateur.getEntreprise().getParametrageEntreprise().isVisibiliteMCommande();
+        
+        privileges = new Privileges("GCommande","bonCommandeCommercial" ,false, false, false, false, false, 123400700, 10020, "MCommande", 1, false, false, false, visibiliteModule);
         listPrivileges.add(privileges);
-        privileges = new Privileges("GEtatCommande","etatCommande" ,false, false, false, false, false, 123400700, 10030, "MCommande", 1, false, false, false, true);
+        privileges = new Privileges("GEtatCommande","etatCommande" ,false, false, false, false, false, 123400700, 10030, "MCommande", 1, false, false, false, visibiliteModule);
         listPrivileges.add(privileges);
-
+        visibiliteModule = utilisateur.getProfile().isSuperAdmin() || utilisateur.getEntreprise().getParametrageEntreprise().isVisibiliteMVentes();
         //MVente
         /* Privileges privileges = new Privileges("GDashboard", false, false, false, false, false, 100000000, 20010, "MVente", 2, false, false, false, true);
         listPrivileges.add(privileges);*/
-        privileges = new Privileges("GDevis","devis", false, false, false, false, false, 123400700, 20020, "MVente", 2, false, false, false, true);
+        privileges = new Privileges("GDevis","devis", false, false, false, false, false, 123400700, 20020, "MVente", 2, false, false, false, visibiliteModule);
         listPrivileges.add(privileges);
         /*privileges = new Privileges("GBonCommandeVente", false, false, false, false, false, 103000000, 20030, "MVente", 2, false, false, false, true);
         listPrivileges.add(privileges);*/
-        privileges = new Privileges("GBonLivraison","bonLivraison", false, false, false, false, false, 123400700, 20040, "MVente", 2, false, false, false, true);
+        privileges = new Privileges("GBonLivraison","bonLivraison", false, false, false, false, false, 123400700, 20040, "MVente", 2, false, false, false, visibiliteModule);
         listPrivileges.add(privileges);
-        privileges = new Privileges("GFacture","facture", false, false, false, false, false, 123400700, 20057, "MVente", 2, false, false, false, true);
+        privileges = new Privileges("GFacture","facture", false, false, false, false, false, 123400700, 20057, "MVente", 2, false, false, false, visibiliteModule);
         listPrivileges.add(privileges);
-        privileges = new Privileges("GEncaissement","encaissement", false, false, false, false, false, 123400700, 20060, "MVente", 2, false, false, false, true);
+        privileges = new Privileges("GEncaissement","encaissement", false, false, false, false, false, 123400700, 20060, "MVente", 2, false, false, false, visibiliteModule);
         listPrivileges.add(privileges);
         /*privileges = new Privileges("GBonSortie", false, false, false, false, false, 123406000, 20070, "MVente", 2, false, false, false, true);
         listPrivileges.add(privileges);
@@ -196,7 +199,7 @@ public class ProfileController implements Serializable {
         listPrivileges.add(privileges);
         privileges = new Privileges("GPaquetAnnules", false, false, false, false, false, 100000000, 20120, "MVente", 2, false, false, false, true);
         listPrivileges.add(privileges);*/
-        privileges = new Privileges("GEncaissementBonLivraison","encaissementBonLivraison", false, false, false, false, false, 123400700, 20130, "MVente", 2, false, false, false, true);
+        privileges = new Privileges("GEncaissementBonLivraison","encaissementBonLivraison", false, false, false, false, false, 123400700, 20130, "MVente", 2, false, false, false, visibiliteModule);
         listPrivileges.add(privileges);
         /*privileges = new Privileges("GRapportVente", false, false, false, false, false, 123400000, 20140, "MVente", 2, false, false, false, true);
         listPrivileges.add(privileges);
@@ -204,48 +207,48 @@ public class ProfileController implements Serializable {
         listPrivileges.add(privileges);
         privileges = new Privileges("GNatureVente", false, false, false, false, false, 123400000, 20160, "MVente", 2, false, false, true, true);
         listPrivileges.add(privileges);*/
-        privileges = new Privileges("GTypeEncaissementVente","typeEncaissementVente", false, false, false, false, false, 123400700, 20170, "MVente", 2, false, false, true, true);
+        privileges = new Privileges("GTypeEncaissementVente","typeEncaissementVente", false, false, false, false, false, 123400700, 20170, "MVente", 2, false, false, true, visibiliteModule);
         listPrivileges.add(privileges);
         /*privileges = new Privileges("GRetenuSourceVente", false, false, false, false, false, 1234000, 20180, "MVente", 2, false, false, true, true);
         listPrivileges.add(privileges);*/
-        privileges = new Privileges("GParametrageTaxe","parametrageTaxe", false, false, false, false, false, 123400700, 20190, "MVente", 2, false, false, true, true);
+        privileges = new Privileges("GParametrageTaxe","parametrageTaxe", false, false, false, false, false, 123400700, 20190, "MVente", 2, false, false, true, visibiliteModule);
         listPrivileges.add(privileges);
-        privileges = new Privileges("GPrefixDevis","prefixDevis", false, false, false, false, false, 123400700, 20200, "MVente", 2, false, false, true, true);
+        privileges = new Privileges("GPrefixDevis","prefixDevis", false, false, false, false, false, 123400700, 20200, "MVente", 2, false, false, true, visibiliteModule);
         listPrivileges.add(privileges);
-        privileges = new Privileges("GPrefixFacture","prefixFacture", false, false, false, false, false, 123400700, 20210, "MVente", 2, false, false, true, true);
+        privileges = new Privileges("GPrefixFacture","prefixFacture", false, false, false, false, false, 123400700, 20210, "MVente", 2, false, false, true, visibiliteModule);
         listPrivileges.add(privileges);
-        privileges = new Privileges("GPrefixBonLivraison","prefixBonLivraison",false, false, false, false, false, 123400700, 20220, "MVente", 2, false, false, true, true);
+        privileges = new Privileges("GPrefixBonLivraison","prefixBonLivraison",false, false, false, false, false, 123400700, 20220, "MVente", 2, false, false, true, visibiliteModule);
         listPrivileges.add(privileges);
-        privileges = new Privileges("GMotifRejetDevisVente","motifRejetDevisVente", false, false, false, false, false, 123400700, 20230, "MVente", 2, false, false, true, true);
+        privileges = new Privileges("GMotifRejetDevisVente","motifRejetDevisVente", false, false, false, false, false, 123400700, 20230, "MVente", 2, false, false, true, visibiliteModule);
         listPrivileges.add(privileges);
         /*privileges = new Privileges("GMotifsAnnulationBCVente", false, false, false, false, false, 123400000, 20240, "MVente", 2, false, false, true, true);
         listPrivileges.add(privileges);
         privileges = new Privileges("GMotifRejetBonLivraisonVente", false, false, false, false, false, 123400000, 20250, "MVente", 2, false, false, true, true);
         listPrivileges.add(privileges);*/
-        privileges = new Privileges("GAvoirVente","avoirVente", false, false, false, false, false, 120000000, 20260, "MVente", 2, false, false, false, true);
+        privileges = new Privileges("GAvoirVente","avoirVente", false, false, false, false, false, 120000000, 20260, "MVente", 2, false, false, false, visibiliteModule);
         listPrivileges.add(privileges);
-        privileges = new Privileges("GPrefixAvoirVente","prefixAvoirVente", false, false, false, false, false, 123400700, 20270, "MVente", 2, false, false, true, true);
+        privileges = new Privileges("GPrefixAvoirVente","prefixAvoirVente", false, false, false, false, false, 123400700, 20270, "MVente", 2, false, false, true, visibiliteModule);
         listPrivileges.add(privileges);
         /*privileges = new Privileges("GTicket", false, false, false, false, false, 123400000, 20280, "MVente", 2, false, false, true, true);
         listPrivileges.add(privileges);*/
-        privileges = new Privileges("GRetour","retour", false, false, false, false, false, 103400700, 20280, "MVente", 2, false, false, false, true);
+        privileges = new Privileges("GRetour","retour", false, false, false, false, false, 103400700, 20280, "MVente", 2, false, false, false, visibiliteModule);
         listPrivileges.add(privileges);
-        privileges = new Privileges("GMotifAvoir","motifAvoir", false, false, false, false, false, 123400700, 20290, "MVente", 2, false, false, true, true);
+        privileges = new Privileges("GMotifAvoir","motifAvoir", false, false, false, false, false, 123400700, 20290, "MVente", 2, false, false, true, visibiliteModule);
         listPrivileges.add(privileges);
 
-       
+        visibiliteModule = utilisateur.getProfile().isSuperAdmin() || utilisateur.getEntreprise().getParametrageEntreprise().isVisibiliteMProduit();
         //Articles
-        privileges = new Privileges("GArticle","article", false, false, false, false, false, 123400700, 600010, "MProduit", 60, false, false, false, true);
+        privileges = new Privileges("GArticle","article", false, false, false, false, false, 123400700, 600010, "MProduit", 60, false, false, false, visibiliteModule);
         listPrivileges.add(privileges);
         /*privileges = new Privileges("GArticleConcurrent", false, false, false, false, false, 123400000, 600020, "MCatalogueArticles", 60, false, false, false, true);
         listPrivileges.add(privileges);*/
-        privileges = new Privileges("GCategorie","categorie", false, false, false, false, false, 123400700, 600030, "MProduit", 60, false, false, false, true);
+        privileges = new Privileges("GCategorie","categorie", false, false, false, false, false, 123400700, 600030, "MProduit", 60, false, false, false, visibiliteModule);
         listPrivileges.add(privileges);
         /*privileges = new Privileges("GMeteoArticle", false, false, false, false, false, 123400000, 600040, "MCatalogueArticles", 60, false, false, false, true);
         listPrivileges.add(privileges);
         privileges = new Privileges("GTypeMesure", false, false, false, false, false, 123400000, 600050, "MCatalogueArticles", 60, false, false, true, true);
         listPrivileges.add(privileges);*/
-        privileges = new Privileges("GTva","tva", false, false, false, false, false, 123400700, 600060, "MProduit", 60, false, false, true, true);
+        privileges = new Privileges("GTva","tva", false, false, false, false, false, 123400700, 600060, "MProduit", 60, false, false, true, visibiliteModule);
         listPrivileges.add(privileges);
         /* privileges = new Privileges("TPlageQuantite", false, false, false, false, false, 123400000, 600070, "MCatalogueArticles", 60, false, false, true, true);
         listPrivileges.add(privileges);
@@ -259,21 +262,22 @@ public class ProfileController implements Serializable {
         listPrivileges.add(privileges);
         privileges = new Privileges("TForme", false, false, false, false, false, 123450000, 600120, "MCatalogueArticles", 60, false, false, true, true);
         listPrivileges.add(privileges);*/
-
+        visibiliteModule = utilisateur.getProfile().isSuperAdmin() || utilisateur.getEntreprise().getParametrageEntreprise().isVisibiliteMStockArticle();
         //Stock
-        privileges = new Privileges("GStockArticle","stock", false, false, false, false, false, 103000700, 130090, "MStock", 13, false, false, false, true);
+        privileges = new Privileges("GStockArticle","stock", false, false, false, false, false, 103000700, 130090, "MStock", 13, false, false, false, visibiliteModule);
         listPrivileges.add(privileges);
 
+        visibiliteModule = utilisateur.getProfile().isSuperAdmin() || utilisateur.getEntreprise().getParametrageEntreprise().isVisibiliteMClient();
         //Clients
         /* privileges = new Privileges("GEnsigne", false, false, false, false, false, 123400000, 620000, "MClient", 62, false, false, false, true);
         listPrivileges.add(privileges);*/
-        privileges = new Privileges("GClient","client", false, false, false, false, false, 123456700, 620010, "MClient", 62, false, false, false, true);
+        privileges = new Privileges("GClient","client", false, false, false, false, false, 123456700, 620010, "MClient", 62, false, false, false, visibiliteModule);
         listPrivileges.add(privileges);
         /* privileges = new Privileges("GNouveauClient", false, false, false, false, false, 123400000, 620020, "MClient", 62, false, false, false, true);
         listPrivileges.add(privileges);*/
-        privileges = new Privileges("GCategorieClient","categorieClient", false, false, false, false, false, 123400700, 620030, "MClient", 62, false, false, false, true);
+        privileges = new Privileges("GCategorieClient","categorieClient", false, false, false, false, false, 123400700, 620030, "MClient", 62, false, false, false, visibiliteModule);
         listPrivileges.add(privileges);
-        privileges = new Privileges("GClassificationClient","classificationClient", false, false, false, false, false, 123400700, 620040, "MClient", 62, false, false, false, true);
+        privileges = new Privileges("GClassificationClient","classificationClient", false, false, false, false, false, 123400700, 620040, "MClient", 62, false, false, false, visibiliteModule);
         listPrivileges.add(privileges);
         /*privileges = new Privileges("GLigneLivraison", false, false, false, false, false, 123400000, 620050, "MClient", 62, false, false, false, true);
         listPrivileges.add(privileges);
@@ -296,38 +300,39 @@ public class ProfileController implements Serializable {
 
         
         //MCommerciale Viste
+        visibiliteModule = utilisateur.getProfile().isSuperAdmin() || utilisateur.getEntreprise().getParametrageEntreprise().isVisibiliteMCommercial();
+        privileges = new Privileges("GCommercial","commercial", false, false, false, false, false, 123400700, 60120, "MCommercial", 6, false, false, false, visibiliteModule);
+        listPrivileges.add(privileges);
+        privileges = new Privileges("GPlanificationVisite","planificationVisite", false, false, false, false, false, 123400000, 60130, "MCommercial", 6, false, false, false, visibiliteModule);
+        listPrivileges.add(privileges);
+        privileges = new Privileges("GTemplateArticleVisite","templateArticleVisite", false, false, false, false, false, 123400000, 60160, "MCommercial", 6, false, false, true, visibiliteModule);
+        listPrivileges.add(privileges);
         
-        privileges = new Privileges("GCommercial","commercial", false, false, false, false, false, 123400700, 60120, "MCommercial", 6, false, false, false, true);
-        listPrivileges.add(privileges);
-        privileges = new Privileges("GPlanificationVisite","planificationVisite", false, false, false, false, false, 123400000, 60130, "MCommercial", 6, false, false, false, true);
-        listPrivileges.add(privileges);
-        privileges = new Privileges("GTemplateArticleVisite","templateArticleVisite", false, false, false, false, false, 123400000, 60160, "MCommerciale", 6, false, false, true, true);
-        listPrivileges.add(privileges);
-        
+        visibiliteModule = utilisateur.getProfile().isSuperAdmin() || utilisateur.getEntreprise().getParametrageEntreprise().isVisibiliteMParametrage();
         //Parametrage
-        privileges = new Privileges("GUtilisateur","utilisateur", false, false, false, false, false, 123456700, 900010, "MParametrage", 90, false, false, false, true);
+        privileges = new Privileges("GUtilisateur","utilisateur", false, false, false, false, false, 123456700, 900010, "MParametrage", 90, false, false, false, visibiliteModule);
         listPrivileges.add(privileges);
-        privileges = new Privileges("GProfile","profile", false, false, false, false, false, 123400700, 900020, "MParametrage", 90, false, false, false, true);
+        privileges = new Privileges("GProfile","profile", false, false, false, false, false, 123400700, 900020, "MParametrage", 90, false, false, false, visibiliteModule);
         listPrivileges.add(privileges);
         /*privileges = new Privileges("GDomaineActivite", false, false, false, false, false, 123400000, 900030, "MParametrage", 90, false, false, false, true);
         listPrivileges.add(privileges);*/
-        privileges = new Privileges("GEntreprise","entreprise", false, false, false, false, false, 123400000, 900040, "MParametrage", 90, false, false, false, true);
+        privileges = new Privileges("GEntreprise","entreprise", false, false, false, false, false, 123400000, 900040, "MParametrage", 90, false, false, false, visibiliteModule);
         listPrivileges.add(privileges);
         /*privileges = new Privileges("GDomaineEntreprise", false, false, false, false, false, 123400000, 900050, "MParametrage", 90, false, false, false,true);
         listPrivileges.add(privileges);*/
-        privileges = new Privileges("GDepartement","departement", false, false, false, false, false, 123400700, 900060, "MParametrage", 90, false, false, false, true);
+        privileges = new Privileges("GDepartement","departement", false, false, false, false, false, 123400700, 900060, "MParametrage", 90, false, false, false, visibiliteModule);
         listPrivileges.add(privileges);
-        privileges = new Privileges("GPoste","poste", false, false, false, false, false, 123400700, 900070, "MParametrage", 90, false, false, false, true);
+        privileges = new Privileges("GPoste","poste", false, false, false, false, false, 123400700, 900070, "MParametrage", 90, false, false, false, visibiliteModule);
         listPrivileges.add(privileges);
         /*privileges = new Privileges("GConcurrents", false, false, false, false, false, 123450000, 900080, "MParametrage", 90, false, false, false, true);
         listPrivileges.add(privileges);
         privileges = new Privileges("GPays", false, false, false, false, false, 100000000, 900085, "MParametrage", 90, false, false, false, true);
         listPrivileges.add(privileges);*/
-        privileges = new Privileges("GGouvernorat","gouvernorat", false, false, false, false, false, 100000000, 900090, "MParametrage", 90, false, false, false, true);
+        privileges = new Privileges("GGouvernorat","gouvernorat", false, false, false, false, false, 100000000, 900090, "MParametrage", 90, false, false, false, visibiliteModule);
         listPrivileges.add(privileges);
-        privileges = new Privileges("GDelegation","delegation", false, false, false, false, false, 100000000, 900100, "MParametrage", 90, false, false, false, true);
+        privileges = new Privileges("GDelegation","delegation", false, false, false, false, false, 100000000, 900100, "MParametrage", 90, false, false, false, visibiliteModule);
         listPrivileges.add(privileges);
-        privileges = new Privileges("GBanque","banque", false, false, false, false, false, 123400700, 900110, "MParametrage", 90, false, false, false, true);
+        privileges = new Privileges("GBanque","banque", false, false, false, false, false, 123400700, 900110, "MParametrage", 90, false, false, false, visibiliteModule);
         listPrivileges.add(privileges);
         /*privileges = new Privileges("GPatrimoine", false, false, false, false, false, 123400000, 900130, "MParametrage", 90, false, false, false, true);
         listPrivileges.add(privileges);
@@ -335,7 +340,7 @@ public class ProfileController implements Serializable {
         listPrivileges.add(privileges);
         privileges = new Privileges("GMotifAvoir", false, false, false, false, false, 123400000, 900150, "MParametrage", 90, false, false, false, true);
         listPrivileges.add(privileges);*/
-        privileges = new Privileges("GTicket","ticket", false, false, false, false, false, 123400700, 900160, "MParametrage", 90, false, false, true, true);
+        privileges = new Privileges("GTicket","ticket", false, false, false, false, false, 123400700, 900160, "MParametrage", 90, false, false, true, visibiliteModule);
         listPrivileges.add(privileges);
 
         return listPrivileges;

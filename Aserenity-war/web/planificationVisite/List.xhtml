@@ -49,7 +49,7 @@
                                                     </h:panelGrid>
 
                                                     <h:panelGrid columns="3" style="float: right">
-                                                        <p:selectOneMenu id="commercial" value="#{planificationVisiteController.commercial}" styleClass="form-control" style="width: 250px;float: right;margin-bottom: 15px" required="true" filter="true" filterMatchMode="startsWith" effect="fade" var="l">
+                                                        <p:selectOneMenu id="commercial" value="#{planificationVisiteController.commercial}" styleClass="form-control" style="width: 250px;float: right;margin-bottom: 15px" required="true" filter="true" filterMatchMode="startsWith" effect="fade" var="l" rendered="#{!planificationVisiteController.isCommercial}">
                                                             <f:selectItems value="#{commercialController.itemsAvailableSelectOne}" var="cl" itemLabel="#{cl.nomPrenom}" itemValue="#{cl}" />
                                                             <p:ajax listener="#{planificationVisiteController.changedCommercial()}" update="schedule, commercial" />
                                                             <p:column>

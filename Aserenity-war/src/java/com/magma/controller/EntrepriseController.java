@@ -8,9 +8,11 @@ import com.magma.controller.util.JsfUtil;
 import com.magma.entity.Delegation;
 import com.magma.entity.Entreprise;
 import com.magma.entity.Gouvernorat;
+import com.magma.entity.ParametrageEntreprise;
 import com.magma.entity.Utilisateur;
 import com.magma.session.DelegationFacadeLocal;
 import com.magma.session.EntrepriseFacadeLocal;
+import com.magma.session.ParametrageEntrepriseFacadeLocal;
 import com.magma.util.MenuTemplate;
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
-import javax.inject.Named;
 import javax.faces.bean.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -47,6 +48,8 @@ public class EntrepriseController implements Serializable {
     private List<Entreprise> items = null;
     @EJB
     private EntrepriseFacadeLocal ejbFacade;
+    @EJB
+    private ParametrageEntrepriseFacadeLocal ejbFacadeParametrageEntreprise;
     private boolean errorMsg;
     private Long idTemp;
     private Entreprise entreprise;
@@ -160,6 +163,7 @@ public class EntrepriseController implements Serializable {
         listeDelegations = null;
         errorMsg = false;
         fileRegistre = null;
+        selected.setParametrageEntreprise(new ParametrageEntreprise());
         return "Create";
     }
 
@@ -198,6 +202,7 @@ public class EntrepriseController implements Serializable {
                 }
 
                 getFacade().create(selected);
+                ejbFacadeParametrageEntreprise.create(selected.getParametrageEntreprise());
                 return prepareList();
 
             } else {
@@ -262,6 +267,8 @@ public class EntrepriseController implements Serializable {
                     selected.setLibelleDelegation(selected.getDelegation().getLibelle());
                 }
 
+                
+
                 if (fileRegistre != null) {
 
                     if (selected.getLogo() != null && selected.getLogo().contains("/resources/images/") == false) {
@@ -291,6 +298,14 @@ public class EntrepriseController implements Serializable {
                 }
 
                 getFacade().edit(selected);
+                
+                ejbFacadeParametrageEntreprise.edit(selected.getParametrageEntreprise());
+                
+               /* if (selected.getParametrageEntreprise() != null) {
+                    selected.setIdDelegation(selected.getDelegation().getId());
+                    selected.setLibelleDelegation(selected.getDelegation().getLibelle());
+                }*/
+                
                 return prepareList();
                 //}
             } else {
