@@ -73,6 +73,8 @@ public class AuthentificationController implements Serializable {
                         utilisateur.setVisibiliteMJourneaux("display:none;");
                         utilisateur.setVisibiliteMParametrage("display:none;");
                         
+                        utilisateur.setVisibiliteMVeille("display:none;");
+                        
                         Map<String, Privileges> mapPrivilege;
 
                         // the key may be replaced by the repo where the xhtml file are stored
@@ -137,6 +139,10 @@ public class AuthentificationController implements Serializable {
                                 // } else {
                                 //     context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "display: none;");
                                 // }
+                            }
+                            
+                            if (privilege.isLecture() == true && privilege.getOrderModule() == 7 && privilege.isModuleActiver() == true) {
+                                utilisateur.setVisibiliteMVeille("");
                             }
 
                             if (privilege.isLecture() == true && privilege.getOrderModule() == 13 && privilege.isModuleActiver() == true) {

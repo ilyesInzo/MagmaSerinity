@@ -57,6 +57,9 @@ public class ParametrageEntreprise implements Serializable {
     @Column(name = "PEnt_VisibiliteMJourneaux")
     private boolean visibiliteMJourneaux;
     
+    @Column(name = "PEnt_VisibiliteMVeille")
+    private boolean visibiliteMVeille;
+    
     
     
     public Long getId() {
@@ -137,6 +140,14 @@ public class ParametrageEntreprise implements Serializable {
 
     public void setVisibiliteMJourneaux(boolean visibiliteMJourneaux) {
         this.visibiliteMJourneaux = visibiliteMJourneaux;
+    }
+
+    public boolean isVisibiliteMVeille() {
+        return visibiliteMVeille;
+    }
+
+    public void setVisibiliteMVeille(boolean visibiliteMVeille) {
+        this.visibiliteMVeille = visibiliteMVeille;
     }
     
     

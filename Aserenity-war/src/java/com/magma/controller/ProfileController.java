@@ -299,11 +299,38 @@ public class ProfileController implements Serializable {
         listPrivileges.add(privileges);*/
 
         
+        //MVeilles
+        visibiliteModule = utilisateur.getProfile().isSuperAdmin() || utilisateur.getEntreprise().getParametrageEntreprise().isVisibiliteMVeille();
+       /* privileges = new Privileges("GVeille", false, false, false, false, false, 1234000, 70010, "MVeilles", 7, false, false, false, listCodeModuleEntreprise.contains(7));
+        selected.getListPrivileges().add(privileges);*/
+        privileges = new Privileges("GProspection","prospection", false, false, false, false, false, 12340700, 70020, "MVeille", 7, false, false, false, visibiliteModule);
+        listPrivileges.add(privileges);
+       /* privileges = new Privileges("GParrainages", false, false, false, false, false, 1234000, 70030, "MVeilles", 7, false, false, false, listCodeModuleEntreprise.contains(7));
+        selected.getListPrivileges().add(privileges);
+        privileges = new Privileges("GPlanificationAnimation", false, false, false, false, false, 1234000, 70040, "MVeilles", 7, false, false, false, listCodeModuleEntreprise.contains(7));
+        selected.getListPrivileges().add(privileges);
+        privileges = new Privileges("GTypeVeille", false, false, false, false, false, 1234000, 70050, "MVeilles", 7, false, false, true, listCodeModuleEntreprise.contains(7));
+        selected.getListPrivileges().add(privileges);
+        privileges = new Privileges("GNatureVeille", false, false, false, false, false, 1234000, 70060, "MVeilles", 7, false, false, true, listCodeModuleEntreprise.contains(7));
+        selected.getListPrivileges().add(privileges);
+        privileges = new Privileges("GEtatProspection", false, false, false, false, false, 1234000, 70070, "MVeilles", 7, false, false, true, listCodeModuleEntreprise.contains(7));
+        selected.getListPrivileges().add(privileges);
+        privileges = new Privileges("GEvaluationProspection", false, false, false, false, false, 1234000, 70080, "MVeilles", 7, false, false, true, listCodeModuleEntreprise.contains(7));
+        selected.getListPrivileges().add(privileges);
+        privileges = new Privileges("GEtatParrainage", false, false, false, false, false, 1234000, 70090, "MVeilles", 7, false, false, true, listCodeModuleEntreprise.contains(7));
+        selected.getListPrivileges().add(privileges);
+        privileges = new Privileges("GAnimatrices", false, false, false, false, false, 1234000, 70100, "MVeilles", 7, false, false, true, listCodeModuleEntreprise.contains(7));
+        selected.getListPrivileges().add(privileges);
+        privileges = new Privileges("GSuiviPrixConcurrent", false, false, false, false, false, 1234000, 70110, "MVeilles", 7, false, false, false, listCodeModuleEntreprise.contains(7));
+        selected.getListPrivileges().add(privileges);*/
+        
         //MCommerciale Viste
         visibiliteModule = utilisateur.getProfile().isSuperAdmin() || utilisateur.getEntreprise().getParametrageEntreprise().isVisibiliteMCommercial();
         privileges = new Privileges("GCommercial","commercial", false, false, false, false, false, 123400700, 60120, "MCommercial", 6, false, false, false, visibiliteModule);
         listPrivileges.add(privileges);
         privileges = new Privileges("GPlanificationVisite","planificationVisite", false, false, false, false, false, 123400000, 60130, "MCommercial", 6, false, false, false, visibiliteModule);
+        listPrivileges.add(privileges);
+        privileges = new Privileges("GRapportVisite","rapportVisit", false, false, false, false, false, 100000000, 60140, "MCommercial", 6, false, false, false, visibiliteModule);
         listPrivileges.add(privileges);
         privileges = new Privileges("GTemplateArticleVisite","templateArticleVisite", false, false, false, false, false, 123400000, 60160, "MCommercial", 6, false, false, true, visibiliteModule);
         listPrivileges.add(privileges);

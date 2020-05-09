@@ -45,7 +45,7 @@ public class CategorieClient implements Serializable {
     @Column(name = "CCl_Description")
     private String description;
 
-    @OneToMany(mappedBy = "categorieClient", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "categorieClient", fetch = FetchType.EAGER)
     private List<Client> listClients;
     
     @Column(name = "Tab_dateSynch")

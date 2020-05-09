@@ -177,7 +177,8 @@ public class Utilisateur implements Serializable {
     @Transient
     private String visibiliteMJourneaux;
     
-    
+    @Transient
+    private String visibiliteMVeille;
     
     @Column(name = "Tab_IdUserCreate")
     private Long idUserCreate;
@@ -696,7 +697,16 @@ public class Utilisateur implements Serializable {
     public void setVisibiliteSousMCommercial(String visibiliteSousMCommercial) {
         this.visibiliteSousMCommercial = visibiliteSousMCommercial;
     }
-    
+
+    public String getVisibiliteMVeille() {
+        return visibiliteMVeille;
+    }
+
+    public void setVisibiliteMVeille(String visibiliteMVeille) {
+        this.visibiliteMVeille = visibiliteMVeille;
+    }
+
+
     
 
     @Override

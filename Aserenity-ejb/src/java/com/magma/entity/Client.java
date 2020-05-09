@@ -99,7 +99,7 @@ public class Client implements Serializable {
     private CategorieClient categorieClient;
     
     @ManyToOne
-    @JoinColumn(name = "CClt_Id", referencedColumnName = "CClt_Id", nullable = false)
+    @JoinColumn(name = "CClt_Id", referencedColumnName = "CClt_Id", nullable = true)
     private ClassificationClient classificationClient;
 
     @Column(name = "Tab_dateSynch")

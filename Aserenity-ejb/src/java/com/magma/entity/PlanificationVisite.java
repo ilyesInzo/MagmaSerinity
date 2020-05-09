@@ -13,6 +13,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -89,6 +91,10 @@ public class PlanificationVisite implements Serializable {
     
     @Transient
     private Commercial commercial;
+    
+    @OneToOne
+    @JoinColumn(name = "RVst_Id", nullable = true)
+    private RapportVisit rapportVisit;
 
     public Long getId() {
         return id;
@@ -349,7 +355,15 @@ public class PlanificationVisite implements Serializable {
     public void setPrenom(String prenom) {
         this.prenom = prenom;
     }
-    
+
+    public RapportVisit getRapportVisit() {
+        return rapportVisit;
+    }
+
+    public void setRapportVisit(RapportVisit rapportVisit) {
+        this.rapportVisit = rapportVisit;
+    }
+
     @PrePersist
     void prepersist() {
         this.dateCreation = new Date();
