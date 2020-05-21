@@ -21,6 +21,9 @@ public class GouverneratWS {
     
     private long dateSynch;
     
+    private Long idPays;
+ 
+    
     private List<DelegationWS>listDelegationWSs;
 
     public Long getId() {
@@ -62,6 +65,14 @@ public class GouverneratWS {
 
     public void setListDelegationWSs(List<DelegationWS> listDelegationWSs) {
         this.listDelegationWSs = listDelegationWSs;
+    }
+
+    public Long getIdPays() {
+        return idPays;
+    }
+
+    public void setIdPays(Long idPays) {
+        this.idPays = idPays;
     }
     
     

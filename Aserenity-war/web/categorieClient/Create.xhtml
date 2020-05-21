@@ -51,6 +51,25 @@
                                             </div>
                                         </div>
 
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Parent} : " for="Parent" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectOneMenu id="Parent" value="#{categorieClientController.selected.parent}"  title="#{bundle.Parent}" style="width: 90%; min-width: 180px" styleClass="form-control" required="false" filter="true" filterMatchMode="startsWith" effect="fade" var="l">
+                                                    <f:selectItems value="#{categorieClientController.itemsAvailableSelectOneParents}" var="cl" itemLabel="#{cl.libelle}" itemValue="#{cl}"  />
+                                                    <p:column>
+                                                        <h:outputText value="#{l.libelle}" />
+                                                    </p:column>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" > 
+                                            <h:outputLabel value="#{bundle.DernierRang} :" for="DernierRang" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectBooleanButton id="DernierRang" value="#{categorieClientController.selected.dernierRang}" onLabel="#{bundle.Oui}" offLabel="#{bundle.Non}" style="width: 90%; min-width: 180px" styleClass="form-control" />
+
+                                            </div>
+                                        </div>
 
                                         <div class="form-group" >
                                             <h:outputLabel value="#{bundle.Description} : " for="Description"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>

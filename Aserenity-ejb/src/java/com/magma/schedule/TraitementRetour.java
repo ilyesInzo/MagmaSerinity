@@ -165,7 +165,7 @@ public class TraitementRetour {
     private void createRetourBonLivraison() {
 
         // toutes les bls non annulée , sans retours  émies, non transformer en facture et date inférieur a date bl
-        List<BonLivraison> listBonLivraisons = ejbFacadeBonLivraison.findAllNative(" where o.BLiv_Etat <> 2 and o.Ret_Id is null and o.BLiv_idFacture is null and o.BLiv_DateBonLivraison < '" + dateJour + "'");
+        List<BonLivraison> listBonLivraisons = ejbFacadeBonLivraison.findAllNative(" where o.BLiv_Etat <> 2 and o.Ret_Id is null and o.BLiv_TransformTo is null and o.BLiv_DateBonLivraison < '" + dateJour + "'");
         System.out.println("listBonLivraisons : " + listBonLivraisons.size());
         for (BonLivraison bonLivraison : listBonLivraisons) {
 

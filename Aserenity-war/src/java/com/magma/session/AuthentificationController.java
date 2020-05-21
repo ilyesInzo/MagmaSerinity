@@ -41,7 +41,7 @@ public class AuthentificationController implements Serializable {
 
     public String connecter() {
         try {
-            //TraitementDate.dataBase = 2;
+            TraitementDate.dataBase = 2;
             FacesContext context = FacesContext.getCurrentInstance();
 
             //GenerationPdf.generationPdf();

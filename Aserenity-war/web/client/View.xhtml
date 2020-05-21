@@ -66,6 +66,13 @@
                                                 <p:outputLabel id="gsm" value="#{clientController.selected.gsmString}" styleClass="form-control" style="width: 90%; min-width: 180px"/>
                                             </div>
                                         </div>
+                                        
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Pays} : " for="Pays" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="Pays" value="#{clientController.selected.libellePays}" styleClass="form-control" style="width: 90%; min-width: 180px"/>
+                                            </div>
+                                        </div>
 
                                         <div class="form-group" >
                                             <h:outputLabel value="#{bundle.Gouvernorat} : " for="Gouvernorat" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
@@ -80,15 +87,19 @@
                                                 <p:outputLabel id="Delegation" value="#{clientController.selected.libelleDelegation}" styleClass="form-control" style="width: 90%; min-width: 180px"/>
                                             </div>
                                         </div>
-                                        
-                                        <div class="form-group" > 
-                                            <h:outputLabel value="#{bundle.AssujettiTVA} :" for="AssujettiTVA" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
-                                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                                <p:selectBooleanButton id="AssujettiTVA" value="#{clientController.selected.assujettiTVA}" onLabel="#{bundle.Oui}" offLabel="#{bundle.Non}" style="width: 90%; min-width: 180px" styleClass="form-control" disabled="true"/>
 
-                                            </div>
-                                        </div>
-                                        
+                                        <h:panelGroup id="pgAssujettiTVA" >
+                                            <h:panelGroup rendered="false">
+                                                <div class="form-group" > 
+                                                    <h:outputLabel value="#{bundle.AssujettiTVA} :" for="AssujettiTVA" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <p:selectBooleanButton id="AssujettiTVA" value="#{clientController.selected.assujettiTVA}" onLabel="#{bundle.Oui}" offLabel="#{bundle.Non}" style="width: 90%; min-width: 180px" styleClass="form-control" disabled="true"/>
+
+                                                    </div>
+                                                </div>
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+
                                         <div class="form-group" >
                                             <h:outputLabel value="#{bundle.Classification}: " for="ClassificationClient"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                             <div class="col-md-9 col-sm-9 col-xs-12">
@@ -110,13 +121,6 @@
                                                 <p:inputTextarea rows="5" id="adresse" readonly="true" value="#{clientController.selected.adresse}" title="#{bundle.Adresse}" required="false"  styleClass="form-control" style="width: 90%; min-width: 180px"/>
                                             </div>
                                         </div>
-                                        
-                                        <div class="form-group" >
-                                            <h:outputLabel value="#{bundle.Commercial} : " for="Commercial" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
-                                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                                <p:outputLabel id="Commercial" value="#{clientController.selected.nomPrenom}" styleClass="form-control" style="width: 90%; min-width: 180px"/>
-                                            </div>
-                                        </div> 
 
                                         <div class="form-group" >
                                             <h:outputLabel value="#{bundle.Description} : " for="Description"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>

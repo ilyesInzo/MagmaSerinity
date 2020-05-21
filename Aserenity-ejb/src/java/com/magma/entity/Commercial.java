@@ -62,6 +62,12 @@ public class Commercial implements Serializable {
 
     @Column(name = "Usr_EtatUsr")
     private boolean etatUsr;
+    
+    @Column(name = "Com_SequenceClientID")
+    private String sequenceClientID;
+    
+    @Column(name = "Com_SequenceZoneID")
+    private String sequenceZoneID;
 
     @Column(name = "Tab_IdUserCreate")
     private Long idUserCreate;
@@ -260,6 +266,22 @@ public class Commercial implements Serializable {
 
     public void setLibelleUserModif(String libelleUserModif) {
         this.libelleUserModif = libelleUserModif;
+    }
+
+    public String getSequenceClientID() {
+        return sequenceClientID;
+    }
+
+    public void setSequenceClientID(String sequenceClientID) {
+        this.sequenceClientID = sequenceClientID;
+    }
+
+    public String getSequenceZoneID() {
+        return sequenceZoneID;
+    }
+
+    public void setSequenceZoneID(String sequenceZoneID) {
+        this.sequenceZoneID = sequenceZoneID;
     }
 
     @PrePersist

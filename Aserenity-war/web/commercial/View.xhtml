@@ -51,7 +51,7 @@
                                                 <p:outputLabel id="Commercial" value="#{commercialController.selected.nomPrenom}"  title="#{bundle.Commercial}"  styleClass="form-control" style="width: 90%; min-width: 180px"/>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="form-group" >
                                             <h:outputLabel value="#{bundle.Type} : "  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                             <div class="col-md-9 col-sm-9 col-xs-12">
@@ -59,7 +59,12 @@
                                             </div>
                                         </div>
 
-
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Client} : "  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:orderList value="#{commercialController.listClientCommercials}" var="client" controlsLocation="none" itemLabel="#{client.toString()}" itemValue="#{client}" />
+                                            </div>
+                                        </div>
 
                                     </div> 
 

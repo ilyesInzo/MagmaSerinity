@@ -14,6 +14,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -44,6 +46,10 @@ public class Gouvernorat implements Serializable {
 
     @OneToMany(mappedBy = "gouvernorat", fetch = FetchType.EAGER)
     private List<Delegation> listDelegations;
+    
+    @ManyToOne
+    @JoinColumn(name = "Pys_Id", referencedColumnName = "Pys_Id", nullable = true)
+    private Pays pays;
 
     public Long getId() {
         return id;
@@ -92,6 +98,15 @@ public class Gouvernorat implements Serializable {
     public void setListDelegations(List<Delegation> listDelegations) {
         this.listDelegations = listDelegations;
     }
+
+    public Pays getPays() {
+        return pays;
+    }
+
+    public void setPays(Pays pays) {
+        this.pays = pays;
+    }
+    
         @PreUpdate
     void preupdate() {
         this.dateSynch = System.currentTimeMillis();

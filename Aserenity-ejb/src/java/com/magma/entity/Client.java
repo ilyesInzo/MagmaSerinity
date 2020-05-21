@@ -78,6 +78,12 @@ public class Client implements Serializable {
 
     @Column(name = "Del_Libelle")
     private String libelleDelegation;
+    
+    @Column(name = "Pys_Id")
+    private Long idPays;
+
+    @Column(name = "Pys_Libelle")
+    private String libellePays;
 
     @Column(name = "Cli_CPostal")
     private String codePostale;
@@ -87,7 +93,10 @@ public class Client implements Serializable {
 
     @Column(name = "Cli_AssujettiTVA")
     private boolean assujettiTVA;
-
+    
+    @Transient
+    private Pays pays;
+    
     @Transient
     private Gouvernorat gouvernorat;
 
@@ -117,21 +126,30 @@ public class Client implements Serializable {
     @Column(name = "Tab_LibelleUserModif")
     private String libelleUserModif;
 
-    @Transient
-    private Commercial commercial;
+    public Long getIdPays() {
+        return idPays;
+    }
 
-    @Column(name = "Com_Id")
-    private Long idCommercial;
+    public void setIdPays(Long idPays) {
+        this.idPays = idPays;
+    }
 
-    @Column(name = "Com_TypeCommercial")
-    private int typeCommercial;
+    public String getLibellePays() {
+        return libellePays;
+    }
 
-    @Column(name = "Com_Nom")
-    private String nomCommercial;
+    public void setLibellePays(String libellePays) {
+        this.libellePays = libellePays;
+    }
 
-    @Column(name = "Com_Prenom")
-    private String prenomCommercial;
+    public Pays getPays() {
+        return pays;
+    }
 
+    public void setPays(Pays pays) {
+        this.pays = pays;
+    }
+    
     public Long getIdUserCreate() {
         return idUserCreate;
     }
@@ -440,55 +458,6 @@ public class Client implements Serializable {
 
     public void setDateSynch(Long dateSynch) {
         this.dateSynch = dateSynch;
-    }
-
-    public Long getIdCommercial() {
-        return idCommercial;
-    }
-
-    public void setIdCommercial(Long idCommercial) {
-        this.idCommercial = idCommercial;
-    }
-
-    public String getNomCommercial() {
-        return nomCommercial;
-    }
-
-    public void setNomCommercial(String nomCommercial) {
-        this.nomCommercial = nomCommercial;
-    }
-
-    public String getPrenomCommercial() {
-        return prenomCommercial;
-    }
-
-    public void setPrenomCommercial(String prenomCommercial) {
-        this.prenomCommercial = prenomCommercial;
-    }
-
-    public Commercial getCommercial() {
-        return commercial;
-    }
-
-    public String getNomPrenom() {
-        if (nomCommercial != null) {
-            return prenomCommercial + " " + nomCommercial;
-        } else {
-            return "---";
-        }
-
-    }
-
-    public void setCommercial(Commercial commercial) {
-        this.commercial = commercial;
-    }
-
-    public int getTypeCommercial() {
-        return typeCommercial;
-    }
-
-    public void setTypeCommercial(int typeCommercial) {
-        this.typeCommercial = typeCommercial;
     }
 
     public ClassificationClient getClassificationClient() {

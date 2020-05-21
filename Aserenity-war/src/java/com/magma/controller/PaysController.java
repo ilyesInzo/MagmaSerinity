@@ -1,59 +1,58 @@
 package com.magma.controller;
 
-import com.magma.entity.Prospection;
+import com.magma.entity.Pays;
 import com.magma.controller.util.JsfUtil;
-import com.magma.entity.CategorieClient;
-import com.magma.entity.ClassificationClient;
-import com.magma.entity.Client;
-import com.magma.entity.Prospection;
+import com.magma.controller.util.PaginationHelper;
+import com.magma.entity.Pays;
 import com.magma.entity.Utilisateur;
-import com.magma.session.ClientFacadeLocal;
-import com.magma.session.ProspectionFacadeLocal;
+import com.magma.session.PaysFacadeLocal;
+import com.magma.session.PaysFacade;
 import com.magma.util.MenuTemplate;
 import java.io.IOException;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.faces.model.DataModel;
+import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 
-@ManagedBean(name= "prospectionController")
+@ManagedBean(name= "paysController")
 @SessionScoped
-public class ProspectionController implements Serializable {
+public class PaysController implements Serializable {
 
-    private Prospection selected;
-    private Prospection selectedSingle;
-    private List<Prospection> items = null;
+
+    private Pays selected;
+    private Pays selectedSingle;
+    private List<Pays> items = null;
     @EJB
-    private ProspectionFacadeLocal ejbFacade;
-    @EJB
-    private ClientFacadeLocal ejbFacadeClient;
+    private PaysFacadeLocal ejbFacade;
     private boolean errorMsg;
     private Long idTemp;
-    private Prospection prospection;
+    private Pays pays;
     private long idEntreprise = 0;
     private Utilisateur utilisateur;
 
-    public ProspectionController() {
+    public PaysController() {
         items = null;
         errorMsg = false;
         FacesContext context = FacesContext.getCurrentInstance();
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
-        /*if (prospection.getIdEntrepriseSuivi() != null && prospection.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = prospection.getIdEntrepriseSuivi();
+        /*if (pays.getIdEntrepriseSuivi() != null && pays.getIdEntrepriseSuivi() != 0) {
+                idEntreprise = pays.getIdEntrepriseSuivi();
             } else {
-                idEntreprise = prospection.getEntreprise().getId();
+                idEntreprise = pays.getEntreprise().getId();
             }*/
     }
 
@@ -63,16 +62,16 @@ public class ProspectionController implements Serializable {
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
             utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
 
-            MenuTemplate.menuFonctionnalitesModules("GProspection", "MVeille", null,utilisateur);
+            MenuTemplate.menuFonctionnalitesModules("GPays", "MParametrage", null,utilisateur);
 
-            //MenuTemplate.menuFonctionnalitesModules("GProspection", utilisateur);
-            /*if (prospection.getIdEntrepriseSuivi() != null && prospection.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = prospection.getIdEntrepriseSuivi();
+            //MenuTemplate.menuFonctionnalitesModules("GPays", utilisateur);
+            /*if (pays.getIdEntrepriseSuivi() != null && pays.getIdEntrepriseSuivi() != 0) {
+                idEntreprise = pays.getIdEntrepriseSuivi();
             } else {
-                idEntreprise = prospection.getEntreprise().getId();
+                idEntreprise = pays.getEntreprise().getId();
             }*/
             recreateModel();
-            FacesContext.getCurrentInstance().getExternalContext().redirect("../prospection/List.xhtml");
+            FacesContext.getCurrentInstance().getExternalContext().redirect("../pays/List.xhtml");
         } catch (IOException ex) {
             System.out.println(ex);
         }
@@ -84,35 +83,35 @@ public class ProspectionController implements Serializable {
         errorMsg = false;
     }
 
-    public List<Prospection> getItems() {
+    public List<Pays> getItems() {
         try {
             if (items == null) {
                 items = getFacade().findAll("order by o.libelle asc ");
             }
             return items;
         } catch (Exception e) {
-            System.out.println("Erreur- ProspectionController - getItems: " + e.getMessage());
+            System.out.println("Erreur- PaysController - getItems: " + e.getMessage());
             return null;
         }
     }
 
-    public Prospection getSelected() {
+    public Pays getSelected() {
         return selected;
     }
 
-    public void setSelected(Prospection selected) {
+    public void setSelected(Pays selected) {
         this.selected = selected;
     }
 
-    public Prospection getSelectedSingle() {
+    public Pays getSelectedSingle() {
         return selectedSingle;
     }
 
-    public void setSelectedSingle(Prospection selectedSingle) {
+    public void setSelectedSingle(Pays selectedSingle) {
         this.selectedSingle = selectedSingle;
     }
 
-    private ProspectionFacadeLocal getFacade() {
+    private PaysFacadeLocal getFacade() {
         return ejbFacade;
     }
 
@@ -135,7 +134,7 @@ public class ProspectionController implements Serializable {
     }
 
     public String prepareCreate() {
-        selected = new Prospection();
+        selected = new Pays();
         errorMsg = false;
         return "Create";
     }
@@ -143,24 +142,10 @@ public class ProspectionController implements Serializable {
     public String create() {
 
         try {
-           // errorMsg = getFacade().verifierUnique(selected.getLibelle().trim());
+            errorMsg = getFacade().verifierUnique(selected.getLibelle().trim());
 
             if (errorMsg == false) {
-                //selected.setSupprimer(false);
-                
-            selected.setIdCommercial(selected.getCommercial().getId());
-            selected.setNomCommercial(selected.getCommercial().getNom());
-            selected.setPrenomCommercial(selected.getCommercial().getPrenom());
-
-            selected.setIdGouvernorat(selected.getGouvernorat().getId());
-            selected.setLibelleGouvernorat(selected.getGouvernorat().getLibelle());
-
-            selected.setIdDelegation(selected.getDelegation().getId());
-            selected.setLibelleDelegation(selected.getDelegation().getLibelle());
-            //selected.setSupression(false);
-            selected.setDateSynch(System.currentTimeMillis());
-            selected.setDateCreation(new Date());
-                
+                selected.setSupprimer(false);
                 getFacade().create(selected);
                 return prepareList();
 
@@ -171,7 +156,7 @@ public class ProspectionController implements Serializable {
             }
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("EchecOperation")));
-            System.out.println("Erreur- ProspectionController - create: " + e.getMessage());
+            System.out.println("Erreur- PaysController - create: " + e.getMessage());
             return null;
         }
 
@@ -196,38 +181,11 @@ public class ProspectionController implements Serializable {
 
     public String update() {
         try {
-            //errorMsg = getFacade().verifierUnique(selected.getLibelle().trim(), selected.getId());
+            errorMsg = getFacade().verifierUnique(selected.getLibelle().trim(), selected.getId());
 
             if (errorMsg == false) {
 
-                //selected.setSupprimer(false);
-                
-                
-                
-                // Transdorm To
-                if(selected.getEtatProspection()==1)
-                {
-                Client client = new Client();
-                client.setAdresse(selected.getAdresse());
-                client.setCodePostale(selected.getCodePostale());
-                client.setIdDelegation(selected.getIdDelegation());
-                client.setIdGouvernorat(selected.getIdGouvernorat());
-                client.setLibelle(selected.getLibelle());
-                //client.setEmail(selected.get);
-                client.setGsm(selected.getGsm());
-                
-                CategorieClient categorieClient = new CategorieClient();
-                categorieClient.setId(selected.getIdCategorieClient());
-                client.setCategorieClient(categorieClient);
-                
-                client.setDateCreation(new Date());
-                client.setAssujettiTVA(true);
-              
-                ejbFacadeClient.create(client);
-                
-                }
-                
-                
+                selected.setSupprimer(false);
                 getFacade().edit(selected);
                 return prepareList();
                 //}
@@ -238,7 +196,7 @@ public class ProspectionController implements Serializable {
             }
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("EchecOperation")));
-            System.out.println("Erreur- ProspectionController - update: " + e.getMessage());
+            System.out.println("Erreur- PaysController - update: " + e.getMessage());
             return null;
         }
     }
@@ -257,7 +215,7 @@ public class ProspectionController implements Serializable {
             getFacade().remove(selectedSingle);
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("EchecOperation")));
-            System.out.println("Erreur- ProspectionController - performDestroy: " + e.getMessage());
+            System.out.println("Erreur- PaysController - performDestroy: " + e.getMessage());
         }
     }
 
@@ -268,7 +226,6 @@ public class ProspectionController implements Serializable {
     public void setErrorMsg(boolean errorMsg) {
         this.errorMsg = errorMsg;
     }
-
     public SelectItem[] getItemsAvailableSelectMany() {
         return JsfUtil.getSelectItems(ejbFacade.findAll(), false);
     }
@@ -277,21 +234,21 @@ public class ProspectionController implements Serializable {
         return JsfUtil.getSelectItems(ejbFacade.findAll(), true);
     }
 
-    public Prospection getProspection(java.lang.Long id) {
+    public Pays getPays(java.lang.Long id) {
         return ejbFacade.find(id);
     }
 
-    @FacesConverter(forClass = Prospection.class)
-    public static class ProspectionControllerConverter implements Converter {
+    @FacesConverter(forClass = Pays.class)
+    public static class PaysControllerConverter implements Converter {
 
         @Override
         public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
             if (value == null || value.length() == 0) {
                 return null;
             }
-            ProspectionController controller = (ProspectionController) facesContext.getApplication().getELResolver().
-                    getValue(facesContext.getELContext(), null, "prospectionController");
-            return controller.getProspection(getKey(value));
+            PaysController controller = (PaysController) facesContext.getApplication().getELResolver().
+                    getValue(facesContext.getELContext(), null, "paysController");
+            return controller.getPays(getKey(value));
         }
 
         java.lang.Long getKey(String value) {
@@ -311,11 +268,11 @@ public class ProspectionController implements Serializable {
             if (object == null) {
                 return null;
             }
-            if (object instanceof Prospection) {
-                Prospection o = (Prospection) object;
+            if (object instanceof Pays) {
+                Pays o = (Pays) object;
                 return getStringKey(o.getId());
             } else {
-                throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName() + "; expected type: " + Prospection.class.getName());
+                throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName() + "; expected type: " + Pays.class.getName());
             }
         }
 

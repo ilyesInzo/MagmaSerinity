@@ -135,9 +135,42 @@ public class CategorieClientController implements Serializable {
     public String create() {
 
         try {
-            errorMsg = getFacade().verifierUnique(selected.getLibelle().trim());
 
+            String clause = " where o.CCl_Supprimer = 0 and o.CCl_Libelle like '" + selected.getLibelle().trim().toUpperCase() + "' ";
+
+            if (selected.getParent() != null) {
+                clause = clause + " and o.CCl_IdParent = " + selected.getParent().getId() + "";
+            } else {
+                clause = clause + " and o.CCl_Rang = " + selected.getRang() + "";
+            }
+
+            //errorMsg = getFacade().verifierUnique(selected.getLibelle().trim());
+            errorMsg = getFacade().verifierUnique(clause);
+            
             if (errorMsg == false) {
+                
+                
+                if (selected.getParent() != null) {
+                    //  selected.setIdParent(selected.getParent().getId());
+                    selected.setLibelleParent(selected.getParent().getLibelle());
+                    selected.setRang(selected.getParent().getRang() + 1);
+                    if (selected.getParent().getRang() > 0) {
+                        selected.setIdPremierParent(selected.getParent().getIdPremierParent());
+                        selected.setIdSuiteParent(selected.getParent().getIdSuiteParent() + " > " + selected.getParent().getId());
+                        selected.setLibelleSuiteParent(selected.getParent().getLibelleSuiteParent() + " > " + selected.getParent().getLibelle());
+                    } else {
+                        selected.setIdPremierParent(selected.getParent().getId());
+                        selected.setIdSuiteParent(selected.getParent().getId() + "");
+                        selected.setLibelleSuiteParent(selected.getParent().getLibelle());
+                    }
+                } else {
+                    selected.setLibelleSuiteParent("---");
+                    selected.setIdSuiteParent("---");
+                    selected.setRang(0);
+                    selected.setIdPremierParent(null);
+                    // selected.setIdParent(null);
+                }
+                
 
                 getFacade().create(selected);
                 return prepareList();
@@ -174,15 +207,36 @@ public class CategorieClientController implements Serializable {
 
     public String update() {
         try {
-            errorMsg = getFacade().verifierUnique(selected.getLibelle().trim(), selected.getId());
+            String clause = " where o.CCl_Supprimer = 0 and o.CCl_Libelle like '" + selected.getLibelle().trim().toUpperCase() + "' and o.CCl_Id <> " + selected.getId();
 
+            if (selected.getParent() != null) {
+                clause = clause + " and o.CCl_IdParent = " + selected.getParent().getId() + "";
+            } else {
+                clause = clause + " and o.CCl_Rang = " + selected.getRang() + "";
+            }
+            
             if (errorMsg == false) {
-                /* if (selected.getMontant().compareTo(BigDecimal.ZERO) == -1) {
-                    FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), " " + ResourceBundle.getBundle("/Bundle").getString("ValeurIncorrecte")));
-                    return null;
-                } else {*/
-                //selected.setIdEntreprise(idEntreprise);
+                if (selected.getParent() != null) {
+                    //  selected.setIdParent(selected.getParent().getId());
+                    selected.setLibelleParent(selected.getParent().getLibelle());
+                    selected.setRang(selected.getParent().getRang() + 1);
+                    if (selected.getParent().getRang() > 0) {
+                        selected.setIdPremierParent(selected.getParent().getIdPremierParent());
+                        selected.setIdSuiteParent(selected.getParent().getIdSuiteParent() + " > " + selected.getParent().getId());
+                        selected.setLibelleSuiteParent(selected.getParent().getLibelleSuiteParent() + " > " + selected.getParent().getLibelle());
+                    } else {
+                        selected.setIdPremierParent(selected.getParent().getId());
+                        selected.setIdSuiteParent(selected.getParent().getId() + "");
+                        selected.setLibelleSuiteParent(selected.getParent().getLibelle());
+                    }
+                } else {
+                    selected.setLibelleSuiteParent("---");
+                    selected.setIdSuiteParent("---");
+                    selected.setRang(0);
+                    selected.setIdPremierParent(null);
+                    // selected.setIdParent(null);
+                }
+                selected.setSupprimer(false);
                 getFacade().edit(selected);
                 return prepareList();
                 //}
@@ -233,8 +287,16 @@ public class CategorieClientController implements Serializable {
         return JsfUtil.getSelectItems(ejbFacade.findAll(), false);
     }
 
-    public SelectItem[] getItemsAvailableSelectOne() {
+   /* public SelectItem[] getItemsAvailableSelectOne() {
         return JsfUtil.getSelectItems(ejbFacade.findAll(), true);
+    }*/
+    
+    public SelectItem[] getItemsAvailableSelectOneParents() {
+        return JsfUtil.getSelectItems(getFacade().findAll(" where o.supprimer = 0 and  o.dernierRang = 0 order by o.libelle asc"), true);
+    }
+    
+    public SelectItem[] getItemsAvailableSelectOne() {
+        return JsfUtil.getSelectItems(getFacade().findAll(" where o.supprimer = 0 and  o.dernierRang = 1 order by o.libelle asc"), true);
     }
 
     public CategorieClient getCategorieClient(java.lang.Long id) {

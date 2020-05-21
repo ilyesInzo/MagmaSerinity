@@ -5,10 +5,13 @@ import com.magma.entity.Client;
 import com.magma.entity.Commercial;
 import com.magma.entity.Delegation;
 import com.magma.entity.Gouvernorat;
+import com.magma.entity.Pays;
 import com.magma.entity.Utilisateur;
 import com.magma.session.ClientFacadeLocal;
 import com.magma.session.CommercialFacadeLocal;
 import com.magma.session.DelegationFacadeLocal;
+import com.magma.session.GouvernoratFacadeLocal;
+import com.magma.session.PaysFacadeLocal;
 import com.magma.util.MenuTemplate;
 import java.io.IOException;
 import javax.faces.bean.ManagedBean;
@@ -17,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
-import javax.inject.Named;
 import javax.faces.bean.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -27,7 +29,7 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 
-@ManagedBean(name= "clientController")
+@ManagedBean(name = "clientController")
 @SessionScoped
 public class ClientController implements Serializable {
 
@@ -38,15 +40,21 @@ public class ClientController implements Serializable {
     private ClientFacadeLocal ejbFacade;
     @EJB
     private DelegationFacadeLocal ejbFacadeDelegation;
-    
+    @EJB
+
+    private GouvernoratFacadeLocal ejbFacadeGouvernorat;
+    @EJB
+    private PaysFacadeLocal ejbFacadePays;
+
     @EJB
     private CommercialFacadeLocal ejbFacadeCommercial;
-    
+
     private boolean errorMsg;
     private Long idTemp;
     private Client client;
     private long idEntreprise = 0;
     private List<Delegation> listDelegation = null;
+    private List<Gouvernorat> listGouvernorat = null;
     private Utilisateur utilisateur;
 
     public ClientController() {
@@ -56,10 +64,10 @@ public class ClientController implements Serializable {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
         /*if (client.getIdEntrepriseSuivi() != null && client.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = client.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = client.getEntreprise().getId();
-            }*/
+         idEntreprise = client.getIdEntrepriseSuivi();
+         } else {
+         idEntreprise = client.getEntreprise().getId();
+         }*/
     }
 
     public String initPage() {
@@ -68,14 +76,14 @@ public class ClientController implements Serializable {
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
             utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
 
-            MenuTemplate.menuFonctionnalitesModules("GClient", "MClient", null,utilisateur);
+            MenuTemplate.menuFonctionnalitesModules("GClient", "MClient", null, utilisateur);
 
             //MenuTemplate.menuFonctionnalitesModules("GClient", utilisateur);
             /*if (client.getIdEntrepriseSuivi() != null && client.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = client.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = client.getEntreprise().getId();
-            }*/
+             idEntreprise = client.getIdEntrepriseSuivi();
+             } else {
+             idEntreprise = client.getEntreprise().getId();
+             }*/
             recreateModel();
             FacesContext.getCurrentInstance().getExternalContext().redirect("../client/List.xhtml");
         } catch (IOException ex) {
@@ -144,6 +152,7 @@ public class ClientController implements Serializable {
         selected.setAssujettiTVA(true);
         errorMsg = false;
         listDelegation = new ArrayList<>();
+        listGouvernorat = new ArrayList<>();
         return "Create";
     }
 
@@ -153,26 +162,24 @@ public class ClientController implements Serializable {
             errorMsg = getFacade().verifierUnique(selected.getLibelle().trim(), selected.getGsm());
 
             if (errorMsg == false) {
-                
-                if(selected.getCommercial() != null){
-                
-                    selected.setNomCommercial(selected.getCommercial().getNom());
-                    selected.setPrenomCommercial(selected.getCommercial().getPrenom());
-                    selected.setIdCommercial(selected.getCommercial().getId());
-                    selected.setTypeCommercial(selected.getCommercial().getTypeCommercial());
-                
+
+
+                if (selected.getPays() != null) {
+                    selected.setIdPays(selected.getPays().getId());
+                    selected.setLibellePays(selected.getPays().getLibelle());
+
                 }
+                
+                    if (selected.getGouvernorat() != null) {
+                        selected.setIdGouvernorat(selected.getGouvernorat().getId());
+                        selected.setLibelleGouvernorat(selected.getGouvernorat().getLibelle());
 
-                if (selected.getGouvernorat() != null) {
-                    selected.setIdGouvernorat(selected.getGouvernorat().getId());
-                    selected.setLibelleGouvernorat(selected.getGouvernorat().getLibelle());
-
-                    if (selected.getDelegation() != null) {
-                        selected.setIdDelegation(selected.getDelegation().getId());
-                        selected.setLibelleDelegation(selected.getDelegation().getLibelle());
+                        if (selected.getDelegation() != null) {
+                            selected.setIdDelegation(selected.getDelegation().getId());
+                            selected.setLibelleDelegation(selected.getDelegation().getLibelle());
+                        }
                     }
 
-                }
                 getFacade().create(selected);
                 return prepareList();
 
@@ -201,23 +208,27 @@ public class ClientController implements Serializable {
         if (selected != null) {
             errorMsg = false;
             idTemp = selected.getId();
-            
 
-            if (selected.getIdCommercial()!= null) {
-                Commercial commercial = new Commercial();
-                commercial.setId(selected.getIdCommercial());
-                commercial.setNom(null);
-                commercial.setPrenom(null);
-                selected.setCommercial(commercial);
+
+            Pays pays = new Pays();
+            if (selected.getIdPays() != null) {
+                pays = new Pays();
+                pays.setId(selected.getIdPays());
+                pays.setLibelle(selected.getLibellePays());
+                selected.setPays(pays);
             }
+
+            listGouvernorat = ejbFacadeGouvernorat.findAllNative(" where o.Pys_Id = " + selected.getIdPays() + " ");
 
             Gouvernorat gouvernorat = new Gouvernorat();
             if (selected.getIdGouvernorat() != null) {
                 gouvernorat = new Gouvernorat();
                 gouvernorat.setId(selected.getIdGouvernorat());
                 gouvernorat.setLibelle(selected.getLibelleGouvernorat());
+                gouvernorat.setPays(pays);
                 selected.setGouvernorat(gouvernorat);
             }
+
             listDelegation = ejbFacadeDelegation.findAllNative(" where o.Gov_Id = " + selected.getIdGouvernorat() + " ");
 
             if (selected.getLibelleDelegation() != null && !selected.getLibelleDelegation().equals("")) {
@@ -239,25 +250,22 @@ public class ClientController implements Serializable {
 
             if (errorMsg == false) {
 
-                if(selected.getCommercial() != null){
-                
-                    selected.setNomCommercial(selected.getCommercial().getNom());
-                    selected.setPrenomCommercial(selected.getCommercial().getPrenom());
-                    selected.setIdCommercial(selected.getCommercial().getId());
-                    selected.setTypeCommercial(selected.getCommercial().getTypeCommercial());
-                
+
+                if (selected.getPays() != null) {
+                    selected.setIdPays(selected.getPays().getId());
+                    selected.setLibellePays(selected.getPays().getLibelle());
+
                 }
                 
-                if (selected.getGouvernorat() != null) {
-                    selected.setIdGouvernorat(selected.getGouvernorat().getId());
-                    selected.setLibelleGouvernorat(selected.getGouvernorat().getLibelle());
+                    if (selected.getGouvernorat() != null) {
+                        selected.setIdGouvernorat(selected.getGouvernorat().getId());
+                        selected.setLibelleGouvernorat(selected.getGouvernorat().getLibelle());
 
-                    if (selected.getDelegation() != null) {
-                        selected.setIdDelegation(selected.getDelegation().getId());
-                        selected.setLibelleDelegation(selected.getDelegation().getLibelle());
+                        if (selected.getDelegation() != null) {
+                            selected.setIdDelegation(selected.getDelegation().getId());
+                            selected.setLibelleDelegation(selected.getDelegation().getLibelle());
+                        }
                     }
-
-                }
 
                 getFacade().edit(selected);
                 return prepareList();
@@ -280,8 +288,8 @@ public class ClientController implements Serializable {
             //if (temps == null || temps.isEmpty()) {
             performDestroy();
             /*} else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SuppressionNonAutorisé")));
-            }*/
+             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SuppressionNonAutorisé")));
+             }*/
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SelectionnerObjet")));
         }
@@ -297,12 +305,28 @@ public class ClientController implements Serializable {
         }
     }
 
+    public List<Gouvernorat> getListGouvernorat() {
+        return listGouvernorat;
+    }
+
+    public void setListGouvernorat(List<Gouvernorat> listGouvernorat) {
+        this.listGouvernorat = listGouvernorat;
+    }
+
     public List<Delegation> getListDelegation() {
         return listDelegation;
     }
 
     public void setListDelegation(List<Delegation> listDelegation) {
         this.listDelegation = listDelegation;
+    }
+
+    public void changedGouvernorat() {
+        if (selected.getPays() != null) {
+            listGouvernorat = selected.getPays().getListeGouvernorat();
+        } else {
+            listGouvernorat = null;
+        }
     }
 
     public void changedDeligation() {
@@ -321,19 +345,20 @@ public class ClientController implements Serializable {
         this.errorMsg = errorMsg;
     }
 
+    public SelectItem[] getItemsAvailableSelectOneGouvernerat() {
+        if (listGouvernorat == null) {
+            listGouvernorat = new ArrayList<>();
+        }
+        return JsfUtil.getSelectItems(listGouvernorat, true);
+    }
+
     public SelectItem[] getItemsAvailableSelectOneDelegation() {
         if (listDelegation == null) {
             listDelegation = new ArrayList<>();
         }
         return JsfUtil.getSelectItems(listDelegation, true);
     }
-    
 
-    public SelectItem[] getItemsAvailableSelectOneCommercial() {
-        
-        return JsfUtil.getSelectItems(ejbFacadeCommercial.findAll(" where o.etatUsr = 1 and o.typeCommercial = "+selected.getTypeCommercial()), true);
-    }
-    
     public SelectItem[] getItemsAvailableSelectMany() {
         return JsfUtil.getSelectItems(ejbFacade.findAll(), false);
     }

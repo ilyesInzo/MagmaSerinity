@@ -30,10 +30,16 @@ public interface CategorieClientFacadeLocal {
 
     List<CategorieClient> findRange(int[] range);
     
-    public boolean verifierUnique(String libelle);
-            
-    public boolean verifierUnique(String libelle, Object id);
+    boolean verifierUnique(String libelle, Long idParent);
+
+    boolean verifierUnique(String libelle, Long idParent, Long id);
+
+    boolean verifierUnique(String libelle, int rang);
+
+    boolean verifierUnique(String libelle, int rang, Long id);
 
     int count();
+    
+    boolean verifierUnique(String clause);
     
 }

@@ -52,7 +52,19 @@
                                             </div>
                                         </div>
 
+                                        <div class="form-group" > 
+                                            <h:outputLabel value="#{bundle.CategorieParent} :" for="categorieParent" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="categorieParent" value="#{categorieClientController.selected.libelleParent}" title="#{bundle.CategorieParent}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div>
 
+                                        <div class="form-group" > 
+                                            <h:outputLabel value="#{bundle.DernierRang} :" for="DernierRang" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectBooleanButton id="DernierRang" disabled="true" value="#{categorieClientController.selected.dernierRang}" onLabel="#{bundle.Oui}" offLabel="#{bundle.Non}" style="width: 90%; min-width: 180px" styleClass="form-control" />
+                                            </div>
+                                        </div>
                                         
                                         <div class="form-group" >
                                             <h:outputLabel value="#{bundle.Description} : " for="Description"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>

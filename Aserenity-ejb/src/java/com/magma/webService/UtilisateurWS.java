@@ -27,6 +27,8 @@ public class UtilisateurWS {
 
     private Long idEntreprise;
     private String LibelleEntreprise;
+    
+    private String sequenceClientID;
 
     private boolean moduleClient;
 
@@ -230,6 +232,14 @@ public class UtilisateurWS {
 
     public void setModuleVente(boolean moduleVente) {
         this.moduleVente = moduleVente;
+    }
+
+    public String getSequenceClientID() {
+        return sequenceClientID;
+    }
+
+    public void setSequenceClientID(String sequenceClientID) {
+        this.sequenceClientID = sequenceClientID;
     }
 
 

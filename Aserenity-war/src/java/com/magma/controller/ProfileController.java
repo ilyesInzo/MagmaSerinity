@@ -352,9 +352,9 @@ public class ProfileController implements Serializable {
         privileges = new Privileges("GPoste","poste", false, false, false, false, false, 123400700, 900070, "MParametrage", 90, false, false, false, visibiliteModule);
         listPrivileges.add(privileges);
         /*privileges = new Privileges("GConcurrents", false, false, false, false, false, 123450000, 900080, "MParametrage", 90, false, false, false, true);
-        listPrivileges.add(privileges);
-        privileges = new Privileges("GPays", false, false, false, false, false, 100000000, 900085, "MParametrage", 90, false, false, false, true);
         listPrivileges.add(privileges);*/
+        privileges = new Privileges("GPays","pays", false, false, false, false, false, 1234000000, 900085, "MParametrage", 90, false, false, false, visibiliteModule);
+        listPrivileges.add(privileges);
         privileges = new Privileges("GGouvernorat","gouvernorat", false, false, false, false, false, 100000000, 900090, "MParametrage", 90, false, false, false, visibiliteModule);
         listPrivileges.add(privileges);
         privileges = new Privileges("GDelegation","delegation", false, false, false, false, false, 100000000, 900100, "MParametrage", 90, false, false, false, visibiliteModule);

@@ -10,7 +10,7 @@
 
         <ui:define name="pageContent">
 
-            
+
 
             <h:panelGroup id="messagePanel" layout="block">
                 <p:messages closable="true" globalOnly="true" showDetail="true"><p:autoUpdate />
@@ -55,18 +55,20 @@
                                                 </p:selectOneMenu>
                                             </div>
                                         </div>
-
-                                        <div class="form-group" >
-                                            <h:outputLabel value="#{bundle.Nature} : *" for="Nature" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
-                                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                                <p:selectOneMenu id="Nature" value="#{clientController.selected.nature}" title="#{bundle.Nature}" required="true"  filter="true" filterMatchMode="contains" style="width: 90%; min-width: 180px" styleClass="form-control">
-                                                    <f:selectItem itemLabel="#{bundle.PersonnePhysique}" itemValue="PersonnePhysique" />
-                                                    <f:selectItem itemLabel="#{bundle.PersonneMorale}" itemValue="PersonneMorale" />
-                                                    <!--p:ajax update="idPanelPersonneMoral"/-->
-                                                </p:selectOneMenu>
-                                            </div>
-                                        </div>
-
+                                        <h:panelGroup id="pgNature" >
+                                            <h:panelGroup rendered="false">
+                                                <div class="form-group" >
+                                                    <h:outputLabel value="#{bundle.Nature} : *" for="Nature" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <p:selectOneMenu id="Nature" value="#{clientController.selected.nature}" title="#{bundle.Nature}" required="true"  filter="true" filterMatchMode="contains" style="width: 90%; min-width: 180px" styleClass="form-control">
+                                                            <f:selectItem itemLabel="#{bundle.PersonnePhysique}" itemValue="PersonnePhysique" />
+                                                            <f:selectItem itemLabel="#{bundle.PersonneMorale}" itemValue="PersonneMorale" />
+                                                            <!--p:ajax update="idPanelPersonneMoral"/-->
+                                                        </p:selectOneMenu>
+                                                    </div>
+                                                </div>
+                                            </h:panelGroup>
+                                        </h:panelGroup>
                                         <div class="form-group" >
                                             <h:outputLabel value="#{bundle.Libelle}: *" for="libelle"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                             <div class="col-md-9 col-sm-9 col-xs-12">
@@ -82,10 +84,23 @@
                                         </div>
 
                                         <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.Pays} : *" for="Pays" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectOneMenu  id="Pays" value="#{clientController.selected.pays}" title="#{bundle.Pays}" required="true"  styleClass="form-control" filter="true" filterMatchMode="startsWith" effect="fade" var="l" style="width: 90%; min-width: 180px">
+                                                    <f:selectItems value="#{paysController.itemsAvailableSelectOne}" var="cl" itemLabel="#{cl.libelle}" itemValue="#{cl}"  />
+                                                    <p:ajax update="Gouvernorat" listener="#{clientController.changedGouvernorat()}" />
+                                                    <p:column>
+                                                        <h:outputText value="#{l.libelle}" />
+                                                    </p:column>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
                                             <h:outputLabel value="#{bundle.Gouvernorat} : *" for="Gouvernorat" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                             <div class="col-md-9 col-sm-9 col-xs-12">
                                                 <p:selectOneMenu  id="Gouvernorat" value="#{clientController.selected.gouvernorat}" title="#{bundle.Gouvernorat}" required="true"  styleClass="form-control" filter="true" filterMatchMode="startsWith" effect="fade" var="l" style="width: 90%; min-width: 180px">
-                                                    <f:selectItems value="#{gouvernoratController.itemsAvailableSelectOne}" var="cl" itemLabel="#{cl.libelle}" itemValue="#{cl}"  />
+                                                    <f:selectItems value="#{clientController.itemsAvailableSelectOneGouvernerat}" var="cl" itemLabel="#{cl.libelle}" itemValue="#{cl}"  />
                                                     <p:ajax update="Delegation" listener="#{clientController.changedDeligation()}" />
                                                     <p:column>
                                                         <h:outputText value="#{l.libelle}" />
@@ -105,15 +120,17 @@
                                                 </p:selectOneMenu>                                            
                                             </div>
                                         </div>
-                                        
-                                        <div class="form-group" > 
-                                            <h:outputLabel value="#{bundle.AssujettiTVA} :" for="AssujettiTVA" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
-                                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                                <p:selectBooleanButton id="AssujettiTVA" value="#{clientController.selected.assujettiTVA}" onLabel="#{bundle.Oui}" offLabel="#{bundle.Non}" style="width: 90%; min-width: 180px" styleClass="form-control" />
+                                        <h:panelGroup id="pgAssujettiTVA" >
+                                            <h:panelGroup rendered="false">
+                                                <div class="form-group" > 
+                                                    <h:outputLabel value="#{bundle.AssujettiTVA} :" for="AssujettiTVA" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <p:selectBooleanButton id="AssujettiTVA" value="#{clientController.selected.assujettiTVA}" onLabel="#{bundle.Oui}" offLabel="#{bundle.Non}" style="width: 90%; min-width: 180px" styleClass="form-control" />
 
-                                            </div>
-                                        </div>
-                                        
+                                                    </div>
+                                                </div>
+                                            </h:panelGroup>
+                                        </h:panelGroup>
                                         <div class="form-group" >
                                             <h:outputLabel value="#{bundle.Classification} : *" for="ClassificationClient" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                             <div class="col-md-9 col-sm-9 col-xs-12">                                       
@@ -139,29 +156,6 @@
                                             <h:outputLabel value="#{bundle.Adresse} : "  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                             <div class="col-md-9 col-sm-9 col-xs-12">
                                                 <p:inputTextarea rows="5" id="adresse" value="#{clientController.selected.adresse}" title="#{bundle.Adresse}" required="false" style="width: 90%; min-width: 180px" styleClass="form-control"/>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="form-group" >
-                                            <h:outputLabel value="#{bundle.Type}: *"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
-                                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                                <p:selectOneMenu id="transFormTo" value="#{clientController.selected.typeCommercial}" styleClass="form-control"  required="false" filter="true" filterMatchMode="contains" effect="fade" var="l" style="width: 90%; min-width: 180px">
-                                                    <f:selectItem itemValue="0" itemLabel="#{bundle.Commercial}" />
-                                                    <f:selectItem itemValue="1" itemLabel="#{bundle.Delegue}"/>
-                                                    <p:ajax update="Commercial"/>
-                                                </p:selectOneMenu>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="form-group" >
-                                            <h:outputLabel value="#{bundle.Commercial} : *" for="Commercial" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
-                                            <div class="col-md-9 col-sm-9 col-xs-12">                                            
-                                                <p:selectOneMenu  id="Commercial" value="#{clientController.selected.commercial}" title="#{bundle.Commercial}" required="false"  styleClass="form-control" filter="true" filterMatchMode="startsWith" effect="fade" var="l" style="width: 90%; min-width: 180px">
-                                                    <f:selectItems value="#{clientController.itemsAvailableSelectOneCommercial}"  var="cl" itemLabel="#{cl.nomPrenom}" itemValue="#{cl}"  />
-                                                    <p:column>
-                                                        <h:outputText value="#{l.nomPrenom}" />
-                                                    </p:column>
-                                                </p:selectOneMenu>                                            
                                             </div>
                                         </div>
 

@@ -15,11 +15,14 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -38,8 +41,8 @@ public class CategorieClient implements Serializable {
     @Column(name = "CCl_Libelle")
     private String libelle;
     
-        @Column(name = "Tab_DateCreation")
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @Column(name = "Tab_DateCreation")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreation;
 
     @Column(name = "CCl_Description")
@@ -50,6 +53,34 @@ public class CategorieClient implements Serializable {
     
     @Column(name = "Tab_dateSynch")
     private Long dateSynch;
+    
+    @Column(name = "CCl_Rang")
+    private int rang;
+    
+    @Column(name = "CCl_LibelleParent")
+    private String libelleParent;
+
+    @Column(name = "CCl_DernierRang")
+    private boolean dernierRang;
+    
+    @Column(name = "CCl_LibelleSuiteParent")
+    private String libelleSuiteParent;
+
+    @Column(name = "CCl_IdSuiteParent")
+    private String idSuiteParent;
+    
+    @Column(name = "CCl_Supprimer")
+    private boolean supprimer;
+    
+    @Column(name = "CCl_IdPremierParent")
+    private Long idPremierParent;
+    
+    @ManyToOne
+    @JoinColumn(name = "CCl_IdParent")
+    private CategorieClient parent;
+
+    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
+    private List<CategorieClient> listCategorieFils;
     
     @Column(name = "Tab_IdUserCreate")
     private Long idUserCreate;
@@ -194,6 +225,93 @@ public class CategorieClient implements Serializable {
 
     public void setDateSynch(Long dateSynch) {
         this.dateSynch = dateSynch;
+    }
+
+    public int getRang() {
+        return rang;
+    }
+
+    public void setRang(int rang) {
+        this.rang = rang;
+    }
+
+    public String getLibelleParent() {
+        return libelleParent;
+    }
+
+    public void setLibelleParent(String libelleParent) {
+        this.libelleParent = libelleParent;
+    }
+
+    public boolean isDernierRang() {
+        return dernierRang;
+    }
+
+    public void setDernierRang(boolean dernierRang) {
+        this.dernierRang = dernierRang;
+    }
+
+    public String getLibelleSuiteParent() {
+        return libelleSuiteParent;
+    }
+
+    public void setLibelleSuiteParent(String libelleSuiteParent) {
+        this.libelleSuiteParent = libelleSuiteParent;
+    }
+
+    public String getIdSuiteParent() {
+        return idSuiteParent;
+    }
+
+    public void setIdSuiteParent(String idSuiteParent) {
+        this.idSuiteParent = idSuiteParent;
+    }
+
+    public Long getIdPremierParent() {
+        return idPremierParent;
+    }
+
+    public void setIdPremierParent(Long idPremierParent) {
+        this.idPremierParent = idPremierParent;
+    }
+
+    public CategorieClient getParent() {
+        return parent;
+    }
+
+    public void setParent(CategorieClient parent) {
+        this.parent = parent;
+    }
+
+    public List<CategorieClient> getListCategorieFils() {
+        return listCategorieFils;
+    }
+
+    public void setListCategorieFils(List<CategorieClient> listCategorieFils) {
+        this.listCategorieFils = listCategorieFils;
+    }
+    
+    public String getLibelleSuiteParentString() {
+        if (rang == 0) {
+            return libelle;
+        }
+        return libelleSuiteParent + " > " + libelle;
+    }
+
+    public String getCategorieRootParent() {
+        if (getParent() != null) {
+            return getParent().getCategorieRootParent();
+        } else {
+            return libelle;
+        }
+    }
+
+    public boolean isSupprimer() {
+        return supprimer;
+    }
+
+    public void setSupprimer(boolean supprimer) {
+        this.supprimer = supprimer;
     }
     
     @PrePersist

@@ -14,9 +14,11 @@ import com.magma.session.CategorieClientFacadeLocal;
 import com.magma.session.CategorieFacadeLocal;
 import com.magma.session.ClientFacadeLocal;
 import com.magma.session.CommercialFacadeLocal;
+import com.magma.session.DelegationFacadeLocal;
 import com.magma.session.EntrepriseFacadeLocal;
 import com.magma.session.EtatCommandeFacadeLocal;
 import com.magma.session.GouvernoratFacadeLocal;
+import com.magma.session.PaysFacadeLocal;
 import com.magma.session.PlanificationVisiteFacadeLocal;
 import com.magma.session.ProspectionFacadeLocal;
 import com.magma.session.RapportVisitArticleFacadeLocal;
@@ -51,7 +53,11 @@ public class MagmaService {
     @EJB
     private EntrepriseFacadeLocal ejbFacadeEntreprise;
     @EJB
+    private PaysFacadeLocal ejbFacadePays;
+    @EJB
     private GouvernoratFacadeLocal ejbFacadeGouvernorat;
+    @EJB
+    private DelegationFacadeLocal ejbFacadeDelegation;
     @EJB
     private CategorieFacadeLocal ejbFacadeCategorie;
     @EJB
@@ -132,6 +138,7 @@ public class MagmaService {
                         utilisateurWS.setGsm(utilisateurs.get(0).getGsm());
                         utilisateurWS.setEmail(utilisateurs.get(0).getEmail());
                         utilisateurWS.setType(1);
+                        utilisateurWS.setSequenceClientID(utilisateurs.get(0).getSequenceClientID());
                         utilisateurWS.setEtatCompte(0);
                         return utilisateurWS;
                     } else {
@@ -199,6 +206,38 @@ public class MagmaService {
         }
 
     }
+    
+    @GET
+    @Path("/synchroniserPayss/{dateSynch}")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public List<PaysWS> synchroniserPayss(@PathParam("dateSynch") long dateSynch) {
+        List<PaysWS> listePaystWS = new ArrayList<>();
+        List<Pays> listePayss = null;
+        try {
+            System.err.println("==> synchroniserPayss");
+            if (dateSynch > 0) {
+                listePayss = ejbFacadePays.findAll(" where  o.dateSynch > " + dateSynch + "");
+            } else {
+                listePayss = ejbFacadePays.findAll();
+            }
+
+            if (listePayss != null && !listePayss.isEmpty()) {
+                for (Pays categorieClient : listePayss) {
+                    PaysWS PaysWS = new PaysWS();
+                    PaysWS.setId(categorieClient.getId());
+                    PaysWS.setLibelle(categorieClient.getLibelle());
+                    PaysWS.setDateSynch(categorieClient.getDateSynch());
+                    listePaystWS.add(PaysWS);
+                }
+                return listePaystWS;
+            } else {
+                return listePaystWS;
+            }
+        } catch (Exception e) {
+            System.out.println("MagmaService synchroniserPayss ERREUR : " + e.getMessage());
+            return listePaystWS;
+        }
+    }
 
     @GET
     @Path("/synchroniserGouvernerats/{dateSynch}")
@@ -219,18 +258,11 @@ public class MagmaService {
                 gouverneratWS.setId(gouvernorat.getId());
                 gouverneratWS.setLibelle(gouvernorat.getLibelle());
                 gouverneratWS.setDescription(gouvernorat.getDescription());
-                gouverneratWS.setListDelegationWSs(new ArrayList<DelegationWS>());
-                gouverneratWS.setDateSynch(gouvernorat.getDateSynch());
-                if (gouvernorat.getListDelegations() != null && !gouvernorat.getListDelegations().isEmpty()) {
-                    for (Delegation delegation : gouvernorat.getListDelegations()) {
-                        DelegationWS delegationWS = new DelegationWS();
-                        delegationWS.setId(delegation.getId());
-                        delegationWS.setLibelle(delegation.getLibelle());
-                        delegationWS.setDescription(delegation.getDescription());
-                        delegationWS.setDateSynch(delegation.getDateSynch());
-                        gouverneratWS.getListDelegationWSs().add(delegationWS);
-                    }
+                
+                if(gouvernorat.getPays()!= null){
+                gouverneratWS.setIdPays(gouvernorat.getPays().getId());
                 }
+                gouverneratWS.setDateSynch(gouvernorat.getDateSynch());
                 listeGouverneratWS.add(gouverneratWS);
             }
             return listeGouverneratWS;
@@ -241,6 +273,39 @@ public class MagmaService {
          System.out.println("MagmaService synchroniserGouvernerats ERREUR : " + e.getMessage());
          return listeGouverneratWS;
          }*/
+    }
+    
+    @GET
+    @Path("/synchroniserDelegations/{dateSynch}")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public List<DelegationWS> synchroniserDelegations(@PathParam("dateSynch") long dateSynch) {
+        List<DelegationWS> listeDelegationtWS = new ArrayList<>();
+        List<Delegation> listeDelegations = null;
+        try {
+            System.err.println("==> synchroniserDelegations");
+            if (dateSynch > 0) {
+                listeDelegations = ejbFacadeDelegation.findAll(" where  o.dateSynch > " + dateSynch + "");
+            } else {
+                listeDelegations = ejbFacadeDelegation.findAll();
+            }
+
+            if (listeDelegations != null && !listeDelegations.isEmpty()) {
+                for (Delegation delegation : listeDelegations) {
+                    DelegationWS delegationWS = new DelegationWS();
+                    delegationWS.setId(delegation.getId());
+                    delegationWS.setLibelle(delegation.getLibelle());
+                    delegationWS.setDateSynch(delegation.getDateSynch());
+                    delegationWS.setIdGouvernerat(delegation.getGouvernorat().getId());
+                    listeDelegationtWS.add(delegationWS);
+                }
+                return listeDelegationtWS;
+            } else {
+                return listeDelegationtWS;
+            }
+        } catch (Exception e) {
+            System.out.println("MagmaService synchroniserDelegations ERREUR : " + e.getMessage());
+            return listeDelegationtWS;
+        }
     }
 
     @GET
@@ -488,8 +553,6 @@ public class MagmaService {
 
                     clientWS.setIdCategorieClient(client.getCategorieClient().getId());
 
-                    clientWS.setIdCommercial(client.getIdCommercial());
-                    clientWS.setTypeCommercial(client.getTypeCommercial());
 
                     listeClientWS.add(clientWS);
                 }
@@ -535,8 +598,6 @@ public class MagmaService {
 
                     clientWS.setIdCategorieClient(client.getCategorieClient().getId());
                     clientWS.setLibelleCategorieClient(client.getCategorieClient().getLibelle());
-                    clientWS.setIdCommercial(client.getIdCommercial());
-                    clientWS.setTypeCommercial(client.getTypeCommercial());
                     listeClientWS.add(clientWS);
                 }
                 return listeClientWS;

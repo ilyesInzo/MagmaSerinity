@@ -9,8 +9,8 @@ package com.magma.webService;
  *
  * @author inzo
  */
-public class DelegationWS {
-
+public class PaysWS {
+    
     private Long id;
 
     private String libelle;
@@ -18,8 +18,6 @@ public class DelegationWS {
     private String description;
 
     private long dateSynch;
-
-    private Long idGouvernerat;
 
     public Long getId() {
         return id;
@@ -53,12 +51,7 @@ public class DelegationWS {
         this.dateSynch = dateSynch;
     }
 
-    public Long getIdGouvernerat() {
-        return idGouvernerat;
-    }
 
-    public void setIdGouvernerat(Long idGouvernerat) {
-        this.idGouvernerat = idGouvernerat;
-    }
-
+    
+    
 }

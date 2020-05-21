@@ -28,16 +28,18 @@
                                 <h:form id="f1">
 
                                     <div class="x_title">
-                                        <h2 style="color: #607D8B">#{bundle.GCategorieClient}</h2>
+                                        <h2 style="color: #607D8B">#{bundle.GPays}</h2>
                                         <ul class="nav navbar-right panel_toolbox">                          
                                             <li>
-                                                <p:commandButton rendered="#{user.profile.toPrivilege('categorieClient').creation}" title="Nouveau" action="#{categorieClientController.prepareCreate()}" id="addButton"  type="push" ajax="false"  icon="fa fa-plus" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                                <p:commandButton  rendered="#{user.profile.toPrivilege('pays').creation}" title="Nouveau" action="#{paysController.prepareCreate()}" id="addButton"  type="push" ajax="false"  icon="fa fa-plus" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
                                             </li>
+                                            
                                             <li>
-                                                <p:commandButton rendered="#{user.profile.toPrivilege('categorieClient').supression}" title="#{bundle.Supprimer}"  id="deleteButton" oncomplete="PF('confirmation').show()" icon="fa fa-fw fa-trash-o" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
-                                            </li>                                         
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('pays').supression}" title="#{bundle.Supprimer}"  id="deleteButton" oncomplete="PF('confirmation').show()" icon="fa fa-fw fa-trash-o" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                            </li>
+                                            
                                             <li>
-                                                <p:commandButton rendered="#{user.profile.toPrivilege('categorieClient').lecture}" title="Refresh" action="#{categorieClientController.prepareList()}" id="updateButton"  immediate="true" icon="fa fa-refresh"  style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('pays').lecture}" title="Refresh" action="#{paysController.prepareList()}" id="updateButton"  immediate="true" icon="fa fa-refresh"  style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
                                             </li>
 
                                         </ul>
@@ -47,36 +49,30 @@
 
                                     <div class="x_content" >
 
-                                        <p:dataTable emptyMessage="#{bundle.TableauVide}"
+                                        <p:dataTable emptyMessage="vide" 
                                                      rows="10"
                                                      paginator="true"
                                                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                                      rowsPerPageTemplate="5,10,15"
-                                                     value="#{categorieClientController.items}" var="item"
-                                                     rowKey="#{item}" selection="#{categorieClientController.selectedSingle}"
+                                                     value="#{paysController.items}" var="item"
+                                                     rowKey="#{item}" selection="#{paysController.selectedSingle}"
                                                      paginatorPosition="bottom"
                                                      >
 
                                             <p:column selectionMode="single" style="width:35px;text-align:center;">
                                             </p:column>         
 
-                                            <p:column filterBy="#{item.libelle}" sortBy="#{item.libelle}" style="width: 20%" filterMatchMode="contains" filterStyle="width:98%">
+                                            <p:column filterBy="#{item.libelle}" sortBy="#{item.libelle}" filterMatchMode="contains" filterStyle="width:98%">
                                                 <f:facet name="header">
                                                     <h:outputText value="#{bundle.Libelle}"/>
                                                 </f:facet>
                                                 <h:outputText value="#{item.libelle}"/>
                                             </p:column>
 
-                                            <p:column filterBy="#{item.libelleSuiteParent}" filterMatchMode="contains" style="width: 40%" filterStyle="width:98%" sortBy="#{item.libelleSuiteParent}" >
-                                                <f:facet name="header">
-                                                    <h:outputText value="#{bundle.Parent}"/>
-                                                </f:facet>
-                                                <h:outputText value="#{item.libelleSuiteParent}"/>
-                                            </p:column>
 
                                             <p:column toggleable="false" style="width:50px" >
-                                                <p:commandButton id="selectButton" icon="fa fa-search" style="font-size: 3em" title="Detail"  action="#{categorieClientController.prepareView()}" type="push"  immediate="true" ajax="false">
-                                                    <f:setPropertyActionListener value="#{item}" target="#{categorieClientController.selected}" />
+                                                <p:commandButton id="selectButton" icon="fa fa-search" style="font-size: 3em" title="Detail"  action="#{paysController.prepareView()}" type="push"  immediate="true" ajax="false">
+                                                    <f:setPropertyActionListener value="#{item}" target="#{paysController.selected}" />
                                                 </p:commandButton>
                                             </p:column>
 
@@ -85,7 +81,7 @@
                                     </div>
 
                                     <p:confirmDialog id="confirmDialogSupp" message="Etes-vous sur de supprimer cet objet" header="Confirmation supression" severity="alert"  widgetVar="confirmation" responsive="true">
-                                        <p:commandButton id="confirm" value="Valider" style="float: right" oncomplete="PF('confirmation').hide()" icon="ui-icon-check"  update="f1" action="#{categorieClientController.destroy}"/>
+                                        <p:commandButton id="confirm" value="Valider" style="float: right" oncomplete="PF('confirmation').hide()" icon="ui-icon-check"  update="f1" action="#{paysController.destroy}"/>
                                         <p:commandButton id="decline" value="Annuler" style="float: right" onclick="PF('confirmation').hide()" icon="ui-icon-close"  type="button" />
                                     </p:confirmDialog>
 
