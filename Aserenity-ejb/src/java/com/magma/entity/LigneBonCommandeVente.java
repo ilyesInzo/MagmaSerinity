@@ -74,6 +74,9 @@ public class LigneBonCommandeVente implements Serializable {
     
     @Transient
     private Article article;
+    
+    @Transient
+    private BigDecimal quantiteStock;
 
     public Long getId() {
         return id;
@@ -200,6 +203,14 @@ public class LigneBonCommandeVente implements Serializable {
         this.quantiteMax = quantiteMax;
     }
 
+    public BigDecimal getQuantiteStock() {
+        return quantiteStock;
+    }
+
+    public void setQuantiteStock(BigDecimal quantiteStock) {
+        this.quantiteStock = quantiteStock;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -210,10 +221,10 @@ public class LigneBonCommandeVente implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof LigneDevis)) {
+        if (!(object instanceof LigneBonCommandeVente)) {
             return false;
         }
-        LigneDevis other = (LigneDevis) object;
+        LigneBonCommandeVente other = (LigneBonCommandeVente) object;
         /*if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }

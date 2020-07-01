@@ -62,21 +62,23 @@
 
 
                                             <div class="form-group">
-                                                <h:outputLabel value="#{bundle.Categorie} : *" for="categorie" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
+                                                <h:outputLabel value="#{bundle.Categorie} :" for="categorie" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
                                                 <div class="col-md-9 col-sm-9 col-xs-12">
                                                     <p:outputLabel id="categorie" value="#{articleController.selected.categorie.libelleSuiteParentString}"  title="#{bundle.Categorie}" style="width: 90%; min-width: 180px"  styleClass="form-control" />
 
                                                 </div>
                                             </div>
 
-
-                                            <div class="form-group" >
-                                                <h:outputLabel value="#{bundle.Code} : *" for="code"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
-                                                <div class="col-md-9 col-sm-9 col-xs-12">
-                                                    <p:outputLabel id="code" value="#{articleController.selected.code}"  title="#{bundle.Code}" style="width: 90%; min-width: 180px"  styleClass="form-control"/>
-                                                </div>
-                                            </div>
-
+                                            <h:panelGroup id="PanelCode">
+                                                <h:panelGroup rendered="#{articleController.parametrageEntreprise.gestionParCodeArticle}">
+                                                    <div class="form-group" >
+                                                        <h:outputLabel value="#{bundle.Code} : *" for="code"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                                            <p:outputLabel id="code" value="#{articleController.selected.code}"  title="#{bundle.Code}" style="width: 90%; min-width: 180px"  styleClass="form-control"/>
+                                                        </div>
+                                                    </div>
+                                                </h:panelGroup>
+                                            </h:panelGroup>
 
                                             <div class="form-group" >
                                                 <h:outputLabel value="#{bundle.Libelle}: " for="libelle"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
@@ -101,29 +103,33 @@
                                                 </div>
                                             </div>
 
-                                            <div class="form-group" >
-                                                <h:outputLabel value="#{bundle.PrixRetour} : " for="prixRetour" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
-                                                <div class="col-md-9 col-sm-9 col-xs-12">
-                                                    <p:outputLabel id="prixRetour" value="#{articleController.selected.prixRetour}"  title="#{bundle.PrixRetour}" style="width: 90%; min-width: 180px"  styleClass="form-control" />
-                                                </div>
-                                            </div>
+                                            <h:panelGroup id="PanelPrixRetour">
+                                                <h:panelGroup rendered="#{articleController.parametrageEntreprise.prixRetour}">
+                                                    <div class="form-group" >
+                                                        <h:outputLabel value="#{bundle.PrixRetour} : " for="prixRetour" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                                            <p:outputLabel id="prixRetour" value="#{articleController.selected.prixRetour}"  title="#{bundle.PrixRetour}" style="width: 90%; min-width: 180px"  styleClass="form-control" />
+                                                        </div>
+                                                    </div>
+                                                </h:panelGroup>
+                                            </h:panelGroup>
 
                                             <div class="form-group" >
-                                                <h:outputLabel value="#{bundle.QuantiteStock}: *" for="QuantiteStock" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <h:outputLabel value="#{bundle.QuantiteStock}: " for="QuantiteStock" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                                 <div class="col-md-9 col-sm-9 col-xs-12">
                                                     <p:outputLabel id="QuantiteStock" value="#{articleController.selected.quantiteStock}"  title="#{bundle.QuantiteStock}" style="width: 90%; min-width: 180px"  styleClass="form-control" />
                                                 </div>
                                             </div>
 
                                             <div class="form-group" >
-                                                <h:outputLabel value="#{bundle.QuantiteMinimal}: *" for="QuantiteMinimal" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <h:outputLabel value="#{bundle.QuantiteMinimal}: " for="QuantiteMinimal" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                                 <div class="col-md-9 col-sm-9 col-xs-12">
                                                     <p:outputLabel id="QuantiteMinimal" value="#{articleController.selected.quantiteMinimal}"  title="#{bundle.QuantiteMinimal}" style="width: 90%; min-width: 180px"  styleClass="form-control" />
                                                 </div>
                                             </div>
 
                                             <div class="form-group">
-                                                <h:outputLabel value="#{bundle.TVA} : *" for="tva" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
+                                                <h:outputLabel value="#{bundle.TVA} : " for="tva" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
                                                 <div class="col-md-9 col-sm-9 col-xs-12">
                                                     <p:outputLabel id="tva" value="#{articleController.selected.tva.valeur}" title="#{bundle.TVA}" style="width: 90%; min-width: 180px"  styleClass="form-control" />
 

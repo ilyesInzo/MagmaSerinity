@@ -20,6 +20,14 @@ import com.itextpdf.text.pdf.PdfWriter;
  * @author inzo
  */
 public class HeaderFooterPageEvent extends PdfPageEventHelper {
+    
+    private String headerMessage;
+    private String footerMessage;
+        
+    public HeaderFooterPageEvent(String headerMessage, String footerMessage){
+    this.headerMessage = headerMessage;
+    this.footerMessage = footerMessage;
+    }
 
     @Override
     public void onEndPage(PdfWriter writer, Document document) {
@@ -27,13 +35,13 @@ public class HeaderFooterPageEvent extends PdfPageEventHelper {
         Font footerFont = new Font(Font.FontFamily.UNDEFINED, 8);
         PdfContentByte contentByte = writer.getDirectContent();
 
-        Phrase footer = new Phrase(" copyright © MagmaCompanies@gmail.com", footerFont);
+        Phrase footer = new Phrase(headerMessage != null ? headerMessage : "" , footerFont);
         ColumnText.showTextAligned(contentByte, Element.ALIGN_CENTER,
                 footer,
                 (document.right() - document.left()) / 2 + document.leftMargin(),
                 document.bottom() - 60, 0);
 
-        Phrase header = new Phrase(" copyright © MagmaCompanies@gmail.com", footerFont);
+        Phrase header = new Phrase(footerMessage != null ? footerMessage : "", footerFont);
         ColumnText.showTextAligned(contentByte, Element.ALIGN_CENTER,
                 header,
                 (document.right() - document.left()) / 2 + document.leftMargin(),

@@ -1,15 +1,12 @@
 package com.magma.controller;
 
-import com.magma.entity.ClassificationClient;
 import com.magma.controller.util.JsfUtil;
-import com.magma.controller.util.PaginationHelper;
 import com.magma.entity.CategorieClient;
 import com.magma.entity.ClassificationClient;
 import com.magma.entity.Client;
 import com.magma.entity.Utilisateur;
 import com.magma.session.CategorieClientFacadeLocal;
 import com.magma.session.ClassificationClientFacadeLocal;
-import com.magma.session.ClassificationClientFacade;
 import com.magma.session.ClientFacadeLocal;
 import com.magma.util.MenuTemplate;
 import java.io.IOException;
@@ -27,8 +24,6 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import javax.faces.model.DataModel;
-import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 import org.primefaces.model.DualListModel;
@@ -47,7 +42,7 @@ public class ClassificationClientController implements Serializable {
     private ClassificationClient classificationClient;
     private long idEntreprise = 0;
     private Utilisateur utilisateur;
-    
+
     private List<Client> source;
     private List<Client> target;
     private DualListModel dualList;
@@ -64,10 +59,10 @@ public class ClassificationClientController implements Serializable {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
         /*if (classificationClient.getIdEntrepriseSuivi() != null && classificationClient.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = classificationClient.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = classificationClient.getEntreprise().getId();
-            }*/
+         idEntreprise = classificationClient.getIdEntrepriseSuivi();
+         } else {
+         idEntreprise = classificationClient.getEntreprise().getId();
+         }*/
     }
 
     public String initPage() {
@@ -76,14 +71,14 @@ public class ClassificationClientController implements Serializable {
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
             utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
 
-            MenuTemplate.menuFonctionnalitesModules("GClassificationClient", "MClient", null,utilisateur);
+            MenuTemplate.menuFonctionnalitesModules("GClassificationClient", "MClient", null, utilisateur);
 
             //MenuTemplate.menuFonctionnalitesModules("GClassificationClient", utilisateur);
             /*if (classificationClient.getIdEntrepriseSuivi() != null && classificationClient.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = classificationClient.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = classificationClient.getEntreprise().getId();
-            }*/
+             idEntreprise = classificationClient.getIdEntrepriseSuivi();
+             } else {
+             idEntreprise = classificationClient.getEntreprise().getId();
+             }*/
             recreateModel();
             FacesContext.getCurrentInstance().getExternalContext().redirect("../classificationClient/List.xhtml");
         } catch (IOException ex) {
@@ -150,7 +145,7 @@ public class ClassificationClientController implements Serializable {
     public String prepareCreate() {
         selected = new ClassificationClient();
         errorMsg = false;
-        
+
         listCategorieClient = null;
         source = new ArrayList<Client>();
         source = ejbFacadeClient.findAllNative(" where o.Cli_Supprimer = 0 and o.CClt_Id is null ");//and o.Cli_ClientSmartSeller = 1
@@ -158,8 +153,7 @@ public class ClassificationClientController implements Serializable {
         target = new ArrayList<Client>();
 
         dualList = new DualListModel<Client>(source, target);
-        
-        
+
         return "Create";
     }
 
@@ -169,13 +163,13 @@ public class ClassificationClientController implements Serializable {
             errorMsg = getFacade().verifierUnique(selected.getLibelle().trim());
 
             if (errorMsg == false) {
+                creationInfo();
                 // if (dualList.getTarget().isEmpty() == false) {
                 List<Client> listeClients = dualList.getTarget();
                 // List<ClientsParClassification> listClientsParClassificationsTemp = new ArrayList<>();
 
                 selected.setDateSynch(new Date().getTime());
                 selected.setSupprimer(false);
-  
 
                 getFacade().create(selected);
 
@@ -236,10 +230,9 @@ public class ClassificationClientController implements Serializable {
             errorMsg = getFacade().verifierUnique(selected.getLibelle().trim(), selected.getId());
 
             if (errorMsg == false) {
-
+                editionInfo();
                 //if (dualList.getTarget().isEmpty() == false) {
                 List<Client> listeClients = dualList.getTarget();
-
 
                 for (Client clientTemp : listeClients) {
 
@@ -282,7 +275,7 @@ public class ClassificationClientController implements Serializable {
             System.out.println("Erreur- ClassificationClientController - performDestroy: " + e.getMessage());
         }
     }
-    
+
     public void changeClients() {
 
         String clauseCategorie = "";
@@ -313,6 +306,16 @@ public class ClassificationClientController implements Serializable {
 
     }
 
+    private void creationInfo() {
+        selected.setIdUserCreate(utilisateur.getId());
+        selected.setLibelleUserCreate(utilisateur.getNomPrenom());
+    }
+
+    private void editionInfo() {
+        selected.setIdUserModif(utilisateur.getId());
+        selected.setLibelleUserModif(utilisateur.getNomPrenom());
+    }
+
     public boolean isErrorMsg() {
         return errorMsg;
     }
@@ -320,7 +323,7 @@ public class ClassificationClientController implements Serializable {
     public void setErrorMsg(boolean errorMsg) {
         this.errorMsg = errorMsg;
     }
-    
+
     public List<Client> getSource() {
         return source;
     }
@@ -344,13 +347,13 @@ public class ClassificationClientController implements Serializable {
     public void setDualList(DualListModel dualList) {
         this.dualList = dualList;
     }
-    
+
     public DualListModel getClients() {
 
 //        dualList = new DualListModel<Article>(source, target);
         return dualList;
     }
-    
+
     public void setClients(DualListModel dualList) {
         this.dualList = dualList;
     }
@@ -362,7 +365,7 @@ public class ClassificationClientController implements Serializable {
     public void setListCategorieClient(List<CategorieClient> listCategorieClient) {
         this.listCategorieClient = listCategorieClient;
     }
-    
+
     public SelectItem[] getItemsAvailableSelectMany() {
         return JsfUtil.getSelectItems(ejbFacade.findAll("where o.supprimer = 0 order by o.libelle asc "), false);
     }

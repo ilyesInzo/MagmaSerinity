@@ -10,7 +10,7 @@
 
         <ui:define name="pageContent">
 
-            
+
 
             <h:panelGroup id="messagePanel" layout="block">
                 <p:messages closable="true" globalOnly="true" showDetail="true"><p:autoUpdate />
@@ -57,14 +57,14 @@
 
                                             <p:column selectionMode="single" style="width:35px;text-align:center;">
                                             </p:column>
-                                            
+
                                             <p:column filterBy="#{item.etatString}" sortBy="#{item.etatString}" style="width: 15%" filterMatchMode="contains" filterStyle="width:98%">
                                                 <f:facet name="header">
                                                     <h:outputText value="#{bundle.Etat}"/>
                                                 </f:facet>
                                                 <h:outputText value="#{item.etatString}"/>
                                             </p:column>
-                                            
+
                                             <p:column filterBy="#{item.origineRetourtring}" sortBy="#{item.origineRetourtring}" style="width: 15%" filterMatchMode="contains" filterStyle="width:98%">
                                                 <f:facet name="header">
                                                     <h:outputText value="#{bundle.Origine}"/>
@@ -114,7 +114,7 @@
                                                 <p:dataTable     liveResize="true"       var="itemLF" paginatorPosition="bottom" value="#{item.listeLigneRetours}" rows="15" id="tblCalculateur" 
                                                                  emptyMessage="#{bundle.TableauVide}" >
 
-                                                    <p:column style="width: 8%" >
+                                                    <p:column style="width: 8%" rendered="#{retourController.parametrageEntreprise.gestionParCodeArticle}">
                                                         <f:facet name="header">
                                                             <h:outputText value="#{bundle.Code}" />
                                                         </f:facet>
@@ -134,7 +134,7 @@
                                                         </f:facet>
                                                         <h:outputText value="#{itemLF.quantite}" />
                                                     </p:column>
-                                                    
+
                                                     <p:column style="width: 7%" >
                                                         <f:facet name="header">
                                                             <h:outputText value="#{bundle.QuantiteCasse}" />
@@ -162,8 +162,8 @@
                                         </p:dataTable>
 
                                     </div>
-                                    
-                                    
+
+
                                     <p:dialog id="confirmDialogRecherche"  header="#{bundle.TitreDialogRecherche}"   widgetVar="rechercheDetaille" height="50%" width="35%" modal="true" resizable="false">
 
                                         <div class="form-group" >

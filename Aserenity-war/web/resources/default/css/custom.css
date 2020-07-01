@@ -4298,3 +4298,4 @@ ul.notifications {
 .etatCongesBle { background: #E8D630 !important; border-color: #E8D630!important; } 
 .etatCongesIvoire { background: #FFFFD4 !important; border-color: #FFFFD4!important; } 
 .etatCongesAnnuler { background: #CECECE !important; border-color: #CECECE!important; } 
+.stockInsufficient {background-color:lightcoral !important;}

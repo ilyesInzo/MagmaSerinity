@@ -1,12 +1,9 @@
 package com.magma.controller;
 
-import com.magma.entity.Pays;
 import com.magma.controller.util.JsfUtil;
-import com.magma.controller.util.PaginationHelper;
 import com.magma.entity.Pays;
 import com.magma.entity.Utilisateur;
 import com.magma.session.PaysFacadeLocal;
-import com.magma.session.PaysFacade;
 import com.magma.util.MenuTemplate;
 import java.io.IOException;
 
@@ -22,15 +19,12 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import javax.faces.model.DataModel;
-import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 
-@ManagedBean(name= "paysController")
+@ManagedBean(name = "paysController")
 @SessionScoped
 public class PaysController implements Serializable {
-
 
     private Pays selected;
     private Pays selectedSingle;
@@ -50,10 +44,10 @@ public class PaysController implements Serializable {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
         /*if (pays.getIdEntrepriseSuivi() != null && pays.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = pays.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = pays.getEntreprise().getId();
-            }*/
+         idEntreprise = pays.getIdEntrepriseSuivi();
+         } else {
+         idEntreprise = pays.getEntreprise().getId();
+         }*/
     }
 
     public String initPage() {
@@ -62,14 +56,14 @@ public class PaysController implements Serializable {
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
             utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
 
-            MenuTemplate.menuFonctionnalitesModules("GPays", "MParametrage", null,utilisateur);
+            MenuTemplate.menuFonctionnalitesModules("GPays", "MParametrage", null, utilisateur);
 
             //MenuTemplate.menuFonctionnalitesModules("GPays", utilisateur);
             /*if (pays.getIdEntrepriseSuivi() != null && pays.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = pays.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = pays.getEntreprise().getId();
-            }*/
+             idEntreprise = pays.getIdEntrepriseSuivi();
+             } else {
+             idEntreprise = pays.getEntreprise().getId();
+             }*/
             recreateModel();
             FacesContext.getCurrentInstance().getExternalContext().redirect("../pays/List.xhtml");
         } catch (IOException ex) {
@@ -145,6 +139,7 @@ public class PaysController implements Serializable {
             errorMsg = getFacade().verifierUnique(selected.getLibelle().trim());
 
             if (errorMsg == false) {
+                creationInfo();
                 selected.setSupprimer(false);
                 getFacade().create(selected);
                 return prepareList();
@@ -184,7 +179,7 @@ public class PaysController implements Serializable {
             errorMsg = getFacade().verifierUnique(selected.getLibelle().trim(), selected.getId());
 
             if (errorMsg == false) {
-
+                editionInfo();
                 selected.setSupprimer(false);
                 getFacade().edit(selected);
                 return prepareList();
@@ -219,6 +214,16 @@ public class PaysController implements Serializable {
         }
     }
 
+    private void creationInfo() {
+        selected.setIdUserCreate(utilisateur.getId());
+        selected.setLibelleUserCreate(utilisateur.getNomPrenom());
+    }
+
+    private void editionInfo() {
+        selected.setIdUserModif(utilisateur.getId());
+        selected.setLibelleUserModif(utilisateur.getNomPrenom());
+    }
+
     public boolean isErrorMsg() {
         return errorMsg;
     }
@@ -226,6 +231,7 @@ public class PaysController implements Serializable {
     public void setErrorMsg(boolean errorMsg) {
         this.errorMsg = errorMsg;
     }
+
     public SelectItem[] getItemsAvailableSelectMany() {
         return JsfUtil.getSelectItems(ejbFacade.findAll(), false);
     }

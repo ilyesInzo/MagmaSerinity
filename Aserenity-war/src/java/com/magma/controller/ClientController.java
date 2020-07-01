@@ -2,9 +2,9 @@ package com.magma.controller;
 
 import com.magma.controller.util.JsfUtil;
 import com.magma.entity.Client;
-import com.magma.entity.Commercial;
 import com.magma.entity.Delegation;
 import com.magma.entity.Gouvernorat;
+import com.magma.entity.ParametrageEntreprise;
 import com.magma.entity.Pays;
 import com.magma.entity.Utilisateur;
 import com.magma.session.ClientFacadeLocal;
@@ -56,6 +56,7 @@ public class ClientController implements Serializable {
     private List<Delegation> listDelegation = null;
     private List<Gouvernorat> listGouvernorat = null;
     private Utilisateur utilisateur;
+    private ParametrageEntreprise parametrageEntreprise = null;
 
     public ClientController() {
         items = null;
@@ -75,7 +76,7 @@ public class ClientController implements Serializable {
             FacesContext context = FacesContext.getCurrentInstance();
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
             utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
-
+            parametrageEntreprise = utilisateur.getEntreprise().getParametrageEntreprise();
             MenuTemplate.menuFonctionnalitesModules("GClient", "MClient", null, utilisateur);
 
             //MenuTemplate.menuFonctionnalitesModules("GClient", utilisateur);
@@ -162,23 +163,22 @@ public class ClientController implements Serializable {
             errorMsg = getFacade().verifierUnique(selected.getLibelle().trim(), selected.getGsm());
 
             if (errorMsg == false) {
-
-
+                creationInfo();
                 if (selected.getPays() != null) {
                     selected.setIdPays(selected.getPays().getId());
                     selected.setLibellePays(selected.getPays().getLibelle());
 
                 }
-                
-                    if (selected.getGouvernorat() != null) {
-                        selected.setIdGouvernorat(selected.getGouvernorat().getId());
-                        selected.setLibelleGouvernorat(selected.getGouvernorat().getLibelle());
 
-                        if (selected.getDelegation() != null) {
-                            selected.setIdDelegation(selected.getDelegation().getId());
-                            selected.setLibelleDelegation(selected.getDelegation().getLibelle());
-                        }
+                if (selected.getGouvernorat() != null) {
+                    selected.setIdGouvernorat(selected.getGouvernorat().getId());
+                    selected.setLibelleGouvernorat(selected.getGouvernorat().getLibelle());
+
+                    if (selected.getDelegation() != null) {
+                        selected.setIdDelegation(selected.getDelegation().getId());
+                        selected.setLibelleDelegation(selected.getDelegation().getLibelle());
                     }
+                }
 
                 getFacade().create(selected);
                 return prepareList();
@@ -208,7 +208,6 @@ public class ClientController implements Serializable {
         if (selected != null) {
             errorMsg = false;
             idTemp = selected.getId();
-
 
             Pays pays = new Pays();
             if (selected.getIdPays() != null) {
@@ -249,23 +248,22 @@ public class ClientController implements Serializable {
             errorMsg = getFacade().verifierUnique(selected.getLibelle().trim(), selected.getGsm(), selected.getId());
 
             if (errorMsg == false) {
-
-
+                editionInfo();
                 if (selected.getPays() != null) {
                     selected.setIdPays(selected.getPays().getId());
                     selected.setLibellePays(selected.getPays().getLibelle());
 
                 }
-                
-                    if (selected.getGouvernorat() != null) {
-                        selected.setIdGouvernorat(selected.getGouvernorat().getId());
-                        selected.setLibelleGouvernorat(selected.getGouvernorat().getLibelle());
 
-                        if (selected.getDelegation() != null) {
-                            selected.setIdDelegation(selected.getDelegation().getId());
-                            selected.setLibelleDelegation(selected.getDelegation().getLibelle());
-                        }
+                if (selected.getGouvernorat() != null) {
+                    selected.setIdGouvernorat(selected.getGouvernorat().getId());
+                    selected.setLibelleGouvernorat(selected.getGouvernorat().getLibelle());
+
+                    if (selected.getDelegation() != null) {
+                        selected.setIdDelegation(selected.getDelegation().getId());
+                        selected.setLibelleDelegation(selected.getDelegation().getLibelle());
                     }
+                }
 
                 getFacade().edit(selected);
                 return prepareList();
@@ -303,6 +301,16 @@ public class ClientController implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("EchecOperation")));
             System.out.println("Erreur- ClientController - performDestroy: " + e.getMessage());
         }
+    }
+
+    private void creationInfo() {
+        selected.setIdUserCreate(utilisateur.getId());
+        selected.setLibelleUserCreate(utilisateur.getNomPrenom());
+    }
+
+    private void editionInfo() {
+        selected.setIdUserModif(utilisateur.getId());
+        selected.setLibelleUserModif(utilisateur.getNomPrenom());
     }
 
     public List<Gouvernorat> getListGouvernorat() {
@@ -345,11 +353,23 @@ public class ClientController implements Serializable {
         this.errorMsg = errorMsg;
     }
 
+    public ParametrageEntreprise getParametrageEntreprise() {
+        return parametrageEntreprise;
+    }
+
+    public void setParametrageEntreprise(ParametrageEntreprise parametrageEntreprise) {
+        this.parametrageEntreprise = parametrageEntreprise;
+    }
+
     public SelectItem[] getItemsAvailableSelectOneGouvernerat() {
-        if (listGouvernorat == null) {
-            listGouvernorat = new ArrayList<>();
+        if (parametrageEntreprise.getTypePlanificationVisite() == 1) {
+            if (listGouvernorat == null) {
+                listGouvernorat = new ArrayList<>();
+            }
+            return JsfUtil.getSelectItems(listGouvernorat, true);
+        } else {
+            return JsfUtil.getSelectItems(ejbFacadeGouvernorat.findAll(), true);
         }
-        return JsfUtil.getSelectItems(listGouvernorat, true);
     }
 
     public SelectItem[] getItemsAvailableSelectOneDelegation() {

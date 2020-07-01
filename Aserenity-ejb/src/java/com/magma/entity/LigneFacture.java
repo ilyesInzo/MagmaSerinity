@@ -75,6 +75,9 @@ public class LigneFacture implements Serializable {
 
     @Transient
     private Article article;
+    
+    @Transient
+    private BigDecimal quantiteStock;
 
     public Long getId() {
         return id;
@@ -198,6 +201,14 @@ public class LigneFacture implements Serializable {
 
     public void setQuantiteMax(BigDecimal quantiteMax) {
         this.quantiteMax = quantiteMax;
+    }
+
+    public BigDecimal getQuantiteStock() {
+        return quantiteStock;
+    }
+
+    public void setQuantiteStock(BigDecimal quantiteStock) {
+        this.quantiteStock = quantiteStock;
     }
 
     @Override

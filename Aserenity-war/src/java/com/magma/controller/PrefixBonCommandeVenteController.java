@@ -1,11 +1,8 @@
 package com.magma.controller;
 
-import com.magma.entity.PrefixBonCommandeVente;
 import com.magma.controller.util.JsfUtil;
-import com.magma.controller.util.PaginationHelper;
 import com.magma.entity.PrefixBonCommandeVente;
 import com.magma.entity.Utilisateur;
-import com.magma.session.PrefixBonCommandeVenteFacade;
 import com.magma.session.PrefixBonCommandeVenteFacadeLocal;
 import com.magma.util.MenuTemplate;
 import java.io.IOException;
@@ -14,7 +11,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
-import javax.inject.Named;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -22,8 +18,6 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import javax.faces.model.DataModel;
-import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 
@@ -49,15 +43,15 @@ public class PrefixBonCommandeVenteController implements Serializable {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
         /*if (prefixBonCommandeVente.getIdEntrepriseSuivi() != null && prefixBonCommandeVente.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = prefixBonCommandeVente.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = prefixBonCommandeVente.getEntreprise().getId();
-            }*/
+         idEntreprise = prefixBonCommandeVente.getIdEntrepriseSuivi();
+         } else {
+         idEntreprise = prefixBonCommandeVente.getEntreprise().getId();
+         }*/
     }
 
     public String initPage() {
         try {
-            
+
             FacesContext context = FacesContext.getCurrentInstance();
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
             utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
@@ -66,10 +60,10 @@ public class PrefixBonCommandeVenteController implements Serializable {
 
             //MenuTemplate.menuFonctionnalitesModules("GPrefixBonCommandeVente", utilisateur);
             /*if (prefixBonCommandeVente.getIdEntrepriseSuivi() != null && prefixBonCommandeVente.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = prefixBonCommandeVente.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = prefixBonCommandeVente.getEntreprise().getId();
-            }*/
+             idEntreprise = prefixBonCommandeVente.getIdEntrepriseSuivi();
+             } else {
+             idEntreprise = prefixBonCommandeVente.getEntreprise().getId();
+             }*/
             recreateModel();
             FacesContext.getCurrentInstance().getExternalContext().redirect("../prefixBonCommandeVente/List.xhtml");
         } catch (IOException ex) {
@@ -145,7 +139,7 @@ public class PrefixBonCommandeVenteController implements Serializable {
             errorMsg = getFacade().verifierUnique(selected.getLibellePrefixe().trim());
 
             if (errorMsg == false) {
-
+                creationInfo();
                 getFacade().create(selected);
                 return prepareList();
 
@@ -184,12 +178,7 @@ public class PrefixBonCommandeVenteController implements Serializable {
             errorMsg = getFacade().verifierUnique(selected.getLibellePrefixe().trim(), selected.getId());
 
             if (errorMsg == false) {
-                /* if (selected.getMontant().compareTo(BigDecimal.ZERO) == -1) {
-                    FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), " " + ResourceBundle.getBundle("/Bundle").getString("ValeurIncorrecte")));
-                    return null;
-                } else {*/
-                //selected.setIdEntreprise(idEntreprise);
+                editionInfo();
                 getFacade().edit(selected);
                 return prepareList();
                 //}
@@ -211,8 +200,8 @@ public class PrefixBonCommandeVenteController implements Serializable {
             //if (temps == null || temps.isEmpty()) {
             performDestroy();
             /*} else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SuppressionNonAutorisé")));
-            }*/
+             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SuppressionNonAutorisé")));
+             }*/
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SelectionnerObjet")));
         }
@@ -226,6 +215,16 @@ public class PrefixBonCommandeVenteController implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("EchecOperation")));
             System.out.println("Erreur- PrefixBonCommandeVenteController - performDestroy: " + e.getMessage());
         }
+    }
+
+    private void creationInfo() {
+        selected.setIdUserCreate(utilisateur.getId());
+        selected.setLibelleUserCreate(utilisateur.getNomPrenom());
+    }
+
+    private void editionInfo() {
+        selected.setIdUserModif(utilisateur.getId());
+        selected.setLibelleUserModif(utilisateur.getNomPrenom());
     }
 
     public boolean isErrorMsg() {

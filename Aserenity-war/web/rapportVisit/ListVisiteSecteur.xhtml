@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+
+        <ui:define name="pageContent">
+
+
+
+            <h:panelGroup id="messagePanel" layout="block">
+                <p:messages closable="true" globalOnly="true" showDetail="true"><p:autoUpdate />
+                </p:messages>
+            </h:panelGroup>
+
+            <div class="layout-content">
+
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="shadow-box ui-shadow-5">
+                            <div class="card">
+
+
+                                <h:form id="f1">
+
+                                    <div class="x_title">
+                                        <h2 style="color: #607D8B">#{bundle.GRapportVisite}</h2>
+                                        <ul class="nav navbar-right panel_toolbox">                          
+
+                                            <li>
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('rapportVisit').lecture}" title="Refresh" action="#{rapportVisitController.prepareList()}" id="updateButton"  immediate="true" icon="fa fa-refresh"  style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
+                                            </li>
+
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>         
+
+
+                                    <div class="x_content" >
+
+                                        <p:dataTable emptyMessage="vide" 
+                                                     rows="10"
+                                                     paginator="true"
+                                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                     rowsPerPageTemplate="5,10,15"
+                                                     value="#{rapportVisitController.itemsPlanification}" var="item"
+                                                     rowKey="#{item}"
+                                                     paginatorPosition="bottom"
+                                                     >
+
+                                            <p:column filterBy="#{item.nomPrenom}" sortBy="#{item.nomPrenom}" filterMatchMode="contains" filterStyle="width:98%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Commercial}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.nomPrenom}"/>
+                                            </p:column>
+
+                                            <p:column filterBy="#{item.libellePays}" sortBy="#{item.libellePays}" filterMatchMode="contains" filterStyle="width:98%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Libelle}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.libellePays}"/>
+                                            </p:column>
+
+                                            <p:column filterBy="#{item.dateDebutStringFr}" sortBy="#{item.dateDebutStringFr}" filterMatchMode="contains" filterStyle="width:98%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.DateDebut}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.dateDebutStringFr}"/>
+                                            </p:column>
+
+                                            <p:column filterBy="#{item.dateFinStringFr}" sortBy="#{item.dateFinStringFr}" filterMatchMode="contains" filterStyle="width:98%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.DateFin}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.dateFinStringFr}"/>
+                                            </p:column>
+
+                                            <p:column toggleable="false" style="width:50px" >
+                                                <p:commandButton id="selectButton" icon="fa fa-search" style="font-size: 3em" title="Detail"  action="#{rapportVisitController.prepareViewVisiteSecteur()}" type="push"  immediate="true" ajax="false">
+                                                    <f:setPropertyActionListener value="#{item}" target="#{rapportVisitController.selectedPlanification}" />
+                                                </p:commandButton>
+                                            </p:column>
+
+                                            <p:column style="width:4%" toggleable="false"  headerText="">
+                                                <p:rowToggler  />
+                                            </p:column>
+
+                                            <p:rowExpansion>
+                                                <p:dataTable     liveResize="true" var="itemLF" paginatorPosition="bottom" value="#{item.listRapportVisits}" rows="15" id="tblCalculateur" 
+                                                                 emptyMessage="#{bundle.TableauVide}" >
+
+                                                    <p:column filterBy="#{itemLF.libelleClient}" sortBy="#{itemLF.libelleClient}" filterMatchMode="contains" filterStyle="width:98%">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{bundle.Client}"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{itemLF.libelleClient}"/>
+                                                    </p:column>
+                                                    
+                                                    <p:column filterBy="#{itemLF.dateCreationStringFr}" sortBy="#{itemLF.dateCreationStringFr}" filterMatchMode="contains" filterStyle="width:98%">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{bundle.DateVisite}"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{itemLF.dateCreationStringFr}"/>
+                                                    </p:column>
+
+                                                    <p:column toggleable="false" style="width:50px" >
+                                                        <p:commandButton id="selectRapportVisite" icon="fa fa-search" style="font-size: 3em" title="Detail"  action="#{rapportVisitController.prepareView()}" type="push"  immediate="true" ajax="false">
+                                                            <f:setPropertyActionListener value="#{itemLF}" target="#{rapportVisitController.selected}" />
+                                                        </p:commandButton>
+                                                    </p:column>
+
+                                                </p:dataTable>
+                                            </p:rowExpansion>
+
+                                        </p:dataTable>
+
+                                    </div>
+
+                                </h:form>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+
+        </ui:define>
+    </ui:composition>
+
+</html>

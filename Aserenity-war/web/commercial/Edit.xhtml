@@ -61,7 +61,7 @@
 
 
                                         <div class="form-group" >
-                                            <h:outputLabel value="#{bundle.Clients} : *" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <h:outputLabel value="#{bundle.Clients} : " styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                             <div class="col-md-9 col-sm-9 col-xs-12">                   
                                                 <p:pickList id="clients"  value="#{commercialController.clients}" var="client" itemLabel="#{client}" itemValue="#{client}"  showSourceFilter="true" showTargetFilter="true" 
                                                             filterMatchMode="contains" converter="entityConverter"    />

@@ -66,6 +66,18 @@ public class Devis implements Serializable {
     @Column(name = "Dev_MontantHT", scale = 3, precision = 28)
     private BigDecimal montantHT;
     
+    @Column(name = "Dev_AppliquerRemise")
+    private Integer appliquerRemise = -1;
+    
+    @Column(name = "Dev_TauxRemiseGlobal", scale = 3, precision = 28)
+    private BigDecimal tauxRemiseGlobal = BigDecimal.ZERO;
+    
+    @Column(name = "Dev_MontantRemiseGlobal", scale = 3, precision = 28)
+    private BigDecimal montantRemiseGlobal = BigDecimal.ZERO;
+    
+    @Column(name = "Dev_MontantNet", scale = 3, precision = 28)
+    private BigDecimal montantNet;
+    
     @Column(name = "Dev_MontantTVA", scale = 3, precision = 28)
     private BigDecimal montantTVA;
 
@@ -83,6 +95,9 @@ public class Devis implements Serializable {
 
     @Column(name = "Dev_Reste", scale = 3, precision = 28)
     private BigDecimal reste;
+    
+    @Column(name = "Dev_NbJourVente")
+    private int nbJourVente = 1;
 
     @Column(name = "Usr_Id")
     private Long idUtilisateur;
@@ -368,6 +383,38 @@ public class Devis implements Serializable {
     public void setTotalTaxe(BigDecimal totalTaxe) {
         this.totalTaxe = totalTaxe;
     }
+    
+    public BigDecimal getMontantNet() {
+        return FonctionsMathematiques.arrondiBigDecimal(montantNet, 3);
+    }
+
+    public void setMontantNet(BigDecimal montantNet) {
+        this.montantNet = montantNet;
+    }
+    
+    public Integer getAppliquerRemise() {
+        return appliquerRemise;
+    }
+
+    public void setAppliquerRemise(Integer appliquerRemise) {
+        this.appliquerRemise = appliquerRemise;
+    }
+
+    public BigDecimal getTauxRemiseGlobal() {
+        return FonctionsMathematiques.arrondiBigDecimal(tauxRemiseGlobal, 3);
+    }
+
+    public void setTauxRemiseGlobal(BigDecimal tauxRemiseGlobal) {
+        this.tauxRemiseGlobal = tauxRemiseGlobal;
+    }
+
+    public BigDecimal getMontantRemiseGlobal() {
+        return FonctionsMathematiques.arrondiBigDecimal(montantRemiseGlobal, 3);
+    }
+
+    public void setMontantRemiseGlobal(BigDecimal montantRemiseGlobal) {
+        this.montantRemiseGlobal = montantRemiseGlobal;
+    }
 
     public Utilisateur getUtilisateur() {
         return utilisateur;
@@ -583,6 +630,14 @@ public class Devis implements Serializable {
 
     public void setNumeroDocumentTransform(String numeroDocumentTransform) {
         this.numeroDocumentTransform = numeroDocumentTransform;
+    }
+
+    public int getNbJourVente() {
+        return nbJourVente;
+    }
+
+    public void setNbJourVente(int nbJourVente) {
+        this.nbJourVente = nbJourVente;
     }
     
     

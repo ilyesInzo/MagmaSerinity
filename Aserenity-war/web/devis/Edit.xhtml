@@ -68,18 +68,90 @@
                                                 </p:selectOneMenu>
                                             </div>
                                         </div>
+                                        
+                                        <h:panelGroup id="pgVenteParJour" >
+                                            <h:panelGroup rendered="#{devisController.parametrageEntreprise.venteParJour}">
+
+                                                <div class="form-group" >
+                                                    <h:outputLabel value="#{bundle.NombreJour}: " styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <p:inputText id="Nombre" value="#{devisController.selected.nbJourVente}" title="#{bundle.NombreJour}" style="width: 90%; min-width: 180px" styleClass="form-control" >
+                                                            <p:keyFilter for="Nombre" mask="num" />
+                                                            <f:validateLongRange minimum="1"/>
+                                                        </p:inputText>
+                                                    </div>
+                                                </div>
+
+                                            </h:panelGroup>
+                                        </h:panelGroup>  
 
                                         <div class="form-group" >
                                             <h:outputLabel value="#{bundle.TotaleHT} :" for="montantHT" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
                                             <div class="col-md-9 col-sm-9 col-xs-12">
-                                                <p:outputLabel id="montantHT" value="#{devisController.selected.montantHT}" title="#{bundle.TotaleHT}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                                <p:outputLabel id="montantHT" value="#{devisController.selected.totalHT}" title="#{bundle.TotaleHT}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <h:panelGroup id="pgAppliquerRemise" >
+                                            <h:panelGroup rendered="#{devisController.parametrageEntreprise.appliquerRemiseGlobale}">
+                                                <div class="form-group" >
+                                                    <h:outputLabel value="#{bundle.RemiseGlobale}: "  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <p:selectOneMenu id="RemiseGlobale" value="#{devisController.selected.appliquerRemise}" styleClass="form-control"  filter="true" filterMatchMode="contains" effect="fade" var="l" style="width: 90%; min-width: 180px">
+                                                            <f:selectItem itemValue="-1" itemLabel="---" />
+                                                            <f:selectItem itemValue="0" itemLabel="#{bundle.Pourcentage}" />
+                                                            <f:selectItem itemValue="1" itemLabel="#{bundle.Montant}"/>
+                                                            <p:ajax update="pgRemisePourcentage, pgRemiseMontant, montantNet, montantTVA, montantTTC, montantHT" listener="#{devisController.appliquerRemiseGlobale()}" />
+                                                        </p:selectOneMenu>
+                                                    </div>
+                                                </div>
+
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+
+                                        <h:panelGroup id="pgRemisePourcentage" >
+                                            <h:panelGroup rendered="#{devisController.selected.appliquerRemise eq 0}">
+
+                                                <div class="form-group" >
+                                                    <h:outputLabel value="#{bundle.Pourcentage} :" for="Pourcentage" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <p:inputText id="Pourcentage" value="#{devisController.selected.tauxRemiseGlobal}" style="width: 90%; min-width: 180px" styleClass="form-control">
+                                                            <f:validateDoubleRange minimum="0" maximum="100" />
+                                                        </p:inputText>
+                                                    </div>
+                                                </div>
+
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+
+                                        <h:panelGroup id="pgRemiseMontant" >
+                                            <h:panelGroup rendered="#{devisController.selected.appliquerRemise eq 1}">
+
+                                                <div class="form-group" >
+                                                    <h:outputLabel value="#{bundle.MontantRemise} :" for="MontantRemise" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <p:inputText id="MontantRemise" value="#{devisController.selected.montantRemiseGlobal}" title="#{bundle.MontantRemise}"  styleClass="form-control" style="width: 90%; min-width: 180px">
+                                                            <p:keyFilter for="MontantRemise" mask="num" />
+                                                            <f:validateDoubleRange minimum="0.000"/>
+                                                        </p:inputText>
+                                                    </div>
+                                                </div>
+
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.TotaleNet}: " styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="montantNet" value="#{devisController.selected.montantNet}" title="#{bundle.TotaleNet}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
                                             </div>
                                         </div>
                                         
                                         <div class="form-group" >
                                             <h:outputLabel value="#{bundle.TotaleTVA}: " styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                             <div class="col-md-9 col-sm-9 col-xs-12">
-                                                <p:outputLabel id="montantTVA" value="#{devisController.selected.montantTVA}" title="#{bundle.TotaleTVA}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                                <p:outputLabel id="montantTVA" value="#{devisController.selected.totalTVA}" title="#{bundle.TotaleTVA}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
                                             </div>
                                         </div>
 
@@ -114,7 +186,7 @@
 
                                             </p:column>
 
-                                            <p:column style="width: 8%" >
+                                            <p:column style="width: 8%" rendered="#{devisController.parametrageEntreprise.gestionParCodeArticle}">
                                                 <f:facet name="header">
                                                     <h:outputText value="#{bundle.Code}" />
                                                 </f:facet>
@@ -169,6 +241,13 @@
                                                 </f:facet>
                                                 <h:outputText value="#{item.totalHT}"/>
                                             </p:column>
+                                            
+                                            <p:column style="width: 7%" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.MontantTTC}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.totalTTC}"/>
+                                            </p:column>
 
 
                                             <p:column id="idColonumEdit" style="width:60px" >
@@ -179,6 +258,15 @@
                                                     <f:setPropertyActionListener value="#{devisController.selectedLigneDevis.remise}" target="#{devisController.oldRemise}" />
                                                 </p:commandButton>
                                             </p:column>
+                                            
+                                            <p:columnGroup type="footer">
+                                                <p:row>
+                                                    <p:column colspan="#{devisController.parametrageEntreprise.gestionParCodeArticle ? 8 : 7}" style="text-align:right" footerText="#{bundle.Total}" />
+                                                    <p:column  colspan="1" footerText="#{devisController.selected.montantHT}" />
+                                                    <p:column  colspan="1" footerText="#{devisController.selected.montantTTC}" />
+                                                </p:row>
+   
+                                            </p:columnGroup>
 
 
                                         </p:dataTable>
@@ -374,7 +462,7 @@
                                             </div>
                                         </div>
 
-                                        <p:commandButton title="#{bundle.Valider}" update=":idTable, :montantTTC, :montantHT, :montantTVA " id="addButton3" action="#{devisController.validerDetailArticle()}" type="push" icon="fa fa-save" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" ajax="false" />
+                                        <p:commandButton title="#{bundle.Valider}" update=":idTable, :montantTTC, :montantHT, :montantTVA, :montantNet, :pgRemisePourcentage, :pgRemiseMontant " id="addButton3" action="#{devisController.validerDetailArticle()}" type="push" icon="fa fa-save" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" ajax="false" />
 
                                     </p:dialog>
                                 </h:form>

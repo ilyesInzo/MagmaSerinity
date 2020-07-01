@@ -1,14 +1,11 @@
 package com.magma.controller;
 
-import com.magma.entity.EtatCommande;
 import com.magma.controller.util.JsfUtil;
-import com.magma.controller.util.PaginationHelper;
 import com.magma.entity.Departement;
 import com.magma.entity.EtatCommande;
 import com.magma.entity.Poste;
 import com.magma.entity.Utilisateur;
 import com.magma.session.EtatCommandeFacadeLocal;
-import com.magma.session.EtatCommandeFacade;
 import com.magma.session.PosteFacadeLocal;
 import com.magma.util.MenuTemplate;
 import java.io.IOException;
@@ -18,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
-import javax.inject.Named;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -27,8 +23,6 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import javax.faces.model.DataModel;
-import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 
@@ -57,10 +51,10 @@ public class EtatCommandeController implements Serializable {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
         /*if (etatCommande.getIdEntrepriseSuivi() != null && etatCommande.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = etatCommande.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = etatCommande.getEntreprise().getId();
-            }*/
+         idEntreprise = etatCommande.getIdEntrepriseSuivi();
+         } else {
+         idEntreprise = etatCommande.getEntreprise().getId();
+         }*/
     }
 
     public String initPage() {
@@ -73,10 +67,10 @@ public class EtatCommandeController implements Serializable {
 
             // MenuTemplate.menuFonctionnalitesModules("GEtatCommande", utilisateur);
             /*if (etatCommande.getIdEntrepriseSuivi() != null && etatCommande.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = etatCommande.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = etatCommande.getEntreprise().getId();
-            }*/
+             idEntreprise = etatCommande.getIdEntrepriseSuivi();
+             } else {
+             idEntreprise = etatCommande.getEntreprise().getId();
+             }*/
             recreateModel();
             FacesContext.getCurrentInstance().getExternalContext().redirect("../etatCommande/List.xhtml");
         } catch (IOException ex) {
@@ -164,7 +158,7 @@ public class EtatCommandeController implements Serializable {
             errorMsg = getFacade().verifierUnique(clause);
 
             if (errorMsg == false) {
-
+                creationInfo();
                 if (selected.getParent() != null) {
                     //  selected.setIdParent(selected.getParent().getId());
                     selected.setLibelleParent(selected.getParent().getLibelle());
@@ -264,7 +258,7 @@ public class EtatCommandeController implements Serializable {
             errorMsg = getFacade().verifierUnique(clause);
 
             if (errorMsg == false) {
-
+                editionInfo();
                 if (selected.getParent() != null) {
                     //  selected.setIdParent(selected.getParent().getId());
                     selected.setLibelleParent(selected.getParent().getLibelle());
@@ -307,8 +301,8 @@ public class EtatCommandeController implements Serializable {
             //if (temps == null || temps.isEmpty()) {
             performDestroy();
             /*} else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SuppressionNonAutorisé")));
-            }*/
+             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SuppressionNonAutorisé")));
+             }*/
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SelectionnerObjet")));
         }
@@ -338,7 +332,7 @@ public class EtatCommandeController implements Serializable {
             listePostes = ejbFacadePoste.findAllNative(" where o.Dep_Id = " + selected.getDepartement().getId());
         }
     }
-    
+
     public void changeCouleur() {
         if (selected.isDernierRang() == true) {
             if (selected.isAcceptation() == true) {
@@ -349,6 +343,16 @@ public class EtatCommandeController implements Serializable {
         } else {
             selected.setCouleur("ffffff");
         }
+    }
+
+    private void creationInfo() {
+        selected.setIdUserCreate(utilisateur.getId());
+        selected.setLibelleUserCreate(utilisateur.getNomPrenom());
+    }
+
+    private void editionInfo() {
+        selected.setIdUserModif(utilisateur.getId());
+        selected.setLibelleUserModif(utilisateur.getNomPrenom());
     }
 
     public SelectItem[] getItemsAvailableSelectOnePoste() {

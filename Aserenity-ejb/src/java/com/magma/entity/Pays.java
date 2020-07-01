@@ -52,7 +52,18 @@ public class Pays implements Serializable {
     @Column(name = "Tab_DateCreation")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreation;
+    
+    @Column(name = "Tab_IdUserCreate")
+    private Long idUserCreate;
 
+    @Column(name = "Tab_LibelleUserCreate")
+    private String libelleUserCreate;
+    
+    @Column(name = "Tab_IdUserModif")
+    private Long idUserModif;
+
+    @Column(name = "Tab_LibelleUserModif")
+    private String libelleUserModif;
     
     @OneToMany(mappedBy = "pays", fetch = FetchType.LAZY)
     private List<Gouvernorat> listeGouvernorat;
@@ -174,9 +185,43 @@ public class Pays implements Serializable {
         }
     }
 
-    
-    
-    
+
+    public void setDateSynch(Long dateSynch) {
+        this.dateSynch = dateSynch;
+    }
+
+    public Long getIdUserCreate() {
+        return idUserCreate;
+    }
+
+    public void setIdUserCreate(Long idUserCreate) {
+        this.idUserCreate = idUserCreate;
+    }
+
+    public String getLibelleUserCreate() {
+        return libelleUserCreate;
+    }
+
+    public void setLibelleUserCreate(String libelleUserCreate) {
+        this.libelleUserCreate = libelleUserCreate;
+    }
+
+    public Long getIdUserModif() {
+        return idUserModif;
+    }
+
+    public void setIdUserModif(Long idUserModif) {
+        this.idUserModif = idUserModif;
+    }
+
+    public String getLibelleUserModif() {
+        return libelleUserModif;
+    }
+
+    public void setLibelleUserModif(String libelleUserModif) {
+        this.libelleUserModif = libelleUserModif;
+    }
+
 
     @Override
     public int hashCode() {

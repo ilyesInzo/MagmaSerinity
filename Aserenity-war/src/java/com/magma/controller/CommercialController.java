@@ -210,6 +210,7 @@ public class CommercialController implements Serializable {
         try {
             errorMsg = getFacade().verifierUnique(commercial.getEmail().trim());
             if (errorMsg == false) {
+                creationInfo();
                 selected.setId(commercial.getId());
                 selected.setCode(commercial.getCode());
                 selected.setDateSynch(new Date().getTime());
@@ -275,11 +276,10 @@ public class CommercialController implements Serializable {
             selectedDelegation = null;
             selectedCategorieClient = null;
 
-            
             if (selected.getSequenceClientID() != null && !"".equals(selected.getSequenceClientID())) {
-                 source = ejbFacadeClient.findAllNative(" where o.Cli_Supprimer = 0 and Cli_Id not  in (" + selected.getSequenceClientID() + ")");
+                source = ejbFacadeClient.findAllNative(" where o.Cli_Supprimer = 0 and Cli_Id not  in (" + selected.getSequenceClientID() + ")");
             } else {
-                 source = ejbFacadeClient.findAllNative(" where o.Cli_Supprimer = 0 ");
+                source = ejbFacadeClient.findAllNative(" where o.Cli_Supprimer = 0 ");
             }
             dualList = new DualListModel<Client>(source, listClientCommercials);
 
@@ -293,7 +293,7 @@ public class CommercialController implements Serializable {
             errorMsg = getFacade().verifierUnique(selected.getEmail().trim(), selected.getId());
 
             if (errorMsg == false) {
-                
+                editionInfo();
                 List<Client> listeClients = dualList.getTarget();
                 // Affectation par client
                 String clause = "";
@@ -549,6 +549,16 @@ public class CommercialController implements Serializable {
         }
         System.out.println("" + source.size());
         dualList = new DualListModel<Client>(source, listeClients);
+    }
+
+    private void creationInfo() {
+        selected.setIdUserCreate(utilisateur.getId());
+        selected.setLibelleUserCreate(utilisateur.getNomPrenom());
+    }
+
+    private void editionInfo() {
+        selected.setIdUserModif(utilisateur.getId());
+        selected.setLibelleUserModif(utilisateur.getNomPrenom());
     }
 
     public boolean isErrorMsg() {

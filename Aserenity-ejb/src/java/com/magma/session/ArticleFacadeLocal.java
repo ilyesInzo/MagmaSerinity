@@ -43,6 +43,6 @@ public interface ArticleFacadeLocal {
 
     int count();
 
-    void editStockArticle(Long idArticle, BigDecimal quantite);
+    void editStockArticle(Long idArticle, BigDecimal quantite, String Operateur);
 
 }

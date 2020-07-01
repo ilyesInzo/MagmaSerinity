@@ -74,7 +74,7 @@
                                                 <h:outputText value="#{item.origineFactureString}"/>
                                             </p:column>
 
-                                            <p:column filterBy="#{item.numero}" sortBy="#{item.numero}" style="width: 15%" filterMatchMode="contains" filterStyle="width:98%">
+                                            <p:column filterBy="#{item.numero}" sortBy="#{item.numero}" style="width: 10%" filterMatchMode="contains" filterStyle="width:98%">
                                                 <f:facet name="header">
                                                     <h:outputText value="#{bundle.Numero}"/>
                                                 </f:facet>
@@ -88,11 +88,18 @@
                                                 <h:outputText value="#{item.libelleClient}"/>
                                             </p:column>
 
-                                            <p:column filterBy="#{item.dateCreationStringFr}" sortBy="#{item.dateCreationStringFr}" style="width: 20%" filterMatchMode="contains" filterStyle="width:98%">
+                                            <p:column filterBy="#{item.dateCreationStringFr}" sortBy="#{item.dateCreationStringFr}" style="width: 17%" filterMatchMode="contains" filterStyle="width:98%">
                                                 <f:facet name="header">
                                                     <h:outputText value="#{bundle.Date}"/>
                                                 </f:facet>
                                                 <h:outputText value="#{item.dateCreationStringFr}"/>
+                                            </p:column>
+                                            
+                                            <p:column filterBy="#{item.montantNet}" sortBy="#{item.montantNet}" filterMatchMode="contains" filterStyle="width:98%" style="width: 10%; text-align:right">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.TotaleNet}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.montantNet}"/>
                                             </p:column>
 
                                             <p:column filterBy="#{item.totalTTC}" filterMatchMode="contains" filterStyle="width:98%" sortBy="#{item.totalTTC}" style="width: 8%; text-align:center">
@@ -123,7 +130,7 @@
                                                 <p:dataTable     liveResize="true"       var="itemLF" paginatorPosition="bottom" value="#{item.listeLigneFactures}" rows="15" id="tblCalculateur" 
                                                                  emptyMessage="#{bundle.TableauVide}" >
 
-                                                    <p:column style="width: 8%" >
+                                                    <p:column style="width: 8%" rendered="#{factureController.parametrageEntreprise.gestionParCodeArticle}">
                                                         <f:facet name="header">
                                                             <h:outputText value="#{bundle.Code}" />
                                                         </f:facet>

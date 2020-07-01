@@ -100,9 +100,21 @@
 
                                     <p:dialog widgetVar="confirmation" id="confirmDialogSupp" closable="false" closeOnEscape="false" header="#{bundle.Detail}" showEffect="clip" hideEffect="clip">
                                         <p:panelGrid id="eventDetails1" style="margin: 5px; padding: 5px;"  columns="2">
+                                            
+                                            <h:panelGroup id="pgClientView" >
+                                                <h:panelGroup rendered="#{planificationVisiteController.parametrageEntreprise.typePlanificationVisite eq 0}">
 
-                                            <h:outputLabel value="#{bundle.Client} : "  />
-                                            <p:outputLabel id="client" value=" #{planificationVisiteController.selected.clientString}" title="#{bundle.Client}" style="width: 250px"/>                       
+                                                    <h:outputLabel value="#{bundle.Client} : "  />
+                                                    <p:outputLabel id="clientView" value=" #{planificationVisiteController.selected.clientString}" title="#{bundle.Client}" style="width: 250px"/>                       
+                                                </h:panelGroup>
+                                            </h:panelGroup>
+                                            
+                                            <h:panelGroup id="pgPaysView" >
+                                                <h:panelGroup rendered="#{planificationVisiteController.parametrageEntreprise.typePlanificationVisite eq 1}">
+                                                    <h:outputLabel value="#{bundle.Pays} : "  />
+                                                    <p:outputLabel id="paysView" value=" #{planificationVisiteController.selected.paysString}" title="#{bundle.Client}" style="width: 250px"/>                       
+                                                </h:panelGroup>
+                                            </h:panelGroup>
 
                                             <h:outputLabel  value="#{bundle.DateDebut} :  "   />
                                             <h:outputLabel  value="#{planificationVisiteController.selected.dateDebutStringFr}   "   />
@@ -118,18 +130,41 @@
 
                                     <p:dialog widgetVar="eventDialog" id="idEventDialog"  style="visibility: #{planificationVisiteController.conditionAffichageEventDialog}" closable="false" closeOnEscape="false"  header="#{bundle.Nouveau}" showEffect="clip" hideEffect="clip" height="70%" width="50%" >
 
-                                        <div class="form-group" >
-                                            <h:outputLabel value="#{bundle.Client}: * " for="Client" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
-                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                        <h:panelGroup id="pgClient" >
+                                            <h:panelGroup rendered="#{planificationVisiteController.parametrageEntreprise.typePlanificationVisite eq 0}">
 
-                                                <p:selectOneMenu id="Client" value="#{planificationVisiteController.client}" style="width: 90%; min-width: 180px"  required="true" styleClass="form-control" filter="true" filterMatchMode="contains" effect="fade" var="l">
-                                                    <f:selectItems value="#{planificationVisiteController.itemsAvailableSelectOneClientByCommercial}" var="cl" itemLabel="#{cl.toString()}" itemValue="#{cl}" />
-                                                    <p:column>
-                                                        <h:outputText value="#{l.toString()}" />
-                                                    </p:column>
-                                                </p:selectOneMenu>
-                                            </div>
-                                        </div>
+                                                <div class="form-group" >
+                                                    <h:outputLabel value="#{bundle.Client}: * " for="Client" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+
+                                                        <p:selectOneMenu id="Client" value="#{planificationVisiteController.client}" style="width: 90%; min-width: 180px"  required="true" styleClass="form-control" filter="true" filterMatchMode="contains" effect="fade" var="l">
+                                                            <f:selectItems value="#{planificationVisiteController.itemsAvailableSelectOneClientByCommercial}" var="cl" itemLabel="#{cl.toString()}" itemValue="#{cl}" />
+                                                            <p:column>
+                                                                <h:outputText value="#{l.toString()}" />
+                                                            </p:column>
+                                                        </p:selectOneMenu>
+                                                    </div>
+                                                </div>
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+
+                                        <h:panelGroup id="pgPays" >
+                                            <h:panelGroup rendered="#{planificationVisiteController.parametrageEntreprise.typePlanificationVisite eq 1}">
+                                                <div class="form-group" >
+                                                    <h:outputLabel value="#{bundle.Pays}: * " for="Pays" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+
+                                                        <p:selectOneMenu id="Pays" value="#{planificationVisiteController.pays}" style="width: 90%; min-width: 180px"  required="true" styleClass="form-control" filter="true" filterMatchMode="contains" effect="fade" var="l">
+                                                            <f:selectItems value="#{paysController.itemsAvailableSelectOne}" var="cl" itemLabel="#{cl.toString()}" itemValue="#{cl}" />
+                                                            <p:column>
+                                                                <h:outputText value="#{l.toString()}" />
+                                                            </p:column>
+                                                        </p:selectOneMenu>
+                                                    </div>
+                                                </div>
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+                                        
 
                                         <div class="form-group" >
                                             <h:outputLabel for="dateDebut" value="#{bundle.DateDebut} :* "  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>

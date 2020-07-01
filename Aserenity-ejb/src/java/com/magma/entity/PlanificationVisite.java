@@ -8,12 +8,15 @@ package com.magma.entity;
 import com.magma.bibliotheque.TraitementDate;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -83,6 +86,15 @@ public class PlanificationVisite implements Serializable {
     @Column(name = "Usr_Prenom")
     private String prenom;
     
+    @Column(name = "Pys_Id")
+    private Long idPays;
+
+    @Column(name = "Pys_Libelle")
+    private String libellePays;
+    
+    @Transient
+    private Pays pays;
+    
     @Transient
     private Client client;
     
@@ -92,9 +104,8 @@ public class PlanificationVisite implements Serializable {
     @Transient
     private Commercial commercial;
     
-    @OneToOne
-    @JoinColumn(name = "RVst_Id", nullable = true)
-    private RapportVisit rapportVisit;
+    @OneToMany(mappedBy = "planificationVisite", fetch = FetchType.EAGER)
+    private List<RapportVisit> listRapportVisits;
 
     public Long getId() {
         return id;
@@ -323,6 +334,18 @@ public class PlanificationVisite implements Serializable {
         }
 
     }
+    
+    public String getPaysString() {
+
+        try {
+
+            return  libellePays;
+
+        } catch (Exception e) {
+            return "---";
+        }
+
+    }
 
     public Commercial getCommercial() {
         return commercial;
@@ -356,12 +379,40 @@ public class PlanificationVisite implements Serializable {
         this.prenom = prenom;
     }
 
-    public RapportVisit getRapportVisit() {
-        return rapportVisit;
+    public Long getIdPays() {
+        return idPays;
     }
 
-    public void setRapportVisit(RapportVisit rapportVisit) {
-        this.rapportVisit = rapportVisit;
+    public void setIdPays(Long idPays) {
+        this.idPays = idPays;
+    }
+
+    public String getLibellePays() {
+        return libellePays;
+    }
+
+    public void setLibellePays(String libellePays) {
+        this.libellePays = libellePays;
+    }
+
+    public Pays getPays() {
+        return pays;
+    }
+
+    public void setPays(Pays pays) {
+        this.pays = pays;
+    }
+
+    public List<RapportVisit> getListRapportVisits() {
+        return listRapportVisits;
+    }
+
+    public void setListRapportVisits(List<RapportVisit> listRapportVisits) {
+        this.listRapportVisits = listRapportVisits;
+    }
+    
+    public String getNomPrenom() {
+        return prenom + " " + nom;
     }
 
     @PrePersist

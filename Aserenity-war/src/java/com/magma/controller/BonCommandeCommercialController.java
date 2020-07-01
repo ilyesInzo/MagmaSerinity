@@ -14,6 +14,7 @@ import com.magma.entity.Client;
 import com.magma.entity.Commercial;
 import com.magma.entity.EtatCommande;
 import com.magma.entity.LigneBonCommandeCommercial;
+import com.magma.entity.ParametrageEntreprise;
 import com.magma.entity.ParametrageTaxe;
 import com.magma.entity.Utilisateur;
 import com.magma.session.BonLivraisonFacadeLocal;
@@ -129,6 +130,7 @@ public class BonCommandeCommercialController implements Serializable {
     private Date dateFin = new Date();
     private Integer etatBonCommandeCommercial;
     private Client client;
+    private ParametrageEntreprise parametrageEntreprise = null;
 
     public BonCommandeCommercialController() {
         items = null;
@@ -148,7 +150,7 @@ public class BonCommandeCommercialController implements Serializable {
             FacesContext context = FacesContext.getCurrentInstance();
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
             utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
-
+            parametrageEntreprise = utilisateur.getEntreprise().getParametrageEntreprise();
             MenuTemplate.menuFonctionnalitesModules("GCommande", "MCommande", null, utilisateur);
             //MenuTemplate.menuFonctionnalitesModules("GBonCommandeCommercial", utilisateur);
             /* if (bonCommandeCommercial.getIdEntrepriseSuivi() != null && bonCommandeCommercial.getIdEntrepriseSuivi() != 0) {
@@ -295,7 +297,7 @@ public class BonCommandeCommercialController implements Serializable {
 
         /*try {*/
         if (errorMsg == false) {
-
+            creationInfo();
             if (selected.getListeLigneBonCommandeCommercials() != null && !selected.getListeLigneBonCommandeCommercials().isEmpty()) {
                 LigneBonCommandeCommercialTemps = selected.getListeLigneBonCommandeCommercials();
 
@@ -339,16 +341,16 @@ public class BonCommandeCommercialController implements Serializable {
                         selected.setLibelleCategorieClientLivraison(selected.getCategorieClientLivraison().getLibelle());
                     }
                 }
-                
-                if(selected.getCommercial() != null){
-                
+
+                if (selected.getCommercial() != null) {
+
                     selected.setNomCommercial(selected.getCommercial().getNom());
                     selected.setPrenomCommercial(selected.getCommercial().getPrenom());
                     selected.setIdCommercial(selected.getCommercial().getId());
                     selected.setTypeCommercial(selected.getCommercial().getTypeCommercial());
-                
+
                 }
-                selected.setNumero("BC"+System.currentTimeMillis());
+                selected.setNumero("BC" + System.currentTimeMillis());
                 getFacade().create(selected);
 
                 for (LigneBonCommandeCommercial ligneBonCommandeCommercial : LigneBonCommandeCommercialTemps) {
@@ -411,9 +413,8 @@ public class BonCommandeCommercialController implements Serializable {
                 }
 
             }
-            
-            
-            if (selected.getIdCategorieClientLivraison()!= null) {
+
+            if (selected.getIdCategorieClientLivraison() != null) {
                 CategorieClient categorieClient = new CategorieClient();
                 categorieClient.setId(selected.getIdCategorieClientLivraison());
                 categorieClient.setLibelle(selected.getLibelleCategorieClientLivraison());
@@ -426,10 +427,9 @@ public class BonCommandeCommercialController implements Serializable {
                     selected.setClientLivraison(client);
                 }
 
-            }      
-            
-            
-            if (selected.getIdCommercial()!= null) {
+            }
+
+            if (selected.getIdCommercial() != null) {
                 Commercial commercial = new Commercial();
                 commercial.setId(selected.getIdCommercial());
                 commercial.setNom(selected.getNomCommercial());
@@ -437,8 +437,6 @@ public class BonCommandeCommercialController implements Serializable {
                 commercial.setTypeCommercial(0);
                 selected.setCommercial(commercial);
             }
-            
-            
 
             //ancienMontantHT = selected.getMontantHT();
             for (LigneBonCommandeCommercial ligneBonCommandeCommercial : selected.getListeLigneBonCommandeCommercials()) {
@@ -462,10 +460,10 @@ public class BonCommandeCommercialController implements Serializable {
         try {
 
             if (selected.getListeLigneBonCommandeCommercials() != null && !selected.getListeLigneBonCommandeCommercials().isEmpty()) {
-
+                editionInfo();
                 LigneBonCommandeCommercialTemps = new ArrayList<LigneBonCommandeCommercial>(selected.getListeLigneBonCommandeCommercials());
                 selected.setListeLigneBonCommandeCommercials(null);
-                
+
                 if (selected.getCategorieClient() != null) {
                     if (selected.getClient() != null) {
 
@@ -488,19 +486,16 @@ public class BonCommandeCommercialController implements Serializable {
                         selected.setLibelleCategorieClientLivraison(selected.getCategorieClientLivraison().getLibelle());
                     }
                 }
-                
-                
-                if(selected.getCommercial() != null){
-                
+
+                if (selected.getCommercial() != null) {
+
                     selected.setNomCommercial(selected.getCommercial().getNom());
                     selected.setPrenomCommercial(selected.getCommercial().getPrenom());
                     selected.setIdCommercial(selected.getCommercial().getId());
                     selected.setTypeCommercial(selected.getCommercial().getTypeCommercial());
-                
+
                 }
-                
-                
-                
+
                 getFacade().edit(selected);
 
                 //LigneBonCommandeCommercialTemps = selected.getListeLigneBonCommandeCommercials();
@@ -795,7 +790,7 @@ public class BonCommandeCommercialController implements Serializable {
             bonCommandeCommercialSummarizeInfos.add("Total Taxe" + " : " + selectedSingle.getTotalTaxe());
             bonCommandeCommercialSummarizeInfos.add("Total TTC" + " : " + selectedSingle.getTotalTTC());
 
-            GenerationPdf.generationPdf(image, path, "BonCommandeCommercial", numeroBonCommandeCommercial, dateBonCommandeCommercial, entrepriseInfos, clientInfos, ligneBonCommandeCommercialEntete, ligneFactures, bonCommandeCommercialSummarizeInfos);
+            GenerationPdf.generationPdf(image, path, "BonCommandeCommercial", numeroBonCommandeCommercial, dateBonCommandeCommercial, entrepriseInfos, clientInfos, ligneBonCommandeCommercialEntete, ligneFactures, bonCommandeCommercialSummarizeInfos, parametrageEntreprise.isGestionParCodeArticle(), utilisateur.getEntreprise().getHeader(), utilisateur.getEntreprise().getFooter());
 
             File file = new File(path);
             HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
@@ -994,30 +989,25 @@ public class BonCommandeCommercialController implements Serializable {
     public void setClient(Client client) {
         this.client = client;
     }
-    
+
     public SelectItem[] parentFils() {
         // TODO check poste for son
         if (selected.getEtatCommande().getRang() == 0) {
 
             // i will not use request => i will use the parent son instead
-            
             List<EtatCommande> etatCommandes = new ArrayList<EtatCommande>();
             etatCommandes.addAll(selected.getEtatCommande().getListEtatCommandesFils());
             etatCommandes.add(selected.getEtatCommande());
             return JsfUtil.getSelectItems(etatCommandes, true);
-            
-            
-            
-            //return JsfUtil.getSelectItems(ejbFacadeEtatCommande.findAllNative(" where ( o.ECm_Rang = 1 OR o.ECm_Rang = 0 )" ), true);
 
+            //return JsfUtil.getSelectItems(ejbFacadeEtatCommande.findAllNative(" where ( o.ECm_Rang = 1 OR o.ECm_Rang = 0 )" ), true);
         } else if (selected.getEtatCommande().isDernierRang() == true) {
             // int rangFils = selected.getEtatCommande().getRang() - 1;
             List<EtatCommande> etatCommandes = new ArrayList<EtatCommande>();
-            
-            
+
             etatCommandes.add(selected.getEtatCommande());
             etatCommandes.add(selected.getEtatCommande().getParent());
-            
+
             //etatCommandes = ejbFacadeEtatCommande.findAllNative(" where o.ECm_Rang = " + rangFils + " OR o.ECm_Id = "+selected.getEtatCommande().getId());
             etatCommandes.add(selected.getEtatCommande());
             return JsfUtil.getSelectItems(etatCommandes, true);
@@ -1026,17 +1016,26 @@ public class BonCommandeCommercialController implements Serializable {
             //int rangParent = selected.getEtatCommande().getRang() + 1;
             //int rangFils = selected.getEtatCommande().getRang() - 1;
             List<EtatCommande> etatCommandes = new ArrayList<EtatCommande>();
-            
+
             etatCommandes.add(selected.getEtatCommande());// RETURN TO PARENT
             etatCommandes.add(selected.getEtatCommande().getParent());// STAY
             etatCommandes.addAll(selected.getEtatCommande().getListEtatCommandesFils()); //GO TO SUN
-            
-            //etatCommandes = ejbFacadeEtatCommande.findAllNative(" where  ( o.ECm_Rang = " + rangParent + " OR o.ECm_Rang = " + rangFils + " OR o.ECm_Id = "+selected.getEtatCommande().getId()+" )");
-           // etatCommandes.add(selected.getEtatCommande());
 
+            //etatCommandes = ejbFacadeEtatCommande.findAllNative(" where  ( o.ECm_Rang = " + rangParent + " OR o.ECm_Rang = " + rangFils + " OR o.ECm_Id = "+selected.getEtatCommande().getId()+" )");
+            // etatCommandes.add(selected.getEtatCommande());
             return JsfUtil.getSelectItems(etatCommandes, true);
 
         }
+    }
+
+    private void creationInfo() {
+        selected.setIdUserCreate(utilisateur.getId());
+        selected.setLibelleUserCreate(utilisateur.getNomPrenom());
+    }
+
+    private void editionInfo() {
+        selected.setIdUserModif(utilisateur.getId());
+        selected.setLibelleUserModif(utilisateur.getNomPrenom());
     }
 
     public SelectItem[] getItemsAvailableSelectOneClientLivraison() {

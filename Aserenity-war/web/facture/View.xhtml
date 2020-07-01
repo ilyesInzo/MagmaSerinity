@@ -71,16 +71,73 @@
                                                 <p:outputLabel id="categorie" value="#{factureController.selected.libelleClient}" title="#{bundle.Client}" styleClass="form-control" style="width: 90%; min-width: 180px"/>
                                             </div>
                                         </div>
+                                        
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.DateFacture} :" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel  value="#{factureController.selected.dateFactureStringFr}" title="#{bundle.DateFacture}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div>
 
+                                        <h:panelGroup id="pgVenteParJour" >
+                                            <h:panelGroup rendered="#{factureController.parametrageEntreprise.venteParJour}">
+
+                                                <div class="form-group" >
+                                                    <h:outputLabel value="#{bundle.NombreJour}: " for="Nombre"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <p:outputLabel id="Nombre" value="#{factureController.selected.nbJourVente}" title="#{bundle.NombreJour}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                                    </div>
+                                                </div>
+
+                                            </h:panelGroup>
+                                        </h:panelGroup>                                       
 
                                         <div class="form-group" >
                                             <h:outputLabel value="#{bundle.TotaleHT} : "  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                             <div class="col-md-9 col-sm-9 col-xs-12">
-                                                <p:inputText id="montantHT" value="#{factureController.selected.montantHT}" title="#{bundle.TotaleHT}" disabled="true"  styleClass="form-control" style="width: 90%; min-width: 180px"/>
+                                                <p:inputText id="montantHT" value="#{factureController.selected.totalHT}" title="#{bundle.TotaleHT}" disabled="true"  styleClass="form-control" style="width: 90%; min-width: 180px"/>
                                             </div>
                                         </div>
 
+                                        <h:panelGroup id="pgRemisePourcentage" >
+                                            <h:panelGroup rendered="#{factureController.selected.appliquerRemise eq 0}">
 
+                                                <div class="form-group" >
+                                                    <h:outputLabel value="#{bundle.Pourcentage} :" for="Pourcentage" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
+                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <p:outputLabel id="Pourcentage" value="#{factureController.selected.tauxRemiseGlobal}" title="#{bundle.Pourcentage}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                                    </div>
+                                                </div>
+
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+
+                                        <h:panelGroup id="pgRemiseMontant" >
+                                            <h:panelGroup rendered="#{factureController.selected.appliquerRemise eq 1}">
+
+                                                <div class="form-group" >
+                                                    <h:outputLabel value="#{bundle.MontantRemise} :" for="MontantRemise" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
+                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <p:outputLabel id="MontantRemise" value="#{factureController.selected.montantRemiseGlobal}" title="#{bundle.MontantRemise}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                                    </div>
+                                                </div>
+
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.TotaleNet} :" for="montantNet" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="montantNet" value="#{factureController.selected.montantNet}" title="#{bundle.TotaleNet}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.TotaleTVA}: " styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="montantTVA" value="#{factureController.selected.totalTVA}" title="#{bundle.TotaleTVA}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div>
 
                                         <div class="form-group" >
                                             <h:outputLabel value="#{bundle.TotaleTTC} : "  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
@@ -107,7 +164,7 @@
                                     <div class="x_content" >
                                         <p:dataTable  value="#{factureController.selected.listeLigneFactures}"  var="item"  selection="#{factureController.selectedLigneFactureSingle}" rowKey="#{item.id}" liveResize="true"     >
 
-                                            <p:column style="width: 8%" >
+                                            <p:column style="width: 8%" rendered="#{factureController.parametrageEntreprise.gestionParCodeArticle}">
                                                 <f:facet name="header">
                                                     <h:outputText value="#{bundle.Code}" />
                                                 </f:facet>
@@ -169,6 +226,14 @@
                                                 </f:facet>
                                                 <h:outputText value="#{item.totalTTC} " /> 
                                             </p:column>
+                                            
+                                            <p:columnGroup type="footer">
+                                                <p:row>
+                                                    <p:column colspan="#{factureController.parametrageEntreprise.gestionParCodeArticle ? 7 : 6}" style="text-align:right" footerText="#{bundle.Total}" />
+                                                    <p:column  colspan="1" footerText="#{factureController.selected.montantHT}" />
+                                                    <p:column  colspan="1" footerText="#{factureController.selected.montantTTC}" />
+                                                </p:row>
+                                            </p:columnGroup>
 
                                         </p:dataTable>
 
@@ -179,7 +244,7 @@
 
 
                                     <h:panelGroup id="PanelBonLivraison">
-                                        <h:panelGroup rendered="#{factureController.selected.origineFacture eq 3}">
+                                        <h:panelGroup rendered="#{factureController.selected.origine eq 3}">
 
                                             <div class="x_title">
                                                 <h2 style="color: #1a8ea5">#{bundle.BonLivraisons}</h2>                        
@@ -222,11 +287,11 @@
                                                         <h:outputText value="#{itemBL.libelleClient}"/>
                                                     </p:column>
 
-                                                    <p:column filterBy="#{itemBL.montantHT}" filterMatchMode="contains" filterStyle="width:98%" sortBy="#{itemBL.montantTTC}" style="width: 8%; text-align:right">
+                                                    <p:column filterBy="#{itemBL.totalHT}" filterMatchMode="contains" filterStyle="width:98%" sortBy="#{itemBL.totalHT}" style="width: 8%; text-align:right">
                                                         <f:facet name="header">
                                                             <h:outputText value="#{bundle.TotaleHT}"/>
                                                         </f:facet>
-                                                        <h:outputText value="#{itemBL.montantHT}"/>
+                                                        <h:outputText value="#{itemBL.totalHT}"/>
                                                     </p:column>
 
                                                     <p:column filterBy="#{itemBL.reste}" filterMatchMode="contains" filterStyle="width:98%" sortBy="#{itemBL.reste}" style="width: 13%; text-align:center">
@@ -247,7 +312,7 @@
                                                         <p:dataTable     liveResize="true"       var="itemLFBL" paginatorPosition="bottom" value="#{itemBL.listeLigneBonLivraisons}" rows="15" id="tblCalculateur" 
                                                                          emptyMessage="#{bundle.TableauVide}" >
 
-                                                            <p:column style="width: 8%" >
+                                                            <p:column style="width: 8%" rendered="#{factureController.parametrageEntreprise.gestionParCodeArticle}">
                                                                 <f:facet name="header">
                                                                     <h:outputText value="#{bundle.Code}" />
                                                                 </f:facet>

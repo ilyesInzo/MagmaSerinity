@@ -21,7 +21,7 @@
                     <div class="ui-g-12">
                         <div class="shadow-box ui-shadow-5">
                             <div class="card">
-                                
+
                                 <h:form id="f1">
 
                                     <div class="x_title">
@@ -48,8 +48,17 @@
                                                 <p:outputLabel id="libelle" value="#{gouvernoratController.selected.libelle}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
                                             </div>
                                         </div>
-
-
+                                        
+                                        <h:panelGroup id="pgPays" >
+                                            <h:panelGroup rendered="#{gouvernoratController.parametrageEntreprise.typePlanificationVisite == 1 and gouvernoratController.selected.pays ne null}">
+                                                <div class="form-group" >
+                                                    <h:outputLabel value=" #{bundle.Pays}: *" for="pays"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <p:inputText id="pays" required="true" value="#{gouvernoratController.selected.pays.libelle}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                                    </div>
+                                                </div>
+                                            </h:panelGroup>
+                                        </h:panelGroup>
                                         
                                         <div class="form-group" >
                                             <h:outputLabel value="#{bundle.Description} : " for="Description"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
@@ -58,13 +67,9 @@
                                             </div>
                                         </div> 
 
-
-
                                     </div> 
 
-
                                 </h:form>       
-                                
 
                             </div>
                         </div>

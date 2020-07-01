@@ -30,7 +30,7 @@
                                         <h2 style="color: #607D8B">#{bundle.GRetour}</h2>
                                         <ul class="nav navbar-right panel_toolbox">                          
                                             <li>
-                                                <p:commandButton rendered="#{user.profile.toPrivilege('retour').modification}" title="Enregistrer" id="addButton" action="#{retourController.update()}"  type="push" ajax="false"  icon="fa fa-save" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
+                                                <p:commandButton rendered="#{user.profile.toPrivilege('retour').modification}" title="Enregistrer" id="addButton" oncomplete="PF('dialogApprouver').show()" icon="fa fa-save" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
                                             </li>
                                             <li>
                                                 <p:commandButton rendered="#{user.profile.toPrivilege('retour').lecture}" title="Annuler" ajax="false"  id="updateButton" action="#{retourController.prepareList()}"  immediate="true" icon="fa fa-reply"  style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary"/>
@@ -153,7 +153,14 @@
                                     </div>
                                 </h:form>     
 
+                                <h:form id="formDialogApprouver">
 
+                                    <p:confirmDialog id="dialogApprouver" widgetVar="dialogApprouver" message="#{bundle.ValiderRetour}" header="#{bundle.Confirmation}" severity="alert"  responsive="true">
+                                        <p:commandButton id="confirm" value="Valider" style="float: right" oncomplete="PF('dialogApprouver').hide()" icon="ui-icon-check"  update="f1" action="#{retourController.update()}" type="push" ajax="false"/>
+                                        <p:commandButton id="decline" value="Annuler" style="float: right" onclick="PF('dialogApprouver').hide()" icon="ui-icon-close"  type="button" />
+                                    </p:confirmDialog>
+
+                                </h:form>
 
                             </div>
                         </div>

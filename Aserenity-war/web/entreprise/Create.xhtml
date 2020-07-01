@@ -145,8 +145,24 @@
                                             <div class="form-group" >
                                                 <h:outputLabel value="#{bundle.Adresse} : " for="adresse" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                                 <div class="col-md-9 col-sm-9 col-xs-12">
-                                                    <p:inputTextarea id="adresse" value="#{entrepriseController.selected.adresse}" title="#{bundle.Adresse}" required="false" rows="5" cols="100"  style="width: 90%; min-width: 180px" styleClass="form-control">
+                                                    <p:inputTextarea id="adresse" value="#{entrepriseController.selected.adresse}" title="#{bundle.Adresse}"  required="false" rows="5" cols="100"  style="width: 90%; min-width: 180px" styleClass="form-control">
                                                         <p:ajax   update="adresse" />
+                                                    </p:inputTextarea>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="form-group" >
+                                                <h:outputLabel value="#{bundle.DocumentHeader} : " for="header" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:inputTextarea id="header" value="#{entrepriseController.selected.header}" title="#{bundle.DocumentHeader}" maxlength="250" required="false" rows="2" cols="125"  style="width: 90%; min-width: 180px" styleClass="form-control">
+                                                    </p:inputTextarea>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="form-group" >
+                                                <h:outputLabel value="#{bundle.DocumentFooter} : " for="footer" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:inputTextarea id="footer" value="#{entrepriseController.selected.footer}" title="#{bundle.DocumentFooter}" maxlength="250"  required="false" rows="2" cols="125"  style="width: 90%; min-width: 180px" styleClass="form-control">
                                                     </p:inputTextarea>
                                                 </div>
                                             </div>
@@ -305,6 +321,32 @@
                                                             </div>
                                                             <div class="ui-g-3">                                                       
                                                                 <p:toggleSwitch value="#{entrepriseController.selected.parametrageEntreprise.visibiliteMCommercial}" />
+                                                            </div>
+                                                        </div>     
+                                                        
+                                                        <div class="clearfix"></div>
+
+                                                    </div>
+
+                                                    <div class="x_content">
+
+                                                        <div id="pie3"> RIEN</div>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-4">
+                                                <div class="x_panel">
+                                                    <div class="x_title">
+   
+                                                        <div class="ui-g">
+                                                            <div class="ui-g-9">
+                                                                <h:outputLabel value="#{bundle.MVeille} : "  />
+                                                            </div>
+                                                            <div class="ui-g-3">                                                       
+                                                                <p:toggleSwitch value="#{entrepriseController.selected.parametrageEntreprise.visibiliteMVeille}" />
                                                             </div>
                                                         </div>     
                                                         

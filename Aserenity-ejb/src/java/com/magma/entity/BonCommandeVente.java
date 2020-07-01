@@ -72,7 +72,19 @@ public class BonCommandeVente implements Serializable {
 
     @Column(name = "BCVnt_MontantTTC", scale = 3, precision = 28)
     private BigDecimal montantTTC;
-
+    
+    @Column(name = "BCVnt_AppliquerRemise")
+    private Integer appliquerRemise = -1;
+    
+    @Column(name = "BCVnt_TauxRemiseGlobal", scale = 3, precision = 28)
+    private BigDecimal tauxRemiseGlobal = BigDecimal.ZERO;
+    
+    @Column(name = "BCVnt_MontantRemiseGlobal", scale = 3, precision = 28)
+    private BigDecimal montantRemiseGlobal = BigDecimal.ZERO;
+    
+    @Column(name = "BCVnt_MontantNet", scale = 3, precision = 28)
+    private BigDecimal montantNet;
+   
     @Column(name = "BCVnt_TotalHT", scale = 3, precision = 28)
     private BigDecimal totalHT;
     
@@ -88,7 +100,9 @@ public class BonCommandeVente implements Serializable {
     @Column(name = "BCVnt_DescriptionMotifAnnulation")
     private String descriptionMotifAnnulation;
 
-
+    @Column(name = "BCVnt_NbJourVente")
+    private int nbJourVente = 1;
+    
     @Column(name = "BCVnt_TotalTaxe", precision = 28, scale = 3)
     private BigDecimal totalTaxe;
 
@@ -237,6 +251,38 @@ public class BonCommandeVente implements Serializable {
     public void setMontantTTC(BigDecimal montantTTC) {
         this.montantTTC = montantTTC;
     }
+    
+    public BigDecimal getMontantNet() {
+        return FonctionsMathematiques.arrondiBigDecimal(montantNet, 3);
+    }
+
+    public void setMontantNet(BigDecimal montantNet) {
+        this.montantNet = montantNet;
+    }
+    
+    public Integer getAppliquerRemise() {
+        return appliquerRemise;
+    }
+
+    public void setAppliquerRemise(Integer appliquerRemise) {
+        this.appliquerRemise = appliquerRemise;
+    }
+
+    public BigDecimal getTauxRemiseGlobal() {
+        return FonctionsMathematiques.arrondiBigDecimal(tauxRemiseGlobal, 3);
+    }
+
+    public void setTauxRemiseGlobal(BigDecimal tauxRemiseGlobal) {
+        this.tauxRemiseGlobal = tauxRemiseGlobal;
+    }
+
+    public BigDecimal getMontantRemiseGlobal() {
+        return FonctionsMathematiques.arrondiBigDecimal(montantRemiseGlobal, 3);
+    }
+
+    public void setMontantRemiseGlobal(BigDecimal montantRemiseGlobal) {
+        this.montantRemiseGlobal = montantRemiseGlobal;
+    }
 
     public BigDecimal getTotalHT() {
         return FonctionsMathematiques.arrondiBigDecimal(totalHT, 3);
@@ -359,7 +405,56 @@ public class BonCommandeVente implements Serializable {
         this.numeroDocumentOrigine = numeroDocumentOrigine;
     }
 
+    public boolean isNePeutModifierBonCommandeVente() {
+        switch (etat) {
+            case 0:
+                return false;
 
+            case 1:
+                return true;
+
+            case 3:
+                return true;
+
+            case 4:
+                return true;
+        }
+        return false;
+    }
+    
+    public boolean isNePeutApprouverBonCommandeVente() {
+        switch (etat) {
+            case 0:
+                return false;
+
+            case 1:
+                return true;
+
+            case 3:
+                return true;
+
+            case 4:
+                return true;
+        }
+        return false;
+    }
+    
+    public boolean isNePeutRejeterBonCommandeVente() {
+        switch (etat) {
+            case 0:
+                return false;
+
+            case 1:
+                return true;
+
+            case 3:
+                return true;
+
+            case 4:
+                return true;
+        }
+        return false;
+    }
 
     public Long getDateSynch() {
         return dateSynch;
@@ -488,6 +583,14 @@ public class BonCommandeVente implements Serializable {
         } catch (Exception e) {
             return "---";
         }
+    }
+
+    public int getNbJourVente() {
+        return nbJourVente;
+    }
+
+    public void setNbJourVente(int nbJourVente) {
+        this.nbJourVente = nbJourVente;
     }
     
     @PreUpdate

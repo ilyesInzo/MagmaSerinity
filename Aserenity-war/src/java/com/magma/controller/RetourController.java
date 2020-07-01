@@ -4,6 +4,7 @@ import com.magma.bibliotheque.TraitementDate;
 import com.magma.controller.util.JsfUtil;
 import com.magma.entity.Client;
 import com.magma.entity.LigneRetour;
+import com.magma.entity.ParametrageEntreprise;
 import com.magma.entity.Retour;
 import com.magma.entity.Utilisateur;
 import com.magma.session.ArticleFacadeLocal;
@@ -49,7 +50,7 @@ public class RetourController implements Serializable {
     private Date dateFin = new Date();
     private Integer etatRetour;
     private Client client;
-
+    private ParametrageEntreprise parametrageEntreprise = null;
     public RetourController() {
         items = null;
         errorMsg = false;
@@ -68,7 +69,7 @@ public class RetourController implements Serializable {
             FacesContext context = FacesContext.getCurrentInstance();
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
             utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
-
+            parametrageEntreprise = utilisateur.getEntreprise().getParametrageEntreprise();
             MenuTemplate.menuFonctionnalitesModules("GRetour", "MVente", null,utilisateur);
 
             //MenuTemplate.menuFonctionnalitesModules("GRetour", utilisateur);
@@ -226,7 +227,7 @@ public class RetourController implements Serializable {
                         System.out.println(quantite);
                         System.out.println(ligneRetour.getIdArticle());
                         if (quantite.compareTo(BigDecimal.ZERO) == 1) {
-                            ejbFacadeArticle.editStockArticle(ligneRetour.getIdArticle(), quantite);
+                            ejbFacadeArticle.editStockArticle(ligneRetour.getIdArticle(), quantite, "+");
                         }
 
                     }
@@ -332,6 +333,14 @@ public class RetourController implements Serializable {
 
     public void setClient(Client client) {
         this.client = client;
+    }
+
+    public ParametrageEntreprise getParametrageEntreprise() {
+        return parametrageEntreprise;
+    }
+
+    public void setParametrageEntreprise(ParametrageEntreprise parametrageEntreprise) {
+        this.parametrageEntreprise = parametrageEntreprise;
     }
 
     public void onCellEdit() {

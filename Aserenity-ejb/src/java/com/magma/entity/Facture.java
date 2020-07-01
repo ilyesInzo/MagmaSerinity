@@ -69,7 +69,19 @@ public class Facture implements Serializable {
 
     @Column(name = "Fct_MontantTTC", scale = 3, precision = 28)
     private BigDecimal montantTTC;
-
+    
+    @Column(name = "Fct_AppliquerRemise")
+    private Integer appliquerRemise = -1;
+    
+    @Column(name = "Fct_TauxRemiseGlobal", scale = 3, precision = 28)
+    private BigDecimal tauxRemiseGlobal = BigDecimal.ZERO;
+    
+    @Column(name = "Fct_MontantRemiseGlobal", scale = 3, precision = 28)
+    private BigDecimal montantRemiseGlobal = BigDecimal.ZERO;
+    
+    @Column(name = "Fct_MontantNet", scale = 3, precision = 28)
+    private BigDecimal montantNet;
+    
     @Column(name = "Fct_TotalHT", scale = 3, precision = 28)
     private BigDecimal totalHT;
     
@@ -81,6 +93,9 @@ public class Facture implements Serializable {
 
     @Column(name = "Fct_Reste", scale = 3, precision = 28)
     private BigDecimal reste;
+    
+    @Column(name = "Fct_NbJourVente")
+    private int nbJourVente = 1;
 
     @Column(name = "Fct_Synchroniser")
     private boolean synchroniser;
@@ -110,7 +125,7 @@ public class Facture implements Serializable {
 
     //  0 : VenteDirecte,  1 : Devis , 2 : Commande , 3 : BonLivraison 
     @Column(name = "Fct_Origine")
-    private Integer origine;
+    private Integer origine = -1;
     
     @Column(name = "Fct_IdDocumentOrigine")
     private Long idDocumentOrigine;
@@ -269,13 +284,13 @@ public class Facture implements Serializable {
     public String getOrigineFactureString() {
         try {
 
-            if (origine == 0) {
+            if (origine == 1) {
                 return "Devis";
-            } else if (origine == 1) {
-                return "Bon commande";
             } else if (origine == 2) {
-                return "Bons livraison";
+                return "Bon commande";
             } else if (origine == 3) {
+                return "Bons livraison";
+            } else if (origine == 0) {
                 return "Vente directe";
             } else {
                 return "---";
@@ -643,6 +658,38 @@ public class Facture implements Serializable {
     public void setMontantTVA(BigDecimal montantTVA) {
         this.montantTVA = montantTVA;
     }
+    
+    public BigDecimal getMontantNet() {
+        return FonctionsMathematiques.arrondiBigDecimal(montantNet, 3);
+    }
+
+    public void setMontantNet(BigDecimal montantNet) {
+        this.montantNet = montantNet;
+    }
+    
+    public Integer getAppliquerRemise() {
+        return appliquerRemise;
+    }
+
+    public void setAppliquerRemise(Integer appliquerRemise) {
+        this.appliquerRemise = appliquerRemise;
+    }
+
+    public BigDecimal getTauxRemiseGlobal() {
+        return FonctionsMathematiques.arrondiBigDecimal(tauxRemiseGlobal, 3);
+    }
+
+    public void setTauxRemiseGlobal(BigDecimal tauxRemiseGlobal) {
+        this.tauxRemiseGlobal = tauxRemiseGlobal;
+    }
+
+    public BigDecimal getMontantRemiseGlobal() {
+        return FonctionsMathematiques.arrondiBigDecimal(montantRemiseGlobal, 3);
+    }
+
+    public void setMontantRemiseGlobal(BigDecimal montantRemiseGlobal) {
+        this.montantRemiseGlobal = montantRemiseGlobal;
+    }
 
     public Long getDateSynch() {
         return dateSynch;
@@ -675,8 +722,14 @@ public class Facture implements Serializable {
     public void setBonCommande(BonCommandeVente bonCommande) {
         this.bonCommande = bonCommande;
     }
-    
-    
+
+    public int getNbJourVente() {
+        return nbJourVente;
+    }
+
+    public void setNbJourVente(int nbJourVente) {
+        this.nbJourVente = nbJourVente;
+    }
     
     @PreUpdate
     void preupdate() {

@@ -4,16 +4,13 @@ import com.magma.controller.util.JsfUtil;
 import com.magma.entity.Ticket;
 import com.magma.entity.Utilisateur;
 import com.magma.session.TicketFacadeLocal;
-import com.magma.util.EditEntityInterceptor;
 import com.magma.util.MenuTemplate;
 import java.io.IOException;
 import javax.faces.bean.ManagedBean;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
-import javax.inject.Named;
 import javax.faces.bean.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -21,10 +18,9 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.faces.model.SelectItem;
-import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpSession;
 
-@ManagedBean(name= "ticketController")
+@ManagedBean(name = "ticketController")
 @SessionScoped
 public class TicketController implements Serializable {
 
@@ -39,6 +35,7 @@ public class TicketController implements Serializable {
     private long idEntreprise = 0;
     private Utilisateur utilisateur;
     private Ticket old;
+
     public TicketController() {
         items = null;
         errorMsg = false;
@@ -46,10 +43,10 @@ public class TicketController implements Serializable {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
         /*if (ticket.getIdEntrepriseSuivi() != null && ticket.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = ticket.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = ticket.getEntreprise().getId();
-            }*/
+         idEntreprise = ticket.getIdEntrepriseSuivi();
+         } else {
+         idEntreprise = ticket.getEntreprise().getId();
+         }*/
     }
 
     public String initPage() {
@@ -58,14 +55,14 @@ public class TicketController implements Serializable {
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
             utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
 
-            MenuTemplate.menuFonctionnalitesModules("GTicket", "MParametrage", null,utilisateur);
+            MenuTemplate.menuFonctionnalitesModules("GTicket", "MParametrage", null, utilisateur);
 
             //MenuTemplate.menuFonctionnalitesModules("GTicket", utilisateur);
            /* if (ticket.getIdEntrepriseSuivi() != null && ticket.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = ticket.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = ticket.getEntreprise().getId();
-            }*/
+             idEntreprise = ticket.getIdEntrepriseSuivi();
+             } else {
+             idEntreprise = ticket.getEntreprise().getId();
+             }*/
             recreateModel();
             FacesContext.getCurrentInstance().getExternalContext().redirect("../ticket/List.xhtml");
         } catch (IOException ex) {
@@ -141,6 +138,7 @@ public class TicketController implements Serializable {
             errorMsg = getFacade().verifierUnique(selected.getLibelle().trim());
 
             if (errorMsg == false) {
+                creationInfo();
                 selected.setSupprimer(false);
                 getFacade().create(selected);
                 return prepareList();
@@ -175,13 +173,12 @@ public class TicketController implements Serializable {
         return "List";
     }
 
-    
     public String update() {
         try {
-            System.out.println("Ticket");
             errorMsg = getFacade().verifierUnique(selected.getLibelle().trim(), selected.getId());
 
             if (errorMsg == false) {
+                editionInfo();
                 selected.setSupprimer(false);
                 getFacade().edit(selected);
                 return prepareList();
@@ -214,6 +211,16 @@ public class TicketController implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("EchecOperation")));
             System.out.println("Erreur- TicketController - performDestroy: " + e.getMessage());
         }
+    }
+
+    private void creationInfo() {
+        selected.setIdUserCreate(utilisateur.getId());
+        selected.setLibelleUserCreate(utilisateur.getNomPrenom());
+    }
+
+    private void editionInfo() {
+        selected.setIdUserModif(utilisateur.getId());
+        selected.setLibelleUserModif(utilisateur.getNomPrenom());
     }
 
     public boolean isErrorMsg() {

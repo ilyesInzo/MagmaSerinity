@@ -41,7 +41,7 @@ public class AuthentificationController implements Serializable {
 
     public String connecter() {
         try {
-            TraitementDate.dataBase = 2;
+            //TraitementDate.dataBase = 2;
             FacesContext context = FacesContext.getCurrentInstance();
 
             //GenerationPdf.generationPdf();
@@ -85,6 +85,9 @@ public class AuthentificationController implements Serializable {
 
                         utilisateur.getProfile().setMapPrivilege(mapPrivilege);
 
+                        // We will also verify if the entreprise config allow
+                        // to display the corresponding module
+                        
                         for (Privileges privilege : utilisateur.getProfile().getListPrivileges()) {
 
                             if (privilege.isLecture() == true) {
@@ -94,7 +97,7 @@ public class AuthentificationController implements Serializable {
                                 context.getExternalContext().getSessionMap().put("FV" + privilege.getLibelle(), "display: none;");
                             }
                             
-                            if (privilege.isLecture() == true && privilege.getOrderModule() == 1 && privilege.isModuleActiver() == true) {
+                            if (privilege.isLecture() == true && privilege.getOrderModule() == 1 && privilege.isModuleActiver() == true  && (utilisateur.getProfile().isSuperAdmin() || utilisateur.getEntreprise().getParametrageEntreprise().isVisibiliteMCommande())) {
                                 utilisateur.setVisibiliteMCommande("");
 
                                 // if (privilege.isLecture() == true) {
@@ -105,7 +108,7 @@ public class AuthentificationController implements Serializable {
                             }
 
 
-                            if (privilege.isLecture() == true && privilege.getOrderModule() == 2 && privilege.isModuleActiver() == true) {
+                            if (privilege.isLecture() == true && privilege.getOrderModule() == 2 && privilege.isModuleActiver() == true && (utilisateur.getProfile().isSuperAdmin() || utilisateur.getEntreprise().getParametrageEntreprise().isVisibiliteMVentes())) {
                                 utilisateur.setVisibiliteMVentes("");
                                 if (privilege.isSousModule() == true) {
                                     utilisateur.setVisibiliteSousMVentes("");
@@ -117,7 +120,7 @@ public class AuthentificationController implements Serializable {
                                 // }
                             }
                             
-                            if (privilege.isLecture() == true && privilege.getOrderModule() == 6 && privilege.isModuleActiver() == true) {
+                            if (privilege.isLecture() == true && privilege.getOrderModule() == 6 && privilege.isModuleActiver() == true && (utilisateur.getProfile().isSuperAdmin() || utilisateur.getEntreprise().getParametrageEntreprise().isVisibiliteMCommercial())) {
                                 utilisateur.setVisibiliteMCommercial("");
                                 if (privilege.isSousModule() == true) {
                                     utilisateur.setVisibiliteSousMCommercial("");
@@ -129,7 +132,7 @@ public class AuthentificationController implements Serializable {
                                 // }
                             }
 
-                            if (privilege.isLecture() == true && privilege.getOrderModule() == 60 && privilege.isModuleActiver() == true) {
+                            if (privilege.isLecture() == true && privilege.getOrderModule() == 60 && privilege.isModuleActiver() == true && (utilisateur.getProfile().isSuperAdmin() || utilisateur.getEntreprise().getParametrageEntreprise().isVisibiliteMProduit())) {
                                 utilisateur.setVisibiliteMProduit("");
                                 if (privilege.isSousModule() == true) {
                                     utilisateur.setVisibiliteSousMProduit("");
@@ -141,22 +144,22 @@ public class AuthentificationController implements Serializable {
                                 // }
                             }
                             
-                            if (privilege.isLecture() == true && privilege.getOrderModule() == 7 && privilege.isModuleActiver() == true) {
+                            if (privilege.isLecture() == true && privilege.getOrderModule() == 7 && privilege.isModuleActiver() == true && (utilisateur.getProfile().isSuperAdmin() || utilisateur.getEntreprise().getParametrageEntreprise().isVisibiliteMVeille())) {
                                 utilisateur.setVisibiliteMVeille("");
                             }
 
-                            if (privilege.isLecture() == true && privilege.getOrderModule() == 13 && privilege.isModuleActiver() == true) {
+                            if (privilege.isLecture() == true && privilege.getOrderModule() == 13 && privilege.isModuleActiver() == true && (utilisateur.getProfile().isSuperAdmin() || utilisateur.getEntreprise().getParametrageEntreprise().isVisibiliteMStockArticle())) {
                                 utilisateur.setVisibiliteMStockArticle("");
                             }
-                            if (privilege.isLecture() == true && privilege.getOrderModule() == 62 && privilege.isModuleActiver() == true) {
+                            if (privilege.isLecture() == true && privilege.getOrderModule() == 62 && privilege.isModuleActiver() == true && (utilisateur.getProfile().isSuperAdmin() || utilisateur.getEntreprise().getParametrageEntreprise().isVisibiliteMClient())) {
                                 utilisateur.setVisibiliteMClient("");
                             }
 
-                            if (privilege.isLecture() == true && privilege.getOrderModule() == 90 && privilege.isModuleActiver() == true) {
+                            if (privilege.isLecture() == true && privilege.getOrderModule() == 90 && privilege.isModuleActiver() == true && (utilisateur.getProfile().isSuperAdmin() || utilisateur.getEntreprise().getParametrageEntreprise().isVisibiliteMParametrage())) {
                                 utilisateur.setVisibiliteMParametrage("");
                             }
 
-                            if (privilege.isLecture() == true && privilege.getOrderModule() == 91 && privilege.isModuleActiver() == true) {
+                            if (privilege.isLecture() == true && privilege.getOrderModule() == 91 && privilege.isModuleActiver() == true && (utilisateur.getProfile().isSuperAdmin() || utilisateur.getEntreprise().getParametrageEntreprise().isVisibiliteMJourneaux())) {
                                 utilisateur.setVisibiliteMJourneaux("");
                             }
 

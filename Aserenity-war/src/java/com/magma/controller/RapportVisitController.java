@@ -1,13 +1,19 @@
 package com.magma.controller;
 
+import com.magma.bibliotheque.TraitementDate;
 import com.magma.controller.util.JsfUtil;
+import com.magma.entity.ParametrageEntreprise;
+import com.magma.entity.PlanificationVisite;
 import com.magma.entity.RapportVisit;
 import com.magma.entity.Utilisateur;
+import com.magma.session.PlanificationVisiteFacadeLocal;
 import com.magma.session.RapportVisitFacadeLocal;
 import com.magma.util.MenuTemplate;
 import java.io.IOException;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
@@ -23,32 +29,45 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 import org.primefaces.event.FlowEvent;
+import org.primefaces.model.timeline.TimelineEvent;
+import org.primefaces.model.timeline.TimelineModel;
 
-@ManagedBean(name= "rapportVisitController")
+@ManagedBean(name = "rapportVisitController")
 @SessionScoped
 public class RapportVisitController implements Serializable {
+
     private RapportVisit selected;
     private RapportVisit selectedSingle;
     private List<RapportVisit> items = null;
+    private List<PlanificationVisite> itemsPlanification = null;
     @EJB
     private RapportVisitFacadeLocal ejbFacade;
+
+    @EJB
+    private PlanificationVisiteFacadeLocal ejbFacadePlanification;
     private boolean errorMsg;
     private Long idTemp;
     private RapportVisit rapportVisit;
     private long idEntreprise = 0;
     private Utilisateur utilisateur;
     private boolean skip;
+    private PlanificationVisite selectedPlanification;
+    private ParametrageEntreprise parametrageEntreprise;
+    private TimelineModel timeLineModel;
+    private Date dateStartTimeline;
+
     public RapportVisitController() {
         items = null;
+        itemsPlanification = null;
         errorMsg = false;
         FacesContext context = FacesContext.getCurrentInstance();
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
         /*if (rapportVisit.getIdEntrepriseSuivi() != null && rapportVisit.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = rapportVisit.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = rapportVisit.getEntreprise().getId();
-            }*/
+         idEntreprise = rapportVisit.getIdEntrepriseSuivi();
+         } else {
+         idEntreprise = rapportVisit.getEntreprise().getId();
+         }*/
     }
 
     public String initPage() {
@@ -57,16 +76,22 @@ public class RapportVisitController implements Serializable {
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
             utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
 
-            MenuTemplate.menuFonctionnalitesModules("GRapportVisite", "MCommercial", null,utilisateur);
+            MenuTemplate.menuFonctionnalitesModules("GRapportVisite", "MCommercial", null, utilisateur);
 
             //MenuTemplate.menuFonctionnalitesModules("GRapportVisit", utilisateur);
             /*if (rapportVisit.getIdEntrepriseSuivi() != null && rapportVisit.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = rapportVisit.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = rapportVisit.getEntreprise().getId();
-            }*/
+             idEntreprise = rapportVisit.getIdEntrepriseSuivi();
+             } else {
+             idEntreprise = rapportVisit.getEntreprise().getId();
+             }*/
             recreateModel();
-            FacesContext.getCurrentInstance().getExternalContext().redirect("../rapportVisit/List.xhtml");
+
+            parametrageEntreprise = utilisateur.getEntreprise().getParametrageEntreprise();
+            if (parametrageEntreprise.getTypePlanificationVisite() == 1) {
+                FacesContext.getCurrentInstance().getExternalContext().redirect("../rapportVisit/ListVisiteSecteur.xhtml");
+            } else {
+                FacesContext.getCurrentInstance().getExternalContext().redirect("../rapportVisit/List.xhtml");
+            }
         } catch (IOException ex) {
             System.out.println(ex);
         }
@@ -75,7 +100,20 @@ public class RapportVisitController implements Serializable {
 
     private void recreateModel() {
         items = null;
+        itemsPlanification = null;
         errorMsg = false;
+    }
+
+    public List<PlanificationVisite> getItemsPlanification() {
+        try {
+            if (itemsPlanification == null) {
+                itemsPlanification = ejbFacadePlanification.findAll("");
+            }
+            return itemsPlanification;
+        } catch (Exception e) {
+            System.out.println("Erreur- RapportVisitController - getItemsPlanification: " + e.getMessage());
+            return null;
+        }
     }
 
     public List<RapportVisit> getItems() {
@@ -117,15 +155,43 @@ public class RapportVisitController implements Serializable {
     public String prepareList() {
         recreateModel();
         selectedSingle = null;
+        selectedPlanification = null;
         selected = null;
-        return "List";
+        if (parametrageEntreprise.getTypePlanificationVisite() == 1) {
+            return "ListVisiteSecteur";
+        } else {
+            return "List";
+        }
+
     }
 
     public String prepareView() {
         if (selected != null) {
             return "View";
         }
-        return "List";
+        if (parametrageEntreprise.getTypePlanificationVisite() == 1) {
+            return "ListVisiteSecteur";
+        } else {
+            return "List";
+        }
+    }
+
+    public String prepareViewVisiteSecteur() {
+        if (selectedPlanification != null) {
+
+            timeLineModel = new TimelineModel();
+            dateStartTimeline = new Date();
+            if (selectedPlanification.getListRapportVisits() != null && !selectedPlanification.getListRapportVisits().isEmpty()) {
+                selectedPlanification.getListRapportVisits().forEach((rapportEvent) -> {
+
+                    timeLineModel.add(new TimelineEvent(rapportEvent.getLibelleClient(), rapportEvent.getDateCreation()));
+                    if(rapportEvent.getDateCreation().before(dateStartTimeline))
+                    dateStartTimeline = TraitementDate.debutJournee( TraitementDate.moinsJour(rapportEvent.getDateCreation()));
+                });
+            }
+            return "ViewVisiteSecteur";
+        }
+        return "ListVisiteSecteur";
     }
 
     public String prepareCreate() {
@@ -137,16 +203,16 @@ public class RapportVisitController implements Serializable {
     public String create() {
 
         try {
-           // errorMsg = getFacade().verifierUnique(selected.getLibelle().trim());
+            // errorMsg = getFacade().verifierUnique(selected.getLibelle().trim());
 
             if (errorMsg == false) {
-               // selected.setSupprimer(false);
+                // selected.setSupprimer(false);
                 getFacade().create(selected);
                 return prepareList();
 
             } else {
                 FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-              //  FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), selected.getLibelle() + " " + ResourceBundle.getBundle("/Bundle").getString("CeChampExist")));
+                //  FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), selected.getLibelle() + " " + ResourceBundle.getBundle("/Bundle").getString("CeChampExist")));
                 return null;
             }
         } catch (Exception e) {
@@ -171,22 +237,26 @@ public class RapportVisitController implements Serializable {
             idTemp = selected.getId();
             return "Edit";
         }
-        return "List";
+        if (parametrageEntreprise.getTypePlanificationVisite() == 1) {
+            return "ListVisiteSecteur";
+        } else {
+            return "List";
+        }
     }
 
     public String update() {
         try {
-           // errorMsg = getFacade().verifierUnique(selected.getLibelle().trim(), selected.getId());
+            // errorMsg = getFacade().verifierUnique(selected.getLibelle().trim(), selected.getId());
 
             if (errorMsg == false) {
 
-              //  selected.setSupprimer(false);
+                //  selected.setSupprimer(false);
                 getFacade().edit(selected);
                 return prepareList();
                 //}
             } else {
                 FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-              //  FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), selected.getLibelle() + " " + ResourceBundle.getBundle("/Bundle").getString("CeChampExist")));
+                //  FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), selected.getLibelle() + " " + ResourceBundle.getBundle("/Bundle").getString("CeChampExist")));
                 return null;
             }
         } catch (Exception e) {
@@ -213,7 +283,7 @@ public class RapportVisitController implements Serializable {
             System.out.println("Erreur- RapportVisitController - performDestroy: " + e.getMessage());
         }
     }
-    
+
     public String onFlowProcess(FlowEvent event) {
         if (skip) {
             skip = false;   //reset in case user goes back
@@ -236,6 +306,30 @@ public class RapportVisitController implements Serializable {
 
     public void setSkip(boolean skip) {
         this.skip = skip;
+    }
+
+    public PlanificationVisite getSelectedPlanification() {
+        return selectedPlanification;
+    }
+
+    public void setSelectedPlanification(PlanificationVisite selectedPlanification) {
+        this.selectedPlanification = selectedPlanification;
+    }
+
+    public TimelineModel getTimeLineModel() {
+        return timeLineModel;
+    }
+
+    public void setTimeLineModel(TimelineModel timeLineModel) {
+        this.timeLineModel = timeLineModel;
+    }
+
+    public Date getDateStartTimeline() {
+        return dateStartTimeline;
+    }
+
+    public void setDateStartTimeline(Date dateStartTimeline) {
+        this.dateStartTimeline = dateStartTimeline;
     }
 
     public SelectItem[] getItemsAvailableSelectMany() {

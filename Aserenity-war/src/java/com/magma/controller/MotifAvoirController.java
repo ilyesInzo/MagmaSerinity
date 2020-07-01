@@ -1,11 +1,8 @@
 package com.magma.controller;
 
-import com.magma.entity.MotifAvoir;
 import com.magma.controller.util.JsfUtil;
-import com.magma.controller.util.PaginationHelper;
 import com.magma.entity.MotifAvoir;
 import com.magma.entity.Utilisateur;
-import com.magma.session.MotifAvoirFacade;
 import com.magma.session.MotifAvoirFacadeLocal;
 import com.magma.util.MenuTemplate;
 import java.io.IOException;
@@ -14,19 +11,16 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
-import javax.inject.Named;
 import javax.faces.bean.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import javax.faces.model.DataModel;
-import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 
-@ManagedBean(name= "motifAvoirController")
+@ManagedBean(name = "motifAvoirController")
 @SessionScoped
 public class MotifAvoirController implements Serializable {
 
@@ -48,10 +42,10 @@ public class MotifAvoirController implements Serializable {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
         /*if (motifAvoir.getIdEntrepriseSuivi() != null && motifAvoir.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = motifAvoir.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = motifAvoir.getEntreprise().getId();
-            }*/
+         idEntreprise = motifAvoir.getIdEntrepriseSuivi();
+         } else {
+         idEntreprise = motifAvoir.getEntreprise().getId();
+         }*/
     }
 
     public String initPage() {
@@ -60,14 +54,14 @@ public class MotifAvoirController implements Serializable {
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
             utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
 
-            MenuTemplate.menuFonctionnalitesModules("GMotifAvoir", "MVente", "MVente",utilisateur);
+            MenuTemplate.menuFonctionnalitesModules("GMotifAvoir", "MVente", "MVente", utilisateur);
 
             //MenuTemplate.menuFonctionnalitesModules("GMotifAvoir", utilisateur);
             /*if (motifAvoir.getIdEntrepriseSuivi() != null && motifAvoir.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = motifAvoir.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = motifAvoir.getEntreprise().getId();
-            }*/
+             idEntreprise = motifAvoir.getIdEntrepriseSuivi();
+             } else {
+             idEntreprise = motifAvoir.getEntreprise().getId();
+             }*/
             recreateModel();
             FacesContext.getCurrentInstance().getExternalContext().redirect("../motifAvoir/List.xhtml");
         } catch (IOException ex) {
@@ -143,7 +137,7 @@ public class MotifAvoirController implements Serializable {
             errorMsg = getFacade().verifierUnique(selected.getLibelle().trim());
 
             if (errorMsg == false) {
-
+                creationInfo();
                 getFacade().create(selected);
                 return prepareList();
 
@@ -182,12 +176,7 @@ public class MotifAvoirController implements Serializable {
             errorMsg = getFacade().verifierUnique(selected.getLibelle().trim(), selected.getId());
 
             if (errorMsg == false) {
-                /* if (selected.getMontant().compareTo(BigDecimal.ZERO) == -1) {
-                    FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), " " + ResourceBundle.getBundle("/Bundle").getString("ValeurIncorrecte")));
-                    return null;
-                } else {*/
-                //selected.setIdEntreprise(idEntreprise);
+                editionInfo();
                 getFacade().edit(selected);
                 return prepareList();
                 //}
@@ -209,8 +198,8 @@ public class MotifAvoirController implements Serializable {
             //if (temps == null || temps.isEmpty()) {
             performDestroy();
             /*} else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SuppressionNonAutorisé")));
-            }*/
+             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SuppressionNonAutorisé")));
+             }*/
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SelectionnerObjet")));
         }
@@ -224,6 +213,16 @@ public class MotifAvoirController implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("EchecOperation")));
             System.out.println("Erreur- MotifAvoirController - performDestroy: " + e.getMessage());
         }
+    }
+
+    private void creationInfo() {
+        selected.setIdUserCreate(utilisateur.getId());
+        selected.setLibelleUserCreate(utilisateur.getNomPrenom());
+    }
+
+    private void editionInfo() {
+        selected.setIdUserModif(utilisateur.getId());
+        selected.setLibelleUserModif(utilisateur.getNomPrenom());
     }
 
     public boolean isErrorMsg() {

@@ -10,7 +10,7 @@
 
         <ui:define name="pageContent">
 
-            
+
 
             <h:panelGroup id="messagePanel" layout="block">
                 <p:messages closable="true" globalOnly="true" showDetail="true"><p:autoUpdate />
@@ -49,21 +49,37 @@
                                                 <p:inputText id="libelle" required="true" value="#{gouvernoratController.selected.libelle}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
                                             </div>
                                         </div>
-
-
-                                        <div class="form-group" >
-                                            <h:outputLabel value="#{bundle.Description} : " for="Description"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
-                                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                                <p:inputTextarea id="Description" value="#{gouvernoratController.selected.description}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                    </div>
+                                    
+                                    <h:panelGroup id="pgPays" >
+                                        <h:panelGroup rendered="#{gouvernoratController.parametrageEntreprise.typePlanificationVisite == 1}">
+                                            <div class="form-group" >
+                                                <h:outputLabel value="#{bundle.Pays} : *" for="Pays" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:selectOneMenu id="Pays"   value="#{gouvernoratController.selected.pays}"  title="#{bundle.Pays}"   styleClass="form-control" style="width: 90%; min-width: 180px" required="true" filter="true" filterMatchMode="startsWith" effect="fade" var="l">
+                                                        <f:selectItems value="#{paysController.itemsAvailableSelectOne}" var="cl" itemLabel="#{cl.libelle}" itemValue="#{cl}"  />
+                                                        <p:column>
+                                                            <h:outputText value="#{l.libelle}" />
+                                                        </p:column>
+                                                    </p:selectOneMenu>
+                                                </div>
                                             </div>
-                                        </div> 
-
+                                        </h:panelGroup>
+                                    </h:panelGroup>
+                                    
+                                    <div class="form-group" >
+                                        <h:outputLabel value="#{bundle.Description} : " for="Description"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                            <p:inputTextarea id="Description" value="#{gouvernoratController.selected.description}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                        </div>
                                     </div> 
-                                </h:form>
-                            </div>
+
+                            </div> 
+                            </h:form>
                         </div>
                     </div>
                 </div>
+            </div>
             </div>   
 
         </ui:define>

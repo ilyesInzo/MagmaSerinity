@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
-import javax.inject.Named;
 import javax.faces.bean.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -208,6 +207,7 @@ public class UtilisateurController implements Serializable {
         try {
             errorMsg = getFacade().verifierUnique(selected.getEmail().trim());
             if (errorMsg == false) {
+                creationInfo();
                 if (selected.getGouvernorat() != null) {
                     selected.setIdGouvernorat(selected.getGouvernorat().getId());
                     selected.setLibelleGouvernorat(selected.getGouvernorat().getLibelle());
@@ -332,63 +332,56 @@ public class UtilisateurController implements Serializable {
 
     public String update() {
         //try {
-            errorMsg = getFacade().verifierUnique(selected.getEmail().trim(), selected.getId());
+        errorMsg = getFacade().verifierUnique(selected.getEmail().trim(), selected.getId());
 
-            if (errorMsg == false) {
-                if (selected.getGouvernorat() != null) {
-                    selected.setIdGouvernorat(selected.getGouvernorat().getId());
-                    selected.setLibelleGouvernorat(selected.getGouvernorat().getLibelle());
+        if (errorMsg == false) {
+            editionInfo();
+            if (selected.getGouvernorat() != null) {
+                selected.setIdGouvernorat(selected.getGouvernorat().getId());
+                selected.setLibelleGouvernorat(selected.getGouvernorat().getLibelle());
+            }
+            if (selected.getDelegation() != null) {
+                selected.setIdDelegation(selected.getDelegation().getId());
+                selected.setLibelleDelegation(selected.getDelegation().getLibelle());
+            }
+
+            if (selected.isEstEmploye() == true) {
+                if (selected.getPoste() != null) {
+                    selected.setIdPoste(selected.getPoste().getId());
+                    selected.setLibellePoste(selected.getPoste().getLibelle());
                 }
-                if (selected.getDelegation() != null) {
-                    selected.setIdDelegation(selected.getDelegation().getId());
-                    selected.setLibelleDelegation(selected.getDelegation().getLibelle());
+                if (selected.getDepartement() != null) {
+                    selected.setIdDepartement(selected.getDepartement().getId());
+                    selected.setLibelleDepartement(selected.getDepartement().getLibelle());
+                }
+            } else {
+                selected.setIdPoste(null);
+                selected.setLibellePoste(null);
+                selected.setIdDepartement(null);
+                selected.setLibelleDepartement(null);
+            }
+
+            if (fileRegistre != null) {
+
+                if (selected.getPhoto() != null && selected.getPhoto().contains("/resources/images/") == false) {
+                    File file = new File(LireParametrage.returnValeurParametrage("urlUmploadPhoto") + selected.getPhoto());
+                    file.delete();
                 }
 
-                if (selected.isEstEmploye() == true) {
-                    if (selected.getPoste() != null) {
-                        selected.setIdPoste(selected.getPoste().getId());
-                        selected.setLibellePoste(selected.getPoste().getLibelle());
-                    }
-                    if (selected.getDepartement() != null) {
-                        selected.setIdDepartement(selected.getDepartement().getId());
-                        selected.setLibelleDepartement(selected.getDepartement().getLibelle());
-                    }
-                } else {
-                    selected.setIdPoste(null);
-                    selected.setLibellePoste(null);
-                    selected.setIdDepartement(null);
-                    selected.setLibelleDepartement(null);
-                }
+                selected.setPhoto(FonctionsString.supprimerCaracteresSpeciaux(selected.getEmail() + "_" + selected.getDateCreation().getTime() + fileRegistre.getFileName().substring(fileRegistre.getFileName().lastIndexOf("."))));
 
-                if (fileRegistre != null) {
-
-                    if (selected.getPhoto() != null && selected.getPhoto().contains("/resources/images/") == false) {
-                        File file = new File(LireParametrage.returnValeurParametrage("urlUmploadPhoto") + selected.getPhoto());
-                        file.delete();
+                try {
+                    InputStream img = fileRegistre.getInputstream();
+                    InputStream is = TraitementImage.resizeImageMaxHeight(img, 300, fileRegistre.getFileName());
+                    boolean res = FileUploadController.uploderFichier(selected.getPhoto(), is, LireParametrage.returnValeurParametrage("urlUmploadPhoto"));
+                    if (res == false) {
+                        FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("ErreurUploadFile")));
+                        return null;
                     }
 
-                    selected.setPhoto(FonctionsString.supprimerCaracteresSpeciaux(selected.getEmail() + "_" + selected.getDateCreation().getTime() + fileRegistre.getFileName().substring(fileRegistre.getFileName().lastIndexOf("."))));
-
-                    try {
-                        InputStream img = fileRegistre.getInputstream();
-                        InputStream is = TraitementImage.resizeImageMaxHeight(img, 300, fileRegistre.getFileName());
-                        boolean res = FileUploadController.uploderFichier(selected.getPhoto(), is, LireParametrage.returnValeurParametrage("urlUmploadPhoto"));
-                        if (res == false) {
-                            FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("ErreurUploadFile")));
-                            return null;
-                        }
-
-                    } catch (Exception e) {
-                        System.out.println("UtilisateurController - update:   " + e.getMessage());
-                        if (selected.getStatut().equals("Mme")) {
-                            selected.setPhoto("../resources/images/femme.png");
-                        } else {
-                            selected.setPhoto("../resources/images/homme.png");
-                        }
-                    }
-
-                } else if (selected.getPhoto() == null || (selected.getPhoto().contains("/resources/images/") == true)) {
+                } catch (Exception e) {
+                    System.out.println("UtilisateurController - update:   " + e.getMessage());
                     if (selected.getStatut().equals("Mme")) {
                         selected.setPhoto("../resources/images/femme.png");
                     } else {
@@ -396,24 +389,32 @@ public class UtilisateurController implements Serializable {
                     }
                 }
 
-                // Le super admin peux changer son image de profile dans la gestion des utilisateurs
-                if (Objects.equals(utilisateur.getId(), selected.getId())) {
-                    utilisateur.setPhoto(selected.getPhoto());
+            } else if (selected.getPhoto() == null || (selected.getPhoto().contains("/resources/images/") == true)) {
+                if (selected.getStatut().equals("Mme")) {
+                    selected.setPhoto("../resources/images/femme.png");
+                } else {
+                    selected.setPhoto("../resources/images/homme.png");
                 }
-
-                getFacade().edit(selected);
-                return prepareList();
-
-            } else {
-                FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), selected.getEmail() + " " + ResourceBundle.getBundle("/Bundle").getString("CeChampExist")));
-                return null;
             }
-       /* } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("EchecOperation")));
-            System.out.println("Erreur- UtilisateurController - update: " + e.getMessage());
+
+            // Le super admin peux changer son image de profile dans la gestion des utilisateurs
+            if (Objects.equals(utilisateur.getId(), selected.getId())) {
+                utilisateur.setPhoto(selected.getPhoto());
+            }
+
+            getFacade().edit(selected);
+            return prepareList();
+
+        } else {
+            FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), selected.getEmail() + " " + ResourceBundle.getBundle("/Bundle").getString("CeChampExist")));
             return null;
-        }*/
+        }
+        /* } catch (Exception e) {
+         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("EchecOperation")));
+         System.out.println("Erreur- UtilisateurController - update: " + e.getMessage());
+         return null;
+         }*/
     }
 
     public String destroy() {
@@ -762,6 +763,16 @@ public class UtilisateurController implements Serializable {
             photo = new DefaultStreamedContent(new FileInputStream(file));
         }
         return photo;
+    }
+
+    private void creationInfo() {
+        selected.setIdUserCreate(utilisateur.getId());
+        selected.setLibelleUserCreate(utilisateur.getNomPrenom());
+    }
+
+    private void editionInfo() {
+        selected.setIdUserModif(utilisateur.getId());
+        selected.setLibelleUserModif(utilisateur.getNomPrenom());
     }
 
     public void uploadRegistre(FileUploadEvent event) {

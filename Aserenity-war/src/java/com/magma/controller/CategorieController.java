@@ -11,7 +11,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
-import javax.inject.Named;
 import javax.faces.bean.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -21,7 +20,7 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 
-@ManagedBean(name= "categorieController")
+@ManagedBean(name = "categorieController")
 @SessionScoped
 public class CategorieController implements Serializable {
 
@@ -35,6 +34,7 @@ public class CategorieController implements Serializable {
     private Categorie categorie;
     private long idEntreprise = 0;
     private Utilisateur utilisateur;
+
     public CategorieController() {
         items = null;
         errorMsg = false;
@@ -42,10 +42,10 @@ public class CategorieController implements Serializable {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
         /*if (categorie.getIdEntrepriseSuivi() != null && categorie.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = categorie.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = categorie.getEntreprise().getId();
-            }*/
+         idEntreprise = categorie.getIdEntrepriseSuivi();
+         } else {
+         idEntreprise = categorie.getEntreprise().getId();
+         }*/
     }
 
     public String initPage() {
@@ -54,14 +54,14 @@ public class CategorieController implements Serializable {
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
             utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
 
-            MenuTemplate.menuFonctionnalitesModules("GCategorie", "MProduit", null,utilisateur);
+            MenuTemplate.menuFonctionnalitesModules("GCategorie", "MProduit", null, utilisateur);
 
            // MenuTemplate.menuFonctionnalitesModules("GCategorie", utilisateur);
             /*if (categorie.getIdEntrepriseSuivi() != null && categorie.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = categorie.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = categorie.getEntreprise().getId();
-            }*/
+             idEntreprise = categorie.getIdEntrepriseSuivi();
+             } else {
+             idEntreprise = categorie.getEntreprise().getId();
+             }*/
             recreateModel();
             FacesContext.getCurrentInstance().getExternalContext().redirect("../categorie/List.xhtml");
         } catch (IOException ex) {
@@ -69,7 +69,6 @@ public class CategorieController implements Serializable {
         }
         return null;
     }
-
 
     private void recreateModel() {
         items = null;
@@ -150,7 +149,7 @@ public class CategorieController implements Serializable {
             errorMsg = getFacade().verifierUnique(clause);
 
             if (errorMsg == false) {
-
+                creationInfo();
                 if (selected.getParent() != null) {
                     //  selected.setIdParent(selected.getParent().getId());
                     selected.setLibelleParent(selected.getParent().getLibelle());
@@ -221,7 +220,7 @@ public class CategorieController implements Serializable {
             errorMsg = getFacade().verifierUnique(clause);
 
             if (errorMsg == false) {
-
+                editionInfo();
                 if (selected.getParent() != null) {
                     //  selected.setIdParent(selected.getParent().getId());
                     selected.setLibelleParent(selected.getParent().getLibelle());
@@ -264,8 +263,8 @@ public class CategorieController implements Serializable {
             //if (temps == null || temps.isEmpty()) {
             performDestroy();
             /*} else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SuppressionNonAutorisé")));
-            }*/
+             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SuppressionNonAutorisé")));
+             }*/
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SelectionnerObjet")));
         }
@@ -279,6 +278,16 @@ public class CategorieController implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("EchecOperation")));
             System.out.println("Erreur- CategorieController - performDestroy: " + e.getMessage());
         }
+    }
+
+    private void creationInfo() {
+        selected.setIdUserCreate(utilisateur.getId());
+        selected.setLibelleUserCreate(utilisateur.getNomPrenom());
+    }
+
+    private void editionInfo() {
+        selected.setIdUserModif(utilisateur.getId());
+        selected.setLibelleUserModif(utilisateur.getNomPrenom());
     }
 
     public boolean isErrorMsg() {

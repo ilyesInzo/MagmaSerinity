@@ -14,67 +14,6 @@
                 <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
             </h:panelGroup>
             <h:form>
-                <h:panelGrid columns="2">
-                    <h:outputLabel value="#{bundle2.EditAvoirVenteLabel_id}" for="id" />
-                    <h:inputText id="id" value="#{avoirVenteController.selected.id}" title="#{bundle2.EditAvoirVenteTitle_id}" />
-                    <h:outputLabel value="#{bundle2.EditAvoirVenteLabel_montantTTC}" for="montantTTC" />
-                    <h:inputText id="montantTTC" value="#{avoirVenteController.selected.montantTTC}" title="#{bundle2.EditAvoirVenteTitle_montantTTC}" />
-                    <h:outputLabel value="#{bundle2.EditAvoirVenteLabel_montantHT}" for="montantHT" />
-                    <h:inputText id="montantHT" value="#{avoirVenteController.selected.montantHT}" title="#{bundle2.EditAvoirVenteTitle_montantHT}" />
-                    <h:outputLabel value="#{bundle2.EditAvoirVenteLabel_dateCreation}" for="dateCreation" />
-                    <h:inputText id="dateCreation" value="#{avoirVenteController.selected.dateCreation}" title="#{bundle2.EditAvoirVenteTitle_dateCreation}" >
-                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
-                    </h:inputText>
-                    <h:outputLabel value="#{bundle2.EditAvoirVenteLabel_numeroFacture}" for="numeroFacture" />
-                    <h:inputText id="numeroFacture" value="#{avoirVenteController.selected.numeroFacture}" title="#{bundle2.EditAvoirVenteTitle_numeroFacture}" />
-                    <h:outputLabel value="#{bundle2.EditAvoirVenteLabel_idFacture}" for="idFacture" />
-                    <h:inputText id="idFacture" value="#{avoirVenteController.selected.idFacture}" title="#{bundle2.EditAvoirVenteTitle_idFacture}" />
-                    <h:outputLabel value="#{bundle2.EditAvoirVenteLabel_idClient}" for="idClient" />
-                    <h:inputText id="idClient" value="#{avoirVenteController.selected.idClient}" title="#{bundle2.EditAvoirVenteTitle_idClient}" />
-                    <h:outputLabel value="#{bundle2.EditAvoirVenteLabel_codeClient}" for="codeClient" />
-                    <h:inputText id="codeClient" value="#{avoirVenteController.selected.codeClient}" title="#{bundle2.EditAvoirVenteTitle_codeClient}" />
-                    <h:outputLabel value="#{bundle2.EditAvoirVenteLabel_libelleClient}" for="libelleClient" />
-                    <h:inputText id="libelleClient" value="#{avoirVenteController.selected.libelleClient}" title="#{bundle2.EditAvoirVenteTitle_libelleClient}" />
-                    <h:outputLabel value="#{bundle2.EditAvoirVenteLabel_motifAvoir}" for="motifAvoir" />
-                    <h:selectOneMenu id="motifAvoir" value="#{avoirVenteController.selected.motifAvoir}" title="#{bundle2.EditAvoirVenteTitle_motifAvoir}" required="true" requiredMessage="#{bundle2.EditAvoirVenteRequiredMessage_motifAvoir}">
-                        <f:selectItems value="#{motifAvoirController.itemsAvailableSelectOne}"/>
-                    </h:selectOneMenu>
-                    <h:outputLabel value="#{bundle2.EditAvoirVenteLabel_numero}" for="numero" />
-                    <h:inputText id="numero" value="#{avoirVenteController.selected.numero}" title="#{bundle2.EditAvoirVenteTitle_numero}" />
-                    <h:outputLabel value="#{bundle2.EditAvoirVenteLabel_typeAvoir}" for="typeAvoir" />
-                    <h:inputText id="typeAvoir" value="#{avoirVenteController.selected.typeAvoir}" title="#{bundle2.EditAvoirVenteTitle_typeAvoir}" />
-                    <h:outputLabel value="#{bundle2.EditAvoirVenteLabel_typeAvoirString}" for="typeAvoirString" />
-                    <h:inputText id="typeAvoirString" value="#{avoirVenteController.selected.typeAvoirString}" title="#{bundle2.EditAvoirVenteTitle_typeAvoirString}" />
-                    <h:outputLabel value="#{bundle2.EditAvoirVenteLabel_remise}" for="remise" />
-                    <h:inputText id="remise" value="#{avoirVenteController.selected.remise}" title="#{bundle2.EditAvoirVenteTitle_remise}" />
-                    <h:outputLabel value="#{bundle2.EditAvoirVenteLabel_reste}" for="reste" />
-                    <h:inputText id="reste" value="#{avoirVenteController.selected.reste}" title="#{bundle2.EditAvoirVenteTitle_reste}" />
-                    <h:outputLabel value="#{bundle2.EditAvoirVenteLabel_dateAvoir}" for="dateAvoir" />
-                    <h:inputText id="dateAvoir" value="#{avoirVenteController.selected.dateAvoir}" title="#{bundle2.EditAvoirVenteTitle_dateAvoir}" >
-                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
-                    </h:inputText>
-                    <h:outputLabel value="#{bundle2.EditAvoirVenteLabel_dateCreationStringFr}" for="dateCreationStringFr" />
-                    <h:inputText id="dateCreationStringFr" value="#{avoirVenteController.selected.dateCreationStringFr}" title="#{bundle2.EditAvoirVenteTitle_dateCreationStringFr}" />
-                    <h:outputLabel value="#{bundle2.EditAvoirVenteLabel_dateCreationStringEn}" for="dateCreationStringEn" />
-                    <h:inputText id="dateCreationStringEn" value="#{avoirVenteController.selected.dateCreationStringEn}" title="#{bundle2.EditAvoirVenteTitle_dateCreationStringEn}" />
-                    <h:outputLabel value="#{bundle2.EditAvoirVenteLabel_dateAvoirStringFr}" for="dateAvoirStringFr" />
-                    <h:inputText id="dateAvoirStringFr" value="#{avoirVenteController.selected.dateAvoirStringFr}" title="#{bundle2.EditAvoirVenteTitle_dateAvoirStringFr}" />
-                    <h:outputLabel value="#{bundle2.EditAvoirVenteLabel_dateAvoirStringEn}" for="dateAvoirStringEn" />
-                    <h:inputText id="dateAvoirStringEn" value="#{avoirVenteController.selected.dateAvoirStringEn}" title="#{bundle2.EditAvoirVenteTitle_dateAvoirStringEn}" />
-                    <h:outputLabel value="#{bundle2.EditAvoirVenteLabel_description}" for="description" />
-                    <h:inputText id="description" value="#{avoirVenteController.selected.description}" title="#{bundle2.EditAvoirVenteTitle_description}" />
-                    <h:outputLabel value="#{bundle2.EditAvoirVenteLabel_descriptionString}" for="descriptionString" />
-                    <h:inputText id="descriptionString" value="#{avoirVenteController.selected.descriptionString}" title="#{bundle2.EditAvoirVenteTitle_descriptionString}" />
-                </h:panelGrid>
-                <h:commandLink action="#{avoirVenteController.update}" value="#{bundle2.EditAvoirVenteSaveLink}"/>
-                <br />
-                <br />
-                <h:link outcome="View" value="#{bundle2.EditAvoirVenteViewLink}"/>
-                <br />
-                <h:commandLink action="#{avoirVenteController.prepareList}" value="#{bundle2.EditAvoirVenteShowAllLink}" immediate="true"/>
-                <br />
-                <br />
-                <h:link outcome="/index" value="#{bundle2.EditAvoirVenteIndexLink}" />
             </h:form>
         </ui:define>
     </ui:composition>

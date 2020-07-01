@@ -12,6 +12,7 @@ import com.magma.entity.LigneBonLivraison;
 import com.magma.entity.LigneFacture;
 import com.magma.entity.LigneRetour;
 import com.magma.entity.Retour;
+import com.magma.session.ArticleFacadeLocal;
 import com.magma.session.BonLivraisonFacadeLocal;
 import com.magma.session.FactureFacadeLocal;
 import com.magma.session.LigneBonLivraisonFacadeLocal;
@@ -50,14 +51,20 @@ public class TraitementRetour {
     @EJB
     private LigneBonLivraisonFacadeLocal ejbFacadeLigneBonLivraison;
 
+    @EJB
+    private ArticleFacadeLocal ejbFacadeArticle;
+
     private String dateJour;
+    private boolean runRetour = true;
+
     @Schedule(minute = "00", hour = "02", dayOfMonth = "*")
     public void runCreationRetour() {
-        dateJour = TraitementDate.returnDate( TraitementDate.moinsPlusJours(  TraitementDate.debutJournee(new Date()) , 1)  );
+        dateJour = TraitementDate.returnDate(TraitementDate.moinsPlusJours(TraitementDate.debutJournee(new Date()), 1));
         System.out.println("**************************** runCreationRetour : " + dateJour + "*****************************");
-
-        createRetourBonLivraison();
-        createRetourFacture();
+        if (runRetour) {
+            createRetourBonLivraison();
+            createRetourFacture();
+        }
     }
 
     private void createRetourFacture() {
@@ -208,6 +215,7 @@ public class TraitementRetour {
                 ligneRetour.setPrixUnitaireHT(BigDecimal.ZERO);
                 ligneRetour.setRetour(retour);
 
+                updateStockArticle(ligneBonLivraison.getIdArticle(), ligneBonLivraison.getQuantite());
                 listLigneRetourTemps.add(ligneRetour);
             }
 
@@ -217,6 +225,10 @@ public class TraitementRetour {
 
         listBonLivraisons = null;
 
+    }
+
+    private void updateStockArticle(Long idArticle, BigDecimal quantiteFacture) {
+        ejbFacadeArticle.editStockArticle(idArticle, quantiteFacture, "-");
     }
 
 }

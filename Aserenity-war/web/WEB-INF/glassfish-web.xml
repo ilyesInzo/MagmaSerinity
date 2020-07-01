@@ -9,7 +9,7 @@
     </property>
   </jsp-config>
   <parameter-encoding default-charset="UTF-8"/>
-<property name="alternatedocroot_1" value="from=/images/* dir=/"/>
+<property name="alternatedocroot_1" value="from=/images/* dir=C:/Program Files/glassfish-4.1/glassfish/domains/domain1"/>
 
   <property name="alternatedocroot_2" value="from=/images/imagesNonPersistant/* dir=/"></property>
   <property name="alternatedocroot_3" value="from=/contents/* dir=/"></property>

@@ -28,9 +28,6 @@
                                         <h2 style="color: #607D8B">#{bundle.GPays}</h2>
                                         <ul class="nav navbar-right panel_toolbox">   
                                             <li>
-                                                <p:commandButton rendered="#{user.profile.toPrivilege('pays').journalisation}" title="Info" id="metaInfo" oncomplete="PF('dlgInfo').show()" icon="fa fa-book" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
-                                            </li>
-                                            <li>
                                                 <p:commandButton rendered="#{user.profile.toPrivilege('pays').modification}" title="Modifier" id="addButton" action="#{paysController.prepareEdit()}"  type="push" ajax="false"  icon="fa fa-pencil" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" />
                                             </li>
                                             <li>
@@ -57,18 +54,6 @@
 
                                 </h:form>       
                                 
-                                <p:dialog id="Info"  header="Info"   widgetVar="dlgInfo" height="50%" width="35%" modal="true" resizable="false">
-
-
-                                    <h:panelGrid columns="2" cellpadding="200" cellspacing="200">
-                                        <h:outputText value="#{bundle.Creation} : " />
-                                        <h:outputText value="Creer le #{paysController.selected.dateCreationStringFr} par #{paysController.selected.libelleUserCreate}" style="margin-left: 20px; font: bold"/>
-                                        <h:outputText value="#{bundle.Modification} : " rendered="#{paysController.selected.idUserModif ne null}"/>
-                                        <h:outputText value="Modif le #{paysController.selected.dateSyncStringFr} par #{paysController.selected.libelleUserModif}" style="margin-left: 20px; font: bold" rendered="#{paysController.selected.idUserModif ne null}"/>
-                                    </h:panelGrid>
-
-
-                                </p:dialog>
                             </div>
                         </div>
                     </div>

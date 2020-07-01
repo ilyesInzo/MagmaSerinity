@@ -66,14 +66,18 @@
                                                 <p:outputLabel id="gsm" value="#{clientController.selected.gsmString}" styleClass="form-control" style="width: 90%; min-width: 180px"/>
                                             </div>
                                         </div>
-                                        
-                                        <div class="form-group" >
-                                            <h:outputLabel value="#{bundle.Pays} : " for="Pays" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
-                                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                                <p:outputLabel id="Pays" value="#{clientController.selected.libellePays}" styleClass="form-control" style="width: 90%; min-width: 180px"/>
-                                            </div>
-                                        </div>
 
+                                        <h:panelGroup id="pgPays" >
+                                            <h:panelGroup rendered="#{clientController.parametrageEntreprise.typePlanificationVisite == 1}">
+                                                <div class="form-group" >
+                                                    <h:outputLabel value="#{bundle.Pays} : " for="Pays" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <p:outputLabel id="Pays" value="#{clientController.selected.libellePays}" styleClass="form-control" style="width: 90%; min-width: 180px"/>
+                                                    </div>
+                                                </div>
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+                                        
                                         <div class="form-group" >
                                             <h:outputLabel value="#{bundle.Gouvernorat} : " for="Gouvernorat" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                             <div class="col-md-9 col-sm-9 col-xs-12">

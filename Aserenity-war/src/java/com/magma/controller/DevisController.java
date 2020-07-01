@@ -20,6 +20,7 @@ import com.magma.entity.LigneBonLivraison;
 import com.magma.entity.LigneDevis;
 import com.magma.entity.LigneFacture;
 import com.magma.entity.LigneRetour;
+import com.magma.entity.ParametrageEntreprise;
 import com.magma.entity.ParametrageTaxe;
 import com.magma.entity.PrefixBonCommandeVente;
 import com.magma.entity.PrefixBonLivraison;
@@ -57,12 +58,12 @@ import java.io.IOException;
 import javax.faces.bean.ManagedBean;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
-import javax.inject.Named;
 import javax.faces.bean.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -75,7 +76,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-@ManagedBean(name= "devisController")
+@ManagedBean(name = "devisController")
 @SessionScoped
 public class DevisController implements Serializable {
 
@@ -104,13 +105,13 @@ public class DevisController implements Serializable {
 
     @EJB
     private BonLivraisonFacadeLocal ejbFacadeBonLivraison;
-    
+
     @EJB
     private LigneBonLivraisonFacadeLocal ejbFacadeLigneBonLivraison;
-    
+
     @EJB
     private PrefixBonLivraisonFacadeLocal ejbFacadePrefixBonLivraison;
-    
+
     @EJB
     private LigneFactureFacadeLocal ejbFacadeLigneFacture;
 
@@ -124,18 +125,18 @@ public class DevisController implements Serializable {
     private RetourFacadeLocal ejbFacadeRetour;
     @EJB
     private LigneRetourFacadeLocal ejbFacadeLigneRetour;
-    
+
     @EJB
     private BonCommandeVenteFacadeLocal ejbFacadeBonCommandeVente;
-    
+
     @EJB
     private LigneBonCommandeVenteFacadeLocal ejbFacadeLigneBonCommandeVente;
-    
+
     @EJB
     private PrefixBonCommandeVenteFacadeLocal ejbFacadePrefixBonCommandeVente;
     @EJB
     private TaxesBonCommandeVenteFacadeLocal ejbFacadeTaxeBonCommandeVente;
-    
+
     private List<Client> listClient = null;
 
     private Categorie categorie;
@@ -167,6 +168,7 @@ public class DevisController implements Serializable {
     private Date dateFin = new Date();
     private Integer etatDevis;
     private Client client;
+    private ParametrageEntreprise parametrageEntreprise = null;
 
     public DevisController() {
         items = null;
@@ -175,10 +177,10 @@ public class DevisController implements Serializable {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
         /*if (devis.getIdEntrepriseSuivi() != null && devis.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = devis.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = devis.getEntreprise().getId();
-            }*/
+         idEntreprise = devis.getIdEntrepriseSuivi();
+         } else {
+         idEntreprise = devis.getEntreprise().getId();
+         }*/
     }
 
     public String initPage() {
@@ -186,14 +188,14 @@ public class DevisController implements Serializable {
             FacesContext context = FacesContext.getCurrentInstance();
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
             utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
-
-            MenuTemplate.menuFonctionnalitesModules("GDevis", "MVente",null, utilisateur);
+            parametrageEntreprise = utilisateur.getEntreprise().getParametrageEntreprise();
+            MenuTemplate.menuFonctionnalitesModules("GDevis", "MVente", null, utilisateur);
             //MenuTemplate.menuFonctionnalitesModules("GDevis", utilisateur);
             /* if (devis.getIdEntrepriseSuivi() != null && devis.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = devis.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = devis.getEntreprise().getId();
-            }*/
+             idEntreprise = devis.getIdEntrepriseSuivi();
+             } else {
+             idEntreprise = devis.getEntreprise().getId();
+             }*/
             recreateModel();
             FacesContext.getCurrentInstance().getExternalContext().redirect("../devis/List.xhtml");
         } catch (IOException ex) {
@@ -264,12 +266,12 @@ public class DevisController implements Serializable {
     public String prepareView() {
         if (selected != null) {
             /*annulation = false;
-            if (selected.getIdDevis() == null && selected.getListEncaissementDeviss().isEmpty()) {
-                annulation = true;
-            }*/
- /*System.err.println(System.getenv("SystemDrive"));
-            System.err.println(System.getProperty("user.dir"));
-            System.err.println(System.getProperty("user.home"));*/
+             if (selected.getIdDevis() == null && selected.getListEncaissementDeviss().isEmpty()) {
+             annulation = true;
+             }*/
+            /*System.err.println(System.getenv("SystemDrive"));
+             System.err.println(System.getProperty("user.dir"));
+             System.err.println(System.getProperty("user.home"));*/
 
             return "View";
         }
@@ -343,14 +345,16 @@ public class DevisController implements Serializable {
         if (errorMsg == false) {
 
             if (selected.getListeLigneDeviss() != null && !selected.getListeLigneDeviss().isEmpty()) {
+                creationInfo();
                 List<TaxesDevis> listTaxesTemps = new ArrayList<>();
                 LigneDevisTemps = selected.getListeLigneDeviss();
 
-//                    for (LigneDevis ligneDevis : LigneDevisTemps) {
-//                        if (ligneDevis.getQuantite().compareTo(BigDecimal.ZERO) == 0) {
-//                            LigneDevisTemps.remove(ligneDevis);
-//                        }
-//                    }
+                if (parametrageEntreprise.isAppliquerRemiseGlobale()) {
+                    recalculerToutMontants();
+                } else {
+                    selected.setMontantNet(selected.getTotalHT());
+                }
+
                 for (int i = LigneDevisTemps.size() - 1; i >= 0; i--) {
                     if (LigneDevisTemps.get(i).getQuantite().compareTo(BigDecimal.ZERO) == 0) {
                         LigneDevisTemps.remove(LigneDevisTemps.get(i));
@@ -367,7 +371,7 @@ public class DevisController implements Serializable {
                 selected.setNumero(compteur);
                 selected.setListeLigneDeviss(null);
                 /*                selected.setDateSynch(System.currentTimeMillis());
-                selected.setSupprimer(false);*/
+                 selected.setSupprimer(false);*/
                 //selected.setDateCreation(new Date());
 
                 if (selected.getClient() != null) {
@@ -376,7 +380,7 @@ public class DevisController implements Serializable {
                     selected.setLibelleClient(selected.getClient().getLibelle());
 
                 }
-                selected.setReste(selected.getMontantHT());
+                selected.setReste(selected.getMontantNet());
                 selected.setTransFormTo(-1);
                 getFacade().create(selected);
 
@@ -409,10 +413,10 @@ public class DevisController implements Serializable {
         }
 
         /*} catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("EchecOperation")));
-            System.out.println("Erreur- DevisController - create: " + e.getMessage());
-            return null;
-        }*/
+         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("EchecOperation")));
+         System.out.println("Erreur- DevisController - create: " + e.getMessage());
+         return null;
+         }*/
     }
 
     public Long getIdTemp() {
@@ -469,8 +473,15 @@ public class DevisController implements Serializable {
         try {
 
             if (selected.getListeLigneDeviss() != null && !selected.getListeLigneDeviss().isEmpty()) {
-
+                editionInfo();
                 List<TaxesDevis> listTaxesTemps = new ArrayList<>();
+
+                if (parametrageEntreprise.isAppliquerRemiseGlobale()) {
+                    recalculerToutMontants();
+                } else {
+                    selected.setMontantNet(selected.getTotalHT());
+                }
+
                 if (selected.getListsTaxe() != null && !selected.getListsTaxe().isEmpty()) {
 
                     listTaxesTemps = selected.getListsTaxe();
@@ -520,10 +531,10 @@ public class DevisController implements Serializable {
                 //errorMsg = getFacade().verifierUnique(selected.getLibellePrefixe().trim(), selected.getId());
                 //if (errorMsg == false) {
                 /* if (selected.getMontant().compareTo(BigDecimal.ZERO) == -1) {
-                    FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), " " + ResourceBundle.getBundle("/Bundle").getString("ValeurIncorrecte")));
-                    return null;
-                } else {*/
+                 FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), " " + ResourceBundle.getBundle("/Bundle").getString("ValeurIncorrecte")));
+                 return null;
+                 } else {*/
                 //selected.setIdEntreprise(idEntreprise);
                 return prepareList();
 
@@ -534,10 +545,10 @@ public class DevisController implements Serializable {
 
             //}
             /* } else {
-                FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), selected.getNumero() + " " + ResourceBundle.getBundle("/Bundle").getString("CeChampExist")));
-                return null;
-            }*/
+             FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), selected.getNumero() + " " + ResourceBundle.getBundle("/Bundle").getString("CeChampExist")));
+             return null;
+             }*/
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": " + ResourceBundle.getBundle("/Bundle").getString("EchecOperation"), ""));
             System.out.println("Erreur- DevisController - update: " + e.getMessage());
@@ -567,8 +578,8 @@ public class DevisController implements Serializable {
             //if (temps == null || temps.isEmpty()) {
             performDestroy();
             /*} else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SuppressionNonAutorisé")));
-            }*/
+             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SuppressionNonAutorisé")));
+             }*/
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": " + ResourceBundle.getBundle("/Bundle").getString("SelectionnerObjet"), ""));
         }
@@ -656,7 +667,6 @@ public class DevisController implements Serializable {
 
     public String approuverDevis() {
 
-        
         if (selected.getTransFormTo() == 0) {
 
             List<PrefixBonCommandeVente> listPrefixBonCommandeVentes = null;
@@ -755,7 +765,7 @@ public class DevisController implements Serializable {
 
         return prepareList();
     }
-    
+
     public BonCommandeVente createCommande(String numero) {
 
         BonCommandeVente bonCommandeVente = new BonCommandeVente();
@@ -773,11 +783,16 @@ public class DevisController implements Serializable {
         bonCommandeVente.setMontantHT(selected.getMontantHT());
         bonCommandeVente.setMontantTVA(selected.getMontantTVA());
         bonCommandeVente.setMontantTTC(selected.getMontantTTC());
+        bonCommandeVente.setMontantNet(selected.getMontantNet());
+        bonCommandeVente.setAppliquerRemise(selected.getAppliquerRemise());
+        bonCommandeVente.setMontantRemiseGlobal(selected.getMontantRemiseGlobal());
+        bonCommandeVente.setTauxRemiseGlobal(selected.getTauxRemiseGlobal());
         bonCommandeVente.setTotalHT(selected.getTotalHT());
         bonCommandeVente.setTotalTVA(selected.getTotalTVA());
         bonCommandeVente.setTotalTTC(selected.getTotalTTC());
         bonCommandeVente.setTotalTaxe(selected.getTotalTaxe());
         bonCommandeVente.setReste(selected.getTotalTTC());
+        bonCommandeVente.setNbJourVente(selected.getNbJourVente());
         ejbFacadeBonCommandeVente.create(bonCommandeVente);
 
         List<LigneBonCommandeVente> listLignebonCommandeVentes = new ArrayList<>();
@@ -835,10 +850,17 @@ public class DevisController implements Serializable {
         bonLivraison.setDateCreation(new Date());
         bonLivraison.setTypeVente(0);
         bonLivraison.setMontantHT(selected.getMontantHT());
+        bonLivraison.setMontantNet(selected.getMontantNet());
+        bonLivraison.setTotalHT(selected.getTotalHT());
+        bonLivraison.setAppliquerRemise(selected.getAppliquerRemise());
+        bonLivraison.setMontantRemiseGlobal(selected.getMontantRemiseGlobal());
+        bonLivraison.setTauxRemiseGlobal(selected.getTauxRemiseGlobal());
         bonLivraison.setMontantTVA(selected.getMontantTVA());
         bonLivraison.setMontantTTC(selected.getMontantTTC());
         bonLivraison.setDateSynch(System.currentTimeMillis());
-        bonLivraison.setReste(selected.getMontantHT());
+        bonLivraison.setReste(selected.getMontantNet());
+        bonLivraison.setDateBonLivraison(new Date());
+        bonLivraison.setNbJourVente(selected.getNbJourVente());
         ejbFacadeBonLivraison.create(bonLivraison);
 
         List<LigneBonLivraison> listLigneBonLivraisons = new ArrayList<>();
@@ -882,6 +904,10 @@ public class DevisController implements Serializable {
         facture.setNumeroDocumentOrigine(selected.getNumero());
         facture.setTypeVente(0);
         facture.setMontantHT(selected.getMontantHT());
+        facture.setMontantNet(selected.getMontantNet());
+        facture.setAppliquerRemise(selected.getAppliquerRemise());
+        facture.setMontantRemiseGlobal(selected.getMontantRemiseGlobal());
+        facture.setTauxRemiseGlobal(selected.getTauxRemiseGlobal());
         facture.setMontantTVA(selected.getMontantTVA());
         facture.setMontantTTC(selected.getMontantTTC());
         facture.setTotalHT(selected.getTotalHT());
@@ -889,6 +915,7 @@ public class DevisController implements Serializable {
         facture.setTotalTTC(selected.getTotalTTC());
         facture.setTotalTaxe(selected.getTotalTaxe());
         facture.setReste(selected.getTotalTTC());
+        facture.setNbJourVente(selected.getNbJourVente());
         ejbFacadeFacture.create(facture);
 
         List<LigneFacture> listLigneFactures = new ArrayList<>();
@@ -978,18 +1005,21 @@ public class DevisController implements Serializable {
         selected.setMontantHT(BigDecimal.ZERO);
         selected.setMontantTVA(BigDecimal.ZERO);
         selected.setMontantTTC(BigDecimal.ZERO);
+
         for (LigneDevis ligneDevis : selected.getListeLigneDeviss()) {
-            System.out.println("da" + selected.getMontantHT().add(ligneDevis.getTotalHT()));
-
-            System.out.println("da" + selected.getMontantTVA().add(ligneDevis.getTotalTVA()));
-
             selected.setMontantHT(selected.getMontantHT().add(ligneDevis.getTotalHT()));
             selected.setMontantTVA(selected.getMontantTVA().add(ligneDevis.getTotalTVA()));
             selected.setMontantTTC(selected.getMontantTTC().add(ligneDevis.getTotalTTC()));
         }
-        selected.setTotalHT(selected.getMontantHT());
-        selected.setTotalTVA(selected.getMontantTVA());
-        selected.setTotalTTC(selected.getMontantTTC());
+
+        selected.setTotalHT(selected.getMontantHT().multiply(BigDecimal.valueOf(selected.getNbJourVente())));
+        selected.setTotalTVA(selected.getMontantTVA().multiply(BigDecimal.valueOf(selected.getNbJourVente())));
+        selected.setMontantNet(selected.getTotalHT());
+        selected.setTotalTTC(selected.getMontantTTC().multiply(BigDecimal.valueOf(selected.getNbJourVente())));
+
+        if (parametrageEntreprise.isAppliquerRemiseGlobale()) {
+            calculeMontantNet();
+        }
     }
 
     public void listnerPrixUnitaire() {
@@ -999,6 +1029,7 @@ public class DevisController implements Serializable {
             selectedLigneDevis.setLibelleArticle(selectedLigneDevis.getArticle().getLibelle());
             selectedLigneDevis.setPrixUnitaireHT(selectedLigneDevis.getArticle().getPrixRevendeur());
             selectedLigneDevis.setTvaArticle(new BigDecimal(selectedLigneDevis.getArticle().getTva().getValeur()));
+            selectedLigneDevis.setQuantiteStock(selectedLigneDevis.getArticle().getQuantiteStock());
             selectedLigneDevis.setQuantite(BigDecimal.ZERO);
             selectedLigneDevis.setRemise(BigDecimal.ZERO);
             selectedLigneDevis.setPrixUnitaireApresRemise(BigDecimal.ZERO);
@@ -1013,6 +1044,7 @@ public class DevisController implements Serializable {
             selectedLigneDevis.setPrixUnitaireHT(BigDecimal.ZERO);
             selectedLigneDevis.setTvaArticle(BigDecimal.ZERO);
             selectedLigneDevis.setQuantite(BigDecimal.ZERO);
+            selectedLigneDevis.setQuantiteStock(BigDecimal.ZERO);
             selectedLigneDevis.setRemise(BigDecimal.ZERO);
             selectedLigneDevis.setPrixUnitaireApresRemise(BigDecimal.ZERO);
             selectedLigneDevis.setTotalHT(BigDecimal.ZERO);
@@ -1045,8 +1077,8 @@ public class DevisController implements Serializable {
             }
 
             /*            BigDecimal valTemp = FonctionsMathematiques.arrondiBigDecimal(selectedLigneDevis.getMontantHT().multiply(selectedLigneDevis.getTvaArticle()), 3);
-            selectedLigneDevis.setMontantTVA(FonctionsMathematiques.arrondiBigDecimal(valTemp.divide(BigDecimal.valueOf(100)), 3));
-            selectedLigneDevis.setMontantTTC(selectedLigneDevis.getMontantHT().add(selectedLigneDevis.getMontantTVA()));*/
+             selectedLigneDevis.setMontantTVA(FonctionsMathematiques.arrondiBigDecimal(valTemp.divide(BigDecimal.valueOf(100)), 3));
+             selectedLigneDevis.setMontantTTC(selectedLigneDevis.getMontantHT().add(selectedLigneDevis.getMontantTVA()));*/
         }
     }
 
@@ -1066,14 +1098,14 @@ public class DevisController implements Serializable {
 
     }
 
-    public void calculerTotalTaxe(List<TaxesDevis> list) {
+    public void calculerTotalTaxe(List<TaxesDevis> taxeTva) {
         selected.setTotalTaxe(BigDecimal.ZERO);
-        for (int i = 0; i < list.size(); i++) {
+        for (int i = 0; i < taxeTva.size(); i++) {
             if (selected.getListsTaxe().get(i).getOperation().trim().equals("+")) {
-                selected.setTotalTaxe((selected.getTotalTaxe()).add(list.get(i).getMontant()));
+                selected.setTotalTaxe((selected.getTotalTaxe()).add(taxeTva.get(i).getMontant()));
             } else {
 
-                selected.setTotalTaxe((selected.getTotalTaxe()).subtract(list.get(i).getMontant()));
+                selected.setTotalTaxe((selected.getTotalTaxe()).subtract(taxeTva.get(i).getMontant()));
             }
         }
     }
@@ -1081,10 +1113,9 @@ public class DevisController implements Serializable {
     public void validerTaxeDevis() {
 
         if ((selected.getTotalHT().compareTo(BigDecimal.ZERO) == 0) && (selected.getTotalTTC().compareTo(BigDecimal.ZERO) == 0)) {
-            selected.setTotalHT(selected.getMontantHT());
-            selected.setTotalTTC(selected.getMontantTTC());
+            selected.setTotalHT(selected.getMontantNet());
+            selected.setTotalTTC(selected.getMontantTTC().multiply(BigDecimal.valueOf(selected.getNbJourVente())));
         }
-        System.err.println("selectedListParametrageTaxe.size() : " + selectedListParametrageTaxe.size());
         if (selectedListParametrageTaxe != null && !selectedListParametrageTaxe.isEmpty()) {
 
             for (ParametrageTaxe selectedTaxe : selectedListParametrageTaxe) {
@@ -1105,7 +1136,7 @@ public class DevisController implements Serializable {
                         taxe.setOperation(selectedTaxe.getOperation());
                         taxe.setTypeTaxe(selectedTaxe.getTypeTaxe());
                         taxe.setApresTva(selectedTaxe.isApresTva());
-                        taxe.setMontant((selected.getMontantHT().multiply(taxe.getValeur())).divide(BigDecimal.valueOf(100)));
+                        taxe.setMontant((selected.getMontantNet().multiply(taxe.getValeur())).divide(BigDecimal.valueOf(100)));
                         if (taxe.getOperation().equals("+")) {
                             selected.setTotalTTC((selected.getTotalTTC()).add(taxe.getMontant()));
                         } else {
@@ -1122,7 +1153,7 @@ public class DevisController implements Serializable {
                         taxe.setOperation(selectedTaxe.getOperation());
                         taxe.setTypeTaxe(selectedTaxe.getTypeTaxe());
                         taxe.setApresTva(selectedTaxe.isApresTva());
-                        taxe.setMontant((selected.getMontantTTC().multiply(taxe.getValeur())).divide(BigDecimal.valueOf(100)));
+                        taxe.setMontant(((selected.getMontantTTC().multiply(BigDecimal.valueOf(selected.getNbJourVente()))).multiply(taxe.getValeur())).divide(BigDecimal.valueOf(100)));
                         if (taxe.getOperation().equals("+")) {
                             selected.setTotalTTC((selected.getTotalTTC()).add(taxe.getMontant()));
                         } else {
@@ -1177,8 +1208,8 @@ public class DevisController implements Serializable {
     public void validerTaxeDevisEdit() {
 
         if ((selected.getTotalHT().compareTo(BigDecimal.ZERO) == 0) && (selected.getTotalTTC().compareTo(BigDecimal.ZERO) == 0)) {
-            selected.setTotalHT(selected.getMontantHT());
-            selected.setTotalTTC(selected.getMontantTTC());
+            selected.setTotalHT(selected.getMontantNet());
+            selected.setTotalTTC(selected.getMontantTTC().multiply(BigDecimal.valueOf(selected.getNbJourVente())));
         }
         if (selectedListParametrageTaxe != null && !selectedListParametrageTaxe.isEmpty()) {
 
@@ -1190,7 +1221,6 @@ public class DevisController implements Serializable {
                     }
                 }
                 if (index > -1) {
-                    System.out.println("taxe existe");
                 } else {
                     if ((selectTaxe.getTypeTaxe().trim().equals("0")) && (!selectTaxe.isApresTva())) {
                         TaxesDevis taxe = new TaxesDevis();
@@ -1199,7 +1229,7 @@ public class DevisController implements Serializable {
                         taxe.setOperation(selectTaxe.getOperation());
                         taxe.setTypeTaxe(selectTaxe.getTypeTaxe());
                         taxe.setApresTva(selectTaxe.isApresTva());
-                        taxe.setMontant((selected.getMontantHT().multiply(taxe.getValeur())).divide(BigDecimal.valueOf(100)));
+                        taxe.setMontant((selected.getMontantNet().multiply(taxe.getValeur())).divide(BigDecimal.valueOf(100)));
                         if (taxe.getOperation().equals("+")) {
                             selected.setTotalTTC((selected.getTotalTTC()).add(taxe.getMontant()));
                         } else {
@@ -1216,7 +1246,7 @@ public class DevisController implements Serializable {
                         taxe.setOperation(selectTaxe.getOperation());
                         taxe.setTypeTaxe(selectTaxe.getTypeTaxe());
                         taxe.setApresTva(selectTaxe.isApresTva());
-                        taxe.setMontant((selected.getMontantTTC().multiply(taxe.getValeur())).divide(BigDecimal.valueOf(100)));
+                        taxe.setMontant(((selected.getMontantTTC().multiply(BigDecimal.valueOf(selected.getNbJourVente()))).multiply(taxe.getValeur())).divide(BigDecimal.valueOf(100)));
                         if (taxe.getOperation().equals("+")) {
                             selected.setTotalTTC((selected.getTotalTTC()).add(taxe.getMontant()));
                         } else {
@@ -1350,13 +1380,13 @@ public class DevisController implements Serializable {
     }
 
     public void updateListTaxe(List<TaxesDevis> list) {
-        selected.setTotalTTC(selected.getMontantTTC());
+        //selected.setTotalTTC(selected.getMontantTTC().multiply(BigDecimal.valueOf(selected.getNbJourVente())));
         if (!list.isEmpty()) {
             for (TaxesDevis item : list) {
 
                 if ((item.getTypeTaxe().trim().equals("0")) && (!item.isApresTva())) {
                     if (item.getOperation().trim().equals("+")) {
-                        item.setMontant((selected.getMontantHT().multiply(item.getValeur())).divide(BigDecimal.valueOf(100)));
+                        item.setMontant((selected.getMontantNet().multiply(item.getValeur())).divide(BigDecimal.valueOf(100)));
                         if (item.getOperation().equals("+")) {
                             selected.setTotalTTC((selected.getTotalTTC()).add(item.getMontant()));
                         } else {
@@ -1365,7 +1395,7 @@ public class DevisController implements Serializable {
                     }
                 } //apresTva
                 else if ((item.getTypeTaxe().trim().equals("0")) && (item.isApresTva())) {
-                    item.setMontant((selected.getMontantTTC().multiply(item.getValeur())).divide(BigDecimal.valueOf(100)));
+                    item.setMontant(((selected.getMontantTTC().multiply(BigDecimal.valueOf(selected.getNbJourVente()))).multiply(item.getValeur())).divide(BigDecimal.valueOf(100)));
                     if (item.getOperation().equals("+")) {
                         selected.setTotalTTC((selected.getTotalTTC()).add(item.getMontant()));
                     } else {
@@ -1381,7 +1411,6 @@ public class DevisController implements Serializable {
                 } //valeur fixe apres tva
                 else if ((item.getTypeTaxe().trim().equals("1")) && (item.isApresTva())) {
                     if (item.getOperation().equals("+")) {
-                        System.err.println("getMontant : " + item.getMontant());
                         selected.setTotalTTC((selected.getTotalTTC()).add(item.getMontant()));
                     } else {
                         selected.setTotalTTC((selected.getTotalTTC()).subtract(item.getMontant()));
@@ -1397,8 +1426,8 @@ public class DevisController implements Serializable {
     public void initTaxeDevis(List<ParametrageTaxe> listParametrageTaxeEntreprise) {
 
         if ((selected.getTotalHT().compareTo(BigDecimal.ZERO) == 0) && (selected.getTotalTTC().compareTo(BigDecimal.ZERO) == 0)) {
-            selected.setTotalHT(selected.getMontantHT());
-            selected.setTotalTTC(selected.getMontantTTC());
+            selected.setTotalHT(selected.getMontantNet());
+            selected.setTotalTTC(selected.getMontantTTC().multiply(BigDecimal.valueOf(selected.getNbJourVente())));
         }
         if (listParametrageTaxeEntreprise != null && !listParametrageTaxeEntreprise.isEmpty()) {
 
@@ -1410,7 +1439,7 @@ public class DevisController implements Serializable {
                     taxe.setOperation(selectedTaxe.getOperation());
                     taxe.setTypeTaxe(selectedTaxe.getTypeTaxe());
                     taxe.setApresTva(selectedTaxe.isApresTva());
-                    taxe.setMontant((selected.getMontantHT().multiply(taxe.getValeur())).divide(BigDecimal.valueOf(100)));
+                    taxe.setMontant((selected.getMontantNet().multiply(taxe.getValeur())).divide(BigDecimal.valueOf(100)));
                     if (taxe.getOperation().equals("+")) {
                         selected.setTotalTTC((selected.getTotalTTC()).add(taxe.getMontant()));
                     } else {
@@ -1427,7 +1456,7 @@ public class DevisController implements Serializable {
                     taxe.setOperation(selectedTaxe.getOperation());
                     taxe.setTypeTaxe(selectedTaxe.getTypeTaxe());
                     taxe.setApresTva(selectedTaxe.isApresTva());
-                    taxe.setMontant((selected.getMontantTTC().multiply(taxe.getValeur())).divide(BigDecimal.valueOf(100)));
+                    taxe.setMontant(((selected.getMontantTTC().multiply(BigDecimal.valueOf(selected.getNbJourVente()))).multiply(taxe.getValeur())).divide(BigDecimal.valueOf(100)));
                     if (taxe.getOperation().equals("+")) {
                         selected.setTotalTTC((selected.getTotalTTC()).add(taxe.getMontant()));
                     } else {
@@ -1517,8 +1546,9 @@ public class DevisController implements Serializable {
 
             //addInvoiceInfo
             ArrayList<String> ligneDevisEntete = new ArrayList();
-
-            ligneDevisEntete.add("Reference");
+            if (parametrageEntreprise.isGestionParCodeArticle()) {
+                ligneDevisEntete.add("Reference");
+            }
             ligneDevisEntete.add("Produit");
             ligneDevisEntete.add("TVA");
             ligneDevisEntete.add("Quantite");
@@ -1533,7 +1563,9 @@ public class DevisController implements Serializable {
 
                 ligneDevisInfo = new ArrayList();
                 //0:left 1: linea left 2:center 3:linea right 4:right
-                ligneDevisInfo.add("1:" + selectedSingle.getListeLigneDeviss().get(i).getCodeArticle());
+                if (parametrageEntreprise.isGestionParCodeArticle()) {
+                    ligneDevisInfo.add("1:" + selectedSingle.getListeLigneDeviss().get(i).getCodeArticle());
+                }
                 ligneDevisInfo.add("1:" + selectedSingle.getListeLigneDeviss().get(i).getLibelleArticle());
                 ligneDevisInfo.add("3:" + selectedSingle.getListeLigneDeviss().get(i).getTvaArticle() + "%");
                 ligneDevisInfo.add("3:" + selectedSingle.getListeLigneDeviss().get(i).getQuantite());
@@ -1546,11 +1578,13 @@ public class DevisController implements Serializable {
             ArrayList<String> devisSummarizeInfos = new ArrayList();
 
             devisSummarizeInfos.add("Total HT" + " : " + selectedSingle.getTotalHT());
+            devisSummarizeInfos.add("Remise" + " : " + selectedSingle.getMontantRemiseGlobal());
+            devisSummarizeInfos.add("Total Net" + " : " + selectedSingle.getMontantNet());
             devisSummarizeInfos.add("Total TVA" + " : " + selectedSingle.getTotalTVA());
             devisSummarizeInfos.add("Total Taxe" + " : " + selectedSingle.getTotalTaxe());
             devisSummarizeInfos.add("Total TTC" + " : " + selectedSingle.getTotalTTC());
 
-            GenerationPdf.generationPdf(image, path, "Devis", numeroDevis, dateDevis, entrepriseInfos, clientInfos, ligneDevisEntete, ligneFactures, devisSummarizeInfos);
+            GenerationPdf.generationPdf(image, path, "Devis", numeroDevis, dateDevis, entrepriseInfos, clientInfos, ligneDevisEntete, ligneFactures, devisSummarizeInfos, parametrageEntreprise.isGestionParCodeArticle(), utilisateur.getEntreprise().getHeader(), utilisateur.getEntreprise().getFooter());
 
             File file = new File(path);
             HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
@@ -1584,7 +1618,45 @@ public class DevisController implements Serializable {
     public void changedArticle() {
         listArticles = new ArrayList<>();
         listArticles = categorie.getArticles();
+    }
 
+    public void appliquerRemiseGlobale() {
+        if (selected.getAppliquerRemise() == -1) {
+
+            selected.setMontantRemiseGlobal(BigDecimal.ZERO);
+            selected.setTauxRemiseGlobal(BigDecimal.ZERO);
+            recalculerTotal();
+            if (selected.getListsTaxe() != null && !selected.getListsTaxe().isEmpty()) {
+                updateListTaxe(selected.getListsTaxe());
+            }
+        }
+    }
+
+    private void calculeMontantNet() {
+
+        if (selected.getAppliquerRemise() == 0 && selected.getTauxRemiseGlobal().compareTo(BigDecimal.ZERO) == 1) {
+
+            selected.setMontantRemiseGlobal(selected.getTotalHT().multiply(selected.getTauxRemiseGlobal()).divide(BigDecimal.valueOf(100)));
+            selected.setMontantNet(selected.getMontantNet().subtract(selected.getMontantRemiseGlobal()));
+            selected.setTotalTTC(selected.getMontantNet().add(selected.getTotalTVA()));
+
+        } else if (selected.getAppliquerRemise() == 1 && selected.getMontantRemiseGlobal().compareTo(BigDecimal.ZERO) == 1) {
+
+            selected.setTauxRemiseGlobal((selected.getMontantRemiseGlobal().divide(selected.getTotalHT(), 4, RoundingMode.HALF_DOWN).multiply(BigDecimal.valueOf(100))));
+            if (selected.getMontantRemiseGlobal().compareTo(selected.getTotalHT()) >= 0) {
+                selected.setTauxRemiseGlobal(BigDecimal.valueOf(100));
+                selected.setMontantRemiseGlobal(selected.getTotalHT());
+            }
+            selected.setMontantNet(selected.getMontantNet().subtract(selected.getMontantRemiseGlobal()));
+            selected.setTotalTTC(selected.getMontantNet().add(selected.getTotalTVA()));
+        }
+    }
+
+    public void recalculerToutMontants() {
+        recalculerTotal();
+        if (selected.getListsTaxe() != null && !selected.getListsTaxe().isEmpty()) {
+            updateListTaxe(selected.getListsTaxe());
+        }
     }
 
     public void rechercher() {
@@ -1605,6 +1677,16 @@ public class DevisController implements Serializable {
         } catch (Exception e) {
 
         }
+    }
+
+    private void creationInfo() {
+        selected.setIdUserCreate(utilisateur.getId());
+        selected.setLibelleUserCreate(utilisateur.getNomPrenom());
+    }
+
+    private void editionInfo() {
+        selected.setIdUserModif(utilisateur.getId());
+        selected.setLibelleUserModif(utilisateur.getNomPrenom());
     }
 
     public SelectItem[] getItemsAvailableSelectOneArticle() {
@@ -1772,6 +1854,14 @@ public class DevisController implements Serializable {
 
     public void setClient(Client client) {
         this.client = client;
+    }
+
+    public ParametrageEntreprise getParametrageEntreprise() {
+        return parametrageEntreprise;
+    }
+
+    public void setParametrageEntreprise(ParametrageEntreprise parametrageEntreprise) {
+        this.parametrageEntreprise = parametrageEntreprise;
     }
 
     public SelectItem[] getItemsAvailableSelectOneClient() {

@@ -19,12 +19,11 @@ import com.magma.entity.LigneBonLivraison;
 import com.magma.entity.LigneBonCommandeVente;
 import com.magma.entity.LigneDevis;
 import com.magma.entity.LigneFacture;
-import com.magma.entity.LigneRetour;
+import com.magma.entity.ParametrageEntreprise;
 import com.magma.entity.ParametrageTaxe;
 import com.magma.entity.PrefixBonLivraison;
 import com.magma.entity.PrefixBonCommandeVente;
 import com.magma.entity.PrefixFacture;
-import com.magma.entity.Retour;
 import com.magma.entity.TaxesBonCommandeVente;
 import com.magma.entity.TaxesDevis;
 import com.magma.entity.TaxesFacture;
@@ -39,12 +38,10 @@ import com.magma.session.LigneBonLivraisonFacadeLocal;
 import com.magma.session.LigneBonCommandeVenteFacadeLocal;
 import com.magma.session.LigneDevisFacadeLocal;
 import com.magma.session.LigneFactureFacadeLocal;
-import com.magma.session.LigneRetourFacadeLocal;
 import com.magma.session.ParametrageTaxeFacadeLocal;
 import com.magma.session.PrefixBonCommandeVenteFacadeLocal;
 import com.magma.session.PrefixBonLivraisonFacadeLocal;
 import com.magma.session.PrefixFactureFacadeLocal;
-import com.magma.session.RetourFacadeLocal;
 import com.magma.session.TaxesBonCommandeVenteFacadeLocal;
 import com.magma.session.TaxesFactureFacadeLocal;
 import com.magma.util.MenuTemplate;
@@ -54,12 +51,13 @@ import java.io.IOException;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
-import javax.inject.Named;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -152,6 +150,7 @@ public class BonCommandeVenteController implements Serializable {
     private Date dateFin = new Date();
     private Integer etatBonCommandeVente;
     private Client client;
+    private ParametrageEntreprise parametrageEntreprise = null;
 
     public BonCommandeVenteController() {
         items = null;
@@ -171,7 +170,7 @@ public class BonCommandeVenteController implements Serializable {
             FacesContext context = FacesContext.getCurrentInstance();
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
             utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
-
+            parametrageEntreprise = utilisateur.getEntreprise().getParametrageEntreprise();
             MenuTemplate.menuFonctionnalitesModules("GBonCommandeVente", "MVente", null, utilisateur);
             //MenuTemplate.menuFonctionnalitesModules("GBonCommandeVente", utilisateur);
             /* if (bonCommandeVente.getIdEntrepriseSuivi() != null && bonCommandeVente.getIdEntrepriseSuivi() != 0) {
@@ -297,11 +296,9 @@ public class BonCommandeVenteController implements Serializable {
         listParametrageTaxeEntreprise = ejbFacadeParametrageTaxe.findAll("");
         selected.setTotalTaxe(BigDecimal.ZERO);
         selected.setTypeVente(0);
-        selected.setListeLigneBonCommandeVentes(new ArrayList<LigneBonCommandeVente>());
-        selected.setListsTaxe(new ArrayList<TaxesBonCommandeVente>());
         //selected.setEtat(-1);
         categorie = new Categorie();
-        initTaxeBonCommandeVente(listParametrageTaxeEntreprise);
+        initDocumentFields();
         return "Create";
     }
 
@@ -325,7 +322,7 @@ public class BonCommandeVenteController implements Serializable {
         errorMsg = getFacade().verifierUniqueNumero(compteur);
 
         if (errorMsg == false) {
-
+            creationInfo();
             if (selected.getListeLigneBonCommandeVentes() != null && !selected.getListeLigneBonCommandeVentes().isEmpty()) {
 
                 if (selected.getOrigine() == 0) {
@@ -333,11 +330,12 @@ public class BonCommandeVenteController implements Serializable {
                     List<TaxesBonCommandeVente> listTaxesTemps = new ArrayList<>();
                     LigneBonCommandeVenteTemps = selected.getListeLigneBonCommandeVentes();
 
-//                    for (LigneBonCommandeVente ligneBonCommandeVente : LigneBonCommandeVenteTemps) {
-//                        if (ligneBonCommandeVente.getQuantite().compareTo(BigDecimal.ZERO) == 0) {
-//                            LigneBonCommandeVenteTemps.remove(ligneBonCommandeVente);
-//                        }
-//                    }
+                    if (parametrageEntreprise.isAppliquerRemiseGlobale()) {
+                        recalculerToutMontants();
+                    } else {
+                        selected.setMontantNet(selected.getTotalHT());
+                    }
+
                     for (int i = LigneBonCommandeVenteTemps.size() - 1; i >= 0; i--) {
                         if (LigneBonCommandeVenteTemps.get(i).getQuantite().compareTo(BigDecimal.ZERO) == 0) {
                             LigneBonCommandeVenteTemps.remove(LigneBonCommandeVenteTemps.get(i));
@@ -360,7 +358,7 @@ public class BonCommandeVenteController implements Serializable {
                         selected.setLibelleClient(selected.getClient().getLibelle());
 
                     }
-                    selected.setReste(selected.getMontantHT());
+                    selected.setReste(selected.getTotalTTC());
                     selected.setTransFormTo(-1);
                     getFacade().create(selected);
 
@@ -476,8 +474,15 @@ public class BonCommandeVenteController implements Serializable {
         try {
 
             if (selected.getListeLigneBonCommandeVentes() != null && !selected.getListeLigneBonCommandeVentes().isEmpty()) {
-
+                editionInfo();
                 List<TaxesBonCommandeVente> listTaxesTemps = new ArrayList<>();
+
+                if (parametrageEntreprise.isAppliquerRemiseGlobale()) {
+                    recalculerToutMontants();
+                } else {
+                    selected.setMontantNet(selected.getTotalHT());
+                }
+
                 if (selected.getListsTaxe() != null && !selected.getListsTaxe().isEmpty()) {
 
                     listTaxesTemps = selected.getListsTaxe();
@@ -738,6 +743,10 @@ public class BonCommandeVenteController implements Serializable {
         selected.setOrigine(1);
         selected.setTypeVente(0);
         selected.setMontantHT(selected.getDevis().getMontantHT());
+        selected.setMontantNet(selected.getDevis().getMontantNet());
+        selected.setAppliquerRemise(selected.getDevis().getAppliquerRemise());
+        selected.setMontantRemiseGlobal(selected.getDevis().getMontantRemiseGlobal());
+        selected.setTauxRemiseGlobal(selected.getDevis().getTauxRemiseGlobal());
         selected.setMontantTVA(selected.getDevis().getMontantTVA());
         selected.setMontantTTC(selected.getDevis().getMontantTTC());
         /*selected.setTotalHT(selected.getDevis().getTotalHT());
@@ -745,7 +754,7 @@ public class BonCommandeVenteController implements Serializable {
          selected.setTotalTaxe(selected.getDevis().getTotalTaxe());*/
 
         selected.setIdDocumentOrigine(selected.getDevis().getId());
-
+        selected.setNbJourVente(selected.getDevis().getNbJourVente());
         List<LigneBonCommandeVente> tempsList = new ArrayList<>();
         tempsList = selected.getListeLigneBonCommandeVentes();
         selected.setListeLigneBonCommandeVentes(null);
@@ -775,10 +784,17 @@ public class BonCommandeVenteController implements Serializable {
         bonLivraison.setDateCreation(new Date());
         bonLivraison.setTypeVente(0);
         bonLivraison.setMontantHT(selected.getMontantHT());
+        bonLivraison.setTotalHT(selected.getTotalHT());
+        bonLivraison.setMontantNet(selected.getMontantNet());
+        bonLivraison.setAppliquerRemise(selected.getAppliquerRemise());
+        bonLivraison.setMontantRemiseGlobal(selected.getMontantRemiseGlobal());
+        bonLivraison.setTauxRemiseGlobal(selected.getTauxRemiseGlobal());
         bonLivraison.setMontantTVA(selected.getMontantTVA());
         bonLivraison.setMontantTTC(selected.getMontantTTC());
         bonLivraison.setDateSynch(System.currentTimeMillis());
-        bonLivraison.setReste(selected.getMontantHT());
+        bonLivraison.setReste(selected.getMontantNet());
+        bonLivraison.setDateBonLivraison(new Date());
+        bonLivraison.setNbJourVente(selected.getNbJourVente());
         ejbFacadeBonLivraison.create(bonLivraison);
 
         List<LigneBonLivraison> listLigneBonLivraisons = new ArrayList<>();
@@ -822,6 +838,10 @@ public class BonCommandeVenteController implements Serializable {
         facture.setNumeroDocumentOrigine(selected.getNumero());
         facture.setTypeVente(0);
         facture.setMontantHT(selected.getMontantHT());
+        facture.setMontantNet(selected.getMontantNet());
+        facture.setAppliquerRemise(selected.getAppliquerRemise());
+        facture.setMontantRemiseGlobal(selected.getMontantRemiseGlobal());
+        facture.setTauxRemiseGlobal(selected.getTauxRemiseGlobal());
         facture.setMontantTVA(selected.getMontantTVA());
         facture.setMontantTTC(selected.getMontantTTC());
         facture.setTotalHT(selected.getTotalHT());
@@ -829,6 +849,7 @@ public class BonCommandeVenteController implements Serializable {
         facture.setTotalTTC(selected.getTotalTTC());
         facture.setTotalTaxe(selected.getTotalTaxe());
         facture.setReste(selected.getTotalTTC());
+        facture.setNbJourVente(selected.getNbJourVente());
         ejbFacadeFacture.create(facture);
 
         List<LigneFacture> listLigneFactures = new ArrayList<>();
@@ -878,17 +899,19 @@ public class BonCommandeVenteController implements Serializable {
         selected.setMontantTVA(BigDecimal.ZERO);
         selected.setMontantTTC(BigDecimal.ZERO);
         for (LigneBonCommandeVente ligneBonCommandeVente : selected.getListeLigneBonCommandeVentes()) {
-            System.out.println("da" + selected.getMontantHT().add(ligneBonCommandeVente.getTotalHT()));
-
-            System.out.println("da" + selected.getMontantTVA().add(ligneBonCommandeVente.getTotalTVA()));
-
             selected.setMontantHT(selected.getMontantHT().add(ligneBonCommandeVente.getTotalHT()));
             selected.setMontantTVA(selected.getMontantTVA().add(ligneBonCommandeVente.getTotalTVA()));
             selected.setMontantTTC(selected.getMontantTTC().add(ligneBonCommandeVente.getTotalTTC()));
         }
-        selected.setTotalHT(selected.getMontantHT());
-        selected.setTotalTVA(selected.getMontantTVA());
-        selected.setTotalTTC(selected.getMontantTTC());
+
+        selected.setTotalHT(selected.getMontantHT().multiply(BigDecimal.valueOf(selected.getNbJourVente())));
+        selected.setTotalTVA(selected.getMontantTVA().multiply(BigDecimal.valueOf(selected.getNbJourVente())));
+        selected.setMontantNet(selected.getTotalHT());
+        selected.setTotalTTC(selected.getMontantTTC().multiply(BigDecimal.valueOf(selected.getNbJourVente())));
+
+        if (parametrageEntreprise.isAppliquerRemiseGlobale()) {
+            calculeMontantNet();
+        }
     }
 
     public void listnerPrixUnitaire() {
@@ -898,6 +921,7 @@ public class BonCommandeVenteController implements Serializable {
             selectedLigneBonCommandeVente.setLibelleArticle(selectedLigneBonCommandeVente.getArticle().getLibelle());
             selectedLigneBonCommandeVente.setPrixUnitaireHT(selectedLigneBonCommandeVente.getArticle().getPrixRevendeur());
             selectedLigneBonCommandeVente.setTvaArticle(new BigDecimal(selectedLigneBonCommandeVente.getArticle().getTva().getValeur()));
+            selectedLigneBonCommandeVente.setQuantiteStock(selectedLigneBonCommandeVente.getArticle().getQuantiteStock());
             selectedLigneBonCommandeVente.setQuantite(BigDecimal.ZERO);
             selectedLigneBonCommandeVente.setRemise(BigDecimal.ZERO);
             selectedLigneBonCommandeVente.setPrixUnitaireApresRemise(BigDecimal.ZERO);
@@ -912,6 +936,7 @@ public class BonCommandeVenteController implements Serializable {
             selectedLigneBonCommandeVente.setPrixUnitaireHT(BigDecimal.ZERO);
             selectedLigneBonCommandeVente.setTvaArticle(BigDecimal.ZERO);
             selectedLigneBonCommandeVente.setQuantite(BigDecimal.ZERO);
+            selectedLigneBonCommandeVente.setQuantiteStock(BigDecimal.ZERO);
             selectedLigneBonCommandeVente.setRemise(BigDecimal.ZERO);
             selectedLigneBonCommandeVente.setPrixUnitaireApresRemise(BigDecimal.ZERO);
             selectedLigneBonCommandeVente.setTotalHT(BigDecimal.ZERO);
@@ -979,11 +1004,15 @@ public class BonCommandeVenteController implements Serializable {
         selected.setMontantHT(selected.getDevis().getTotalHT());
         selected.setMontantTVA(selected.getDevis().getTotalTVA());
         selected.setMontantTTC(selected.getDevis().getTotalTTC());
-
+        selected.setMontantNet(selected.getDevis().getMontantNet());
+        selected.setMontantRemiseGlobal(selected.getDevis().getMontantRemiseGlobal());
+        selected.setTauxRemiseGlobal(selected.getDevis().getTauxRemiseGlobal());
+        selected.setAppliquerRemise(selected.getDevis().getAppliquerRemise());
         selected.setTotalHT(selected.getMontantHT());
         selected.setTotalTVA(selected.getMontantTVA());
         selected.setTotalTTC(selected.getMontantTTC());
-
+        selected.setNbJourVente(selected.getDevis().getNbJourVente());
+        selected.setListsTaxe(new ArrayList<>());
         // nous allons calculer la taxe
         for (LigneDevis detailDevis : selected.getDevis().getListeLigneDeviss()) {
 
@@ -1000,25 +1029,11 @@ public class BonCommandeVenteController implements Serializable {
             ligneBonCommandeVente.setTotalHT(detailDevis.getTotalHT());
             ligneBonCommandeVente.setTotalTVA(detailDevis.getTotalTVA());
             ligneBonCommandeVente.setTotalTTC(detailDevis.getTotalTTC());
-            // if recalculer taxe
 
-            /*Article articleTemp = new Article();
-             articleTemp.setId(ligneFacture.getIdArticle());
-             int i = listArticleTemps.indexOf(articleTemp);
-
-             if (i > -1) {
-             ligneFacture.setTotalTTC(ligneFacture.getTotalHT().add(((ligneFacture.getTotalHT().multiply(BigDecimal.valueOf(listArticleTemps.get(i).getTva().getValeur())))).divide(BigDecimal.valueOf(100))));
-
-             } else {
-             ligneFacture.setTotalTTC(ligneFacture.getTotalTTC());
-             }
-
-             selected.setMontantTTC(selected.getMontantTTC().add(ligneFacture.getTotalTTC()));
-             selected.setTotalTTC(selected.getMontantTTC());
-             */
             selected.getListeLigneBonCommandeVentes().add(ligneBonCommandeVente);
 
-            //List<TaxesFacture> listTaxesFactures = new ArrayList<>();
+        }
+        if (selected.getDevis().getListsTaxe() != null) {
             for (TaxesDevis taxesDevis : selected.getDevis().getListsTaxe()) {
                 TaxesBonCommandeVente taxesBonCommandeVente = new TaxesBonCommandeVente();
                 //taxesFacture.setFacture(facture);
@@ -1030,59 +1045,7 @@ public class BonCommandeVenteController implements Serializable {
                 taxesBonCommandeVente.setParametrageTaxe(taxesDevis.getParametrageTaxe());
                 selected.getListsTaxe().add(taxesBonCommandeVente);
             }
-
-            //ejbFacadeTaxeFacture.create(listTaxesFactures);
         }
-
-        //récupération des bons de livraison
-        /*List<BonLivraison> listBonLivraisonTemp = ejbFacadeBonLivraison.findAllNative(" where o.BLiv_OrigineBonLivraison = 1 and o.BLiv_Etat = 0 and o.Dev_Id = " + selected.getDevis().getId());
-
-         //soustraction des lignes de bon de livraison et la taxe pour chaque ligne
-         if (listBonLivraisonTemp != null && !listBonLivraisonTemp.isEmpty()) {
-         //Probléme les bons de livraisons sont importer sans leurs lignes
-         //ejbFacadeLigneBonLivraison.findAll("where o.bonLivraison.id = " + listBonLivraison.get(0).getId());
-
-         for (LigneFacture ligneFacture : selected.getListeLigneFactures()) {
-         for (BonLivraison bonLivraison : listBonLivraisonTemp) {
-         bonLivraison.setListeLigneBonLivraisons(ejbFacadeLigneBonLivraison.findAll("where o.bonLivraison.id = " + bonLivraison.getId()));
-         LigneBonLivraison ligneBonLivraison = new LigneBonLivraison();
-         ligneBonLivraison.setIdArticle(ligneFacture.getIdArticle());
-
-         int index = bonLivraison.getListeLigneBonLivraisons().indexOf(ligneBonLivraison);
-
-         if (index > -1) {
-
-         ligneFacture.setQuantite(ligneFacture.getQuantite() - Double.parseDouble("" + bonLivraison.getListeLigneBonLivraisons().get(index).getQuantite()));
-         ligneFacture.setQuantiteMax(BigDecimal.valueOf(ligneFacture.getQuantite()));
-
-         BigDecimal TotalTVA = bonLivraison.getListeLigneBonLivraisons().get(index).getTotalHT().multiply(BigDecimal.valueOf(ligneFacture.getTvaArticle())).divide(BigDecimal.valueOf(100));
-
-         selected.setMontantHT(selected.getMontantHT().subtract(bonLivraison.getListeLigneBonLivraisons().get(index).getTotalHT()));
-         selected.setMontantTTC(selected.getMontantTTC().subtract(bonLivraison.getListeLigneBonLivraisons().get(index).getTotalHT().add(TotalTVA)));
-         selected.setTotalHT(selected.getMontantHT());
-         selected.setTotalTTC(selected.getMontantTTC());
-
-         ligneFacture.setTotalHT(ligneFacture.getTotalHT().subtract(bonLivraison.getListeLigneBonLivraisons().get(index).getTotalHT()));
-
-         // la tva est déjà actualiser en haut
-         ligneFacture.setTotalTTC(ligneFacture.getTotalTTC().subtract(bonLivraison.getListeLigneBonLivraisons().get(index).getTotalHT().add(TotalTVA)));
-
-         }
-
-         }
-         }
-
-         // aprés avoir enlever les ligne déja saisites dans les anciennes bonDelivraison
-         // je vais filter la liste de bon de livraison listBonLivraison de maniére à garder les
-         // les bon de livraison non ajouter dans une ancienne facture liée a ce bon de commande
-         listBonLivraison = new ArrayList<>();
-         for (BonLivraison bonLivraison : listBonLivraisonTemp) {
-         if (bonLivraison.getIdFacture() == null) {
-         listBonLivraison.add(bonLivraison);
-         }
-         }
-
-         }*/
     }
 
     //taxe bonCommandeVente
@@ -1116,10 +1079,9 @@ public class BonCommandeVenteController implements Serializable {
     public void validerTaxeBonCommandeVente() {
 
         if ((selected.getTotalHT().compareTo(BigDecimal.ZERO) == 0) && (selected.getTotalTTC().compareTo(BigDecimal.ZERO) == 0)) {
-            selected.setTotalHT(selected.getMontantHT());
-            selected.setTotalTTC(selected.getMontantTTC());
+            selected.setTotalHT(selected.getMontantNet());
+            selected.setTotalTTC(selected.getMontantTTC().multiply(BigDecimal.valueOf(selected.getNbJourVente())));
         }
-        System.err.println("selectedListParametrageTaxe.size() : " + selectedListParametrageTaxe.size());
         if (selectedListParametrageTaxe != null && !selectedListParametrageTaxe.isEmpty()) {
 
             for (ParametrageTaxe selectedTaxe : selectedListParametrageTaxe) {
@@ -1140,7 +1102,7 @@ public class BonCommandeVenteController implements Serializable {
                         taxe.setOperation(selectedTaxe.getOperation());
                         taxe.setTypeTaxe(selectedTaxe.getTypeTaxe());
                         taxe.setApresTva(selectedTaxe.isApresTva());
-                        taxe.setMontant((selected.getMontantHT().multiply(taxe.getValeur())).divide(BigDecimal.valueOf(100)));
+                        taxe.setMontant((selected.getMontantNet().multiply(taxe.getValeur())).divide(BigDecimal.valueOf(100)));
                         if (taxe.getOperation().equals("+")) {
                             selected.setTotalTTC((selected.getTotalTTC()).add(taxe.getMontant()));
                         } else {
@@ -1157,7 +1119,7 @@ public class BonCommandeVenteController implements Serializable {
                         taxe.setOperation(selectedTaxe.getOperation());
                         taxe.setTypeTaxe(selectedTaxe.getTypeTaxe());
                         taxe.setApresTva(selectedTaxe.isApresTva());
-                        taxe.setMontant((selected.getMontantTTC().multiply(taxe.getValeur())).divide(BigDecimal.valueOf(100)));
+                        taxe.setMontant(((selected.getMontantTTC().multiply(BigDecimal.valueOf(selected.getNbJourVente()))).multiply(taxe.getValeur())).divide(BigDecimal.valueOf(100)));
                         if (taxe.getOperation().equals("+")) {
                             selected.setTotalTTC((selected.getTotalTTC()).add(taxe.getMontant()));
                         } else {
@@ -1234,7 +1196,7 @@ public class BonCommandeVenteController implements Serializable {
                         taxe.setOperation(selectTaxe.getOperation());
                         taxe.setTypeTaxe(selectTaxe.getTypeTaxe());
                         taxe.setApresTva(selectTaxe.isApresTva());
-                        taxe.setMontant((selected.getMontantHT().multiply(taxe.getValeur())).divide(BigDecimal.valueOf(100)));
+                        taxe.setMontant((selected.getMontantNet().multiply(taxe.getValeur())).divide(BigDecimal.valueOf(100)));
                         if (taxe.getOperation().equals("+")) {
                             selected.setTotalTTC((selected.getTotalTTC()).add(taxe.getMontant()));
                         } else {
@@ -1251,7 +1213,7 @@ public class BonCommandeVenteController implements Serializable {
                         taxe.setOperation(selectTaxe.getOperation());
                         taxe.setTypeTaxe(selectTaxe.getTypeTaxe());
                         taxe.setApresTva(selectTaxe.isApresTva());
-                        taxe.setMontant((selected.getMontantTTC().multiply(taxe.getValeur())).divide(BigDecimal.valueOf(100)));
+                        taxe.setMontant(((selected.getMontantTTC().multiply(BigDecimal.valueOf(selected.getNbJourVente()))).multiply(taxe.getValeur())).divide(BigDecimal.valueOf(100)));
                         if (taxe.getOperation().equals("+")) {
                             selected.setTotalTTC((selected.getTotalTTC()).add(taxe.getMontant()));
                         } else {
@@ -1385,13 +1347,13 @@ public class BonCommandeVenteController implements Serializable {
     }
 
     public void updateListTaxe(List<TaxesBonCommandeVente> list) {
-        selected.setTotalTTC(selected.getMontantTTC());
+        //selected.setTotalTTC(selected.getMontantTTC().multiply(BigDecimal.valueOf(selected.getNbJourVente())));
         if (!list.isEmpty()) {
             for (TaxesBonCommandeVente item : list) {
 
                 if ((item.getTypeTaxe().trim().equals("0")) && (!item.isApresTva())) {
                     if (item.getOperation().trim().equals("+")) {
-                        item.setMontant((selected.getMontantHT().multiply(item.getValeur())).divide(BigDecimal.valueOf(100)));
+                        item.setMontant((selected.getMontantNet().multiply(item.getValeur())).divide(BigDecimal.valueOf(100)));
                         if (item.getOperation().equals("+")) {
                             selected.setTotalTTC((selected.getTotalTTC()).add(item.getMontant()));
                         } else {
@@ -1400,7 +1362,7 @@ public class BonCommandeVenteController implements Serializable {
                     }
                 } //apresTva
                 else if ((item.getTypeTaxe().trim().equals("0")) && (item.isApresTva())) {
-                    item.setMontant((selected.getMontantTTC().multiply(item.getValeur())).divide(BigDecimal.valueOf(100)));
+                    item.setMontant(((selected.getMontantTTC().multiply(BigDecimal.valueOf(selected.getNbJourVente()))).multiply(item.getValeur())).divide(BigDecimal.valueOf(100)));
                     if (item.getOperation().equals("+")) {
                         selected.setTotalTTC((selected.getTotalTTC()).add(item.getMontant()));
                     } else {
@@ -1416,7 +1378,6 @@ public class BonCommandeVenteController implements Serializable {
                 } //valeur fixe apres tva
                 else if ((item.getTypeTaxe().trim().equals("1")) && (item.isApresTva())) {
                     if (item.getOperation().equals("+")) {
-                        System.err.println("getMontant : " + item.getMontant());
                         selected.setTotalTTC((selected.getTotalTTC()).add(item.getMontant()));
                     } else {
                         selected.setTotalTTC((selected.getTotalTTC()).subtract(item.getMontant()));
@@ -1429,12 +1390,14 @@ public class BonCommandeVenteController implements Serializable {
 
     }
 
+    public void initChamps() {
+        initDocumentFields();
+        loadDevis();
+        selected.setDevis(null);
+    }
+
     public void initTaxeBonCommandeVente(List<ParametrageTaxe> listParametrageTaxeEntreprise) {
 
-        if ((selected.getTotalHT().compareTo(BigDecimal.ZERO) == 0) && (selected.getTotalTTC().compareTo(BigDecimal.ZERO) == 0)) {
-            selected.setTotalHT(selected.getMontantHT());
-            selected.setTotalTTC(selected.getMontantTTC());
-        }
         if (listParametrageTaxeEntreprise != null && !listParametrageTaxeEntreprise.isEmpty()) {
 
             for (ParametrageTaxe selectedTaxe : listParametrageTaxeEntreprise) {
@@ -1445,7 +1408,7 @@ public class BonCommandeVenteController implements Serializable {
                     taxe.setOperation(selectedTaxe.getOperation());
                     taxe.setTypeTaxe(selectedTaxe.getTypeTaxe());
                     taxe.setApresTva(selectedTaxe.isApresTva());
-                    taxe.setMontant((selected.getMontantHT().multiply(taxe.getValeur())).divide(BigDecimal.valueOf(100)));
+                    taxe.setMontant((selected.getMontantNet().multiply(taxe.getValeur())).divide(BigDecimal.valueOf(100)));
                     if (taxe.getOperation().equals("+")) {
                         selected.setTotalTTC((selected.getTotalTTC()).add(taxe.getMontant()));
                     } else {
@@ -1462,7 +1425,7 @@ public class BonCommandeVenteController implements Serializable {
                     taxe.setOperation(selectedTaxe.getOperation());
                     taxe.setTypeTaxe(selectedTaxe.getTypeTaxe());
                     taxe.setApresTva(selectedTaxe.isApresTva());
-                    taxe.setMontant((selected.getMontantTTC().multiply(taxe.getValeur())).divide(BigDecimal.valueOf(100)));
+                    taxe.setMontant(((selected.getMontantTTC().multiply(BigDecimal.valueOf(selected.getNbJourVente()))).multiply(taxe.getValeur())).divide(BigDecimal.valueOf(100)));
                     if (taxe.getOperation().equals("+")) {
                         selected.setTotalTTC((selected.getTotalTTC()).add(taxe.getMontant()));
                     } else {
@@ -1510,6 +1473,63 @@ public class BonCommandeVenteController implements Serializable {
 
     }
 
+    public void appliquerRemiseGlobale() {
+        if (selected.getAppliquerRemise() == -1) {
+
+            selected.setMontantRemiseGlobal(BigDecimal.ZERO);
+            selected.setTauxRemiseGlobal(BigDecimal.ZERO);
+            recalculerTotal();
+            if (selected.getListsTaxe() != null && !selected.getListsTaxe().isEmpty()) {
+                updateListTaxe(selected.getListsTaxe());
+            }
+        }
+    }
+
+    private void calculeMontantNet() {
+
+        if (selected.getAppliquerRemise() == 0 && selected.getTauxRemiseGlobal().compareTo(BigDecimal.ZERO) == 1) {
+
+            selected.setMontantRemiseGlobal(selected.getTotalHT().multiply(selected.getTauxRemiseGlobal()).divide(BigDecimal.valueOf(100)));
+            selected.setMontantNet(selected.getMontantNet().subtract(selected.getMontantRemiseGlobal()));
+            selected.setTotalTTC(selected.getMontantNet().add(selected.getTotalTVA()));
+
+        } else if (selected.getAppliquerRemise() == 1 && selected.getMontantRemiseGlobal().compareTo(BigDecimal.ZERO) == 1) {
+
+            selected.setTauxRemiseGlobal((selected.getMontantRemiseGlobal().divide(selected.getTotalHT(), 4, RoundingMode.HALF_DOWN).multiply(BigDecimal.valueOf(100))));
+            if (selected.getMontantRemiseGlobal().compareTo(selected.getTotalHT()) >= 0) {
+                selected.setTauxRemiseGlobal(BigDecimal.valueOf(100));
+                selected.setMontantRemiseGlobal(selected.getTotalHT());
+            }
+            selected.setMontantNet(selected.getMontantNet().subtract(selected.getMontantRemiseGlobal()));
+            selected.setTotalTTC(selected.getMontantNet().add(selected.getTotalTVA()));
+        }
+    }
+
+    public void recalculerToutMontants() {
+        recalculerTotal();
+        if (selected.getListsTaxe() != null && !selected.getListsTaxe().isEmpty()) {
+            updateListTaxe(selected.getListsTaxe());
+        }
+    }
+
+    private void initDocumentFields() {
+        selected.setMontantHT(new BigDecimal(BigInteger.ZERO));
+        selected.setMontantTVA(new BigDecimal(BigInteger.ZERO));
+        selected.setMontantTTC(new BigDecimal(BigInteger.ZERO));
+        selected.setTotalHT(BigDecimal.ZERO);
+        selected.setTotalTVA(BigDecimal.ZERO);
+        selected.setTotalTTC(BigDecimal.ZERO);
+        selected.setMontantNet(BigDecimal.ZERO);
+        selected.setMontantRemiseGlobal(BigDecimal.ZERO);
+        selected.setTauxRemiseGlobal(BigDecimal.ZERO);
+        selected.setAppliquerRemise(-1);
+        selected.setNbJourVente(1);
+        selected.setDevis(null);
+        selected.setListsTaxe(new ArrayList<>());
+        selected.setListeLigneBonCommandeVentes(new ArrayList<>());
+        initTaxeBonCommandeVente(listParametrageTaxeEntreprise);
+    }
+
     public void generationSelectedPDF() throws IOException, DocumentException {
 
         if (selectedSingle != null) {
@@ -1552,8 +1572,9 @@ public class BonCommandeVenteController implements Serializable {
 
             //addInvoiceInfo
             ArrayList<String> ligneBonCommandeVenteEntete = new ArrayList();
-
-            ligneBonCommandeVenteEntete.add("Reference");
+            if (parametrageEntreprise.isGestionParCodeArticle()) {
+                ligneBonCommandeVenteEntete.add("Reference");
+            }
             ligneBonCommandeVenteEntete.add("Produit");
             ligneBonCommandeVenteEntete.add("TVA");
             ligneBonCommandeVenteEntete.add("Quantite");
@@ -1568,7 +1589,9 @@ public class BonCommandeVenteController implements Serializable {
 
                 ligneBonCommandeVenteInfo = new ArrayList();
                 //0:left 1: linea left 2:center 3:linea right 4:right
-                ligneBonCommandeVenteInfo.add("1:" + selectedSingle.getListeLigneBonCommandeVentes().get(i).getCodeArticle());
+                if (parametrageEntreprise.isGestionParCodeArticle()) {
+                    ligneBonCommandeVenteInfo.add("1:" + selectedSingle.getListeLigneBonCommandeVentes().get(i).getCodeArticle());
+                }
                 ligneBonCommandeVenteInfo.add("1:" + selectedSingle.getListeLigneBonCommandeVentes().get(i).getLibelleArticle());
                 ligneBonCommandeVenteInfo.add("3:" + selectedSingle.getListeLigneBonCommandeVentes().get(i).getTvaArticle() + "%");
                 ligneBonCommandeVenteInfo.add("3:" + selectedSingle.getListeLigneBonCommandeVentes().get(i).getQuantite());
@@ -1581,11 +1604,13 @@ public class BonCommandeVenteController implements Serializable {
             ArrayList<String> bonCommandeVenteSummarizeInfos = new ArrayList();
 
             bonCommandeVenteSummarizeInfos.add("Total HT" + " : " + selectedSingle.getTotalHT());
+            bonCommandeVenteSummarizeInfos.add("Remise" + " : " + selectedSingle.getMontantRemiseGlobal());
+            bonCommandeVenteSummarizeInfos.add("Total Net" + " : " + selectedSingle.getMontantNet());
             bonCommandeVenteSummarizeInfos.add("Total TVA" + " : " + selectedSingle.getTotalTVA());
             bonCommandeVenteSummarizeInfos.add("Total Taxe" + " : " + selectedSingle.getTotalTaxe());
             bonCommandeVenteSummarizeInfos.add("Total TTC" + " : " + selectedSingle.getTotalTTC());
 
-            GenerationPdf.generationPdf(image, path, "BonCommandeVente", numeroBonCommandeVente, dateBonCommandeVente, entrepriseInfos, clientInfos, ligneBonCommandeVenteEntete, ligneFactures, bonCommandeVenteSummarizeInfos);
+            GenerationPdf.generationPdf(image, path, "BonCommandeVente", numeroBonCommandeVente, dateBonCommandeVente, entrepriseInfos, clientInfos, ligneBonCommandeVenteEntete, ligneFactures, bonCommandeVenteSummarizeInfos, parametrageEntreprise.isGestionParCodeArticle(), utilisateur.getEntreprise().getHeader(), utilisateur.getEntreprise().getFooter());
 
             File file = new File(path);
             HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
@@ -1639,6 +1664,16 @@ public class BonCommandeVenteController implements Serializable {
         } catch (Exception e) {
 
         }
+    }
+
+    private void creationInfo() {
+        selected.setIdUserCreate(utilisateur.getId());
+        selected.setLibelleUserCreate(utilisateur.getNomPrenom());
+    }
+
+    private void editionInfo() {
+        selected.setIdUserModif(utilisateur.getId());
+        selected.setLibelleUserModif(utilisateur.getNomPrenom());
     }
 
     public SelectItem[] getItemsAvailableSelectOneArticle() {
@@ -1812,6 +1847,14 @@ public class BonCommandeVenteController implements Serializable {
 
     public void setClient(Client client) {
         this.client = client;
+    }
+
+    public ParametrageEntreprise getParametrageEntreprise() {
+        return parametrageEntreprise;
+    }
+
+    public void setParametrageEntreprise(ParametrageEntreprise parametrageEntreprise) {
+        this.parametrageEntreprise = parametrageEntreprise;
     }
 
     public SelectItem[] getItemsAvailableSelectOneClient() {

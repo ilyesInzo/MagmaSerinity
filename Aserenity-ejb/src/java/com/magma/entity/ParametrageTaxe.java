@@ -32,7 +32,8 @@ import javax.persistence.Temporal;
 @Entity
 @Table(name = "T_ParametrageTaxe")
 public class ParametrageTaxe implements Serializable {
-     private static final long serialVersionUID = 1L;
+
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "PTa_Id")
@@ -46,40 +47,34 @@ public class ParametrageTaxe implements Serializable {
 
     @Column(name = "PTa_Operation")
     private String operation;
-    
-    
+
     //0: Pourcentage & 1: valeur fixe
     @Column(name = "PTa_TypeTaxe")
     private String typeTaxe;
-    
-    
+
     //0:avant tva ; 1:apresTva    
     @Column(name = "PTa_ApresTva")
     private boolean apresTva;
-    
+
     @Column(name = "PTa_Description")
     private String description;
-    
-    
 
-   
-    
     @OneToMany(mappedBy = "parametrageTaxe", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<TaxesFacture> listsTaxe;
-    
-       @Column(name = "Tab_dateSynch")
-    private Long dateSynch; 
-    
-        @Column(name = "Tab_DateCreation")
+
+    @Column(name = "Tab_dateSynch")
+    private Long dateSynch;
+
+    @Column(name = "Tab_DateCreation")
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date dateCreation;
-        
+
     @Column(name = "Tab_IdUserCreate")
     private Long idUserCreate;
 
     @Column(name = "Tab_LibelleUserCreate")
     private String libelleUserCreate;
-    
+
     @Column(name = "Tab_IdUserModif")
     private Long idUserModif;
 
@@ -117,7 +112,7 @@ public class ParametrageTaxe implements Serializable {
     public void setLibelleUserModif(String libelleUserModif) {
         this.libelleUserModif = libelleUserModif;
     }
-    
+
     public Long getId() {
         return id;
     }
@@ -133,7 +128,7 @@ public class ParametrageTaxe implements Serializable {
     }
 
     public void setLibelle(String libelle) {
-       try {
+        try {
             this.libelle = FonctionsString.toutMajuscule(libelle);
         } catch (Exception e) {
             this.libelle = libelle;
@@ -171,7 +166,7 @@ public class ParametrageTaxe implements Serializable {
     public void setTypeTaxe(String typeTaxe) {
         this.typeTaxe = typeTaxe;
     }
-    
+
     public String getTypeTaxeString() {
 
         if (typeTaxe.equals("0")) {
@@ -183,7 +178,7 @@ public class ParametrageTaxe implements Serializable {
         }
 
     }
-    
+
     public String getDateCreationStringFr() {
         try {
             if (dateCreation != null) {
@@ -205,7 +200,7 @@ public class ParametrageTaxe implements Serializable {
             return "---";
         }
     }
-    
+
     public String getDateSyncStringFr() {
         try {
             if (dateSynch != null) {
@@ -243,8 +238,8 @@ public class ParametrageTaxe implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
-    
-     public String getDescriptionString() {
+
+    public String getDescriptionString() {
         if (description != null && !description.equals("")) {
             return description;
         } else {
@@ -267,18 +262,19 @@ public class ParametrageTaxe implements Serializable {
     public void setDateSynch(Long dateSynch) {
         this.dateSynch = dateSynch;
     }
-    
-        @PrePersist
+
+    @PrePersist
     void prepersist() {
-                this.dateCreation = new Date();
+        this.dateCreation = new Date();
         this.dateSynch = System.currentTimeMillis();
     }
-    
-        @PreUpdate
+
+    @PreUpdate
     void preupdate() {
         this.dateSynch = System.currentTimeMillis();
 
     }
+
     @Override
     public String toString() {
         return typeTaxe + " " + valeur + " " + operation;

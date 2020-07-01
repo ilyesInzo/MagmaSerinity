@@ -2,6 +2,7 @@ package com.magma.controller;
 
 import com.magma.controller.util.JsfUtil;
 import com.magma.entity.Gouvernorat;
+import com.magma.entity.ParametrageEntreprise;
 import com.magma.entity.Utilisateur;
 import com.magma.session.GouvernoratFacadeLocal;
 import com.magma.util.MenuTemplate;
@@ -35,6 +36,7 @@ public class GouvernoratController implements Serializable {
     private Gouvernorat gouvernorat;
     private long idEntreprise = 0;
     private Utilisateur utilisateur;
+    private ParametrageEntreprise parametrageEntreprise = null;
     public GouvernoratController() {
         items = null;
         errorMsg = false;
@@ -53,7 +55,7 @@ public class GouvernoratController implements Serializable {
             FacesContext context = FacesContext.getCurrentInstance();
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
             utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
-
+            parametrageEntreprise = utilisateur.getEntreprise().getParametrageEntreprise();
            MenuTemplate.menuFonctionnalitesModules("GGouvernorat", "MParametrage", null,utilisateur);
 
             //MenuTemplate.menuFonctionnalitesModules("GGouvernorat", utilisateur);
@@ -223,6 +225,14 @@ public class GouvernoratController implements Serializable {
         this.errorMsg = errorMsg;
     }
 
+    public ParametrageEntreprise getParametrageEntreprise() {
+        return parametrageEntreprise;
+    }
+
+    public void setParametrageEntreprise(ParametrageEntreprise parametrageEntreprise) {
+        this.parametrageEntreprise = parametrageEntreprise;
+    } 
+    
     public SelectItem[] getItemsAvailableSelectMany() {
         return JsfUtil.getSelectItems(ejbFacade.findAll(), false);
     }

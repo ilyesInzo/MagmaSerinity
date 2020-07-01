@@ -26,6 +26,10 @@ public class PlanificationVisiteWS {
 
     private String libelleClient;
     
+    private Long idPays;
+
+    private String libellePays;
+    
     private Long idCategorieClient;
 
     private String libelleCategorieClient;
@@ -130,6 +134,22 @@ public class PlanificationVisiteWS {
 
     public void setIdCommercial(Long idCommercial) {
         this.idCommercial = idCommercial;
+    }
+
+    public Long getIdPays() {
+        return idPays;
+    }
+
+    public void setIdPays(Long idPays) {
+        this.idPays = idPays;
+    }
+
+    public String getLibellePays() {
+        return libellePays;
+    }
+
+    public void setLibellePays(String libellePays) {
+        this.libellePays = libellePays;
     }
     
     

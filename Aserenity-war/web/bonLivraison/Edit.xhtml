@@ -58,11 +58,82 @@
                                             </div>
                                         </div>
 
+                                        <h:panelGroup id="pgVenteParJour" >
+                                            <h:panelGroup rendered="#{bonLivraisonController.parametrageEntreprise.venteParJour}">
+
+                                                <div class="form-group" >
+                                                    <h:outputLabel value="#{bundle.NombreJour}: " styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <p:inputText id="Nombre" value="#{bonLivraisonController.selected.nbJourVente}" title="#{bundle.NombreJour}" style="width: 90%; min-width: 180px" styleClass="form-control" >
+                                                            <p:keyFilter for="Nombre" mask="num" />
+                                                            <f:validateLongRange minimum="1"/>
+                                                        </p:inputText>
+                                                    </div>
+                                                </div>
+
+                                            </h:panelGroup>
+                                        </h:panelGroup> 
 
                                         <div class="form-group" >
                                             <h:outputLabel value="#{bundle.TotaleHT} :" for="montantHT" styleClass="control-label col-md-3 col-sm-3 col-xs-12" />
                                             <div class="col-md-9 col-sm-9 col-xs-12">
-                                                <p:outputLabel id="montantHT" value="#{bonLivraisonController.selected.montantHT}" title="#{bundle.TotaleHT}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                                <p:outputLabel id="montantHT" value="#{bonLivraisonController.selected.totalHT}" title="#{bundle.TotaleHT}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <h:panelGroup id="pgAppliquerRemise" >
+                                            <h:panelGroup rendered="#{bonLivraisonController.parametrageEntreprise.appliquerRemiseGlobale}">
+                                                <div class="form-group" >
+                                                    <h:outputLabel value="#{bundle.RemiseGlobale}: "  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <p:selectOneMenu id="RemiseGlobale" value="#{bonLivraisonController.selected.appliquerRemise}" styleClass="form-control"  filter="true" filterMatchMode="contains" effect="fade" var="l" style="width: 90%; min-width: 180px">
+                                                            <f:selectItem itemValue="-1" itemLabel="---" />
+                                                            <f:selectItem itemValue="0" itemLabel="#{bundle.Pourcentage}" />
+                                                            <f:selectItem itemValue="1" itemLabel="#{bundle.Montant}"/>
+                                                            <p:ajax update="pgRemisePourcentage, pgRemiseMontant, montantNet, montantHT" listener="#{bonLivraisonController.appliquerRemiseGlobale()}" />
+                                                        </p:selectOneMenu>
+                                                    </div>
+                                                </div>
+
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+
+                                        <h:panelGroup id="pgRemisePourcentage" >
+                                            <h:panelGroup rendered="#{bonLivraisonController.selected.appliquerRemise eq 0}">
+
+                                                <div class="form-group" >
+                                                    <h:outputLabel value="#{bundle.Pourcentage} :" for="Pourcentage" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <p:inputText id="Pourcentage" value="#{bonLivraisonController.selected.tauxRemiseGlobal}" style="width: 90%; min-width: 180px" styleClass="form-control">
+                                                            <f:validateDoubleRange minimum="0" maximum="100" />
+                                                        </p:inputText>
+                                                    </div>
+                                                </div>
+
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+
+                                        <h:panelGroup id="pgRemiseMontant" >
+                                            <h:panelGroup rendered="#{bonLivraisonController.selected.appliquerRemise eq 1}">
+
+                                                <div class="form-group" >
+                                                    <h:outputLabel value="#{bundle.MontantRemise} :" for="MontantRemise" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <p:inputText id="MontantRemise" value="#{bonLivraisonController.selected.montantRemiseGlobal}" title="#{bundle.MontantRemise}"  styleClass="form-control" style="width: 90%; min-width: 180px">
+                                                            <p:keyFilter for="MontantRemise" mask="num" />
+                                                            <f:validateDoubleRange minimum="0.000"/>
+                                                        </p:inputText>
+                                                    </div>
+                                                </div>
+
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+
+
+                                        <div class="form-group" >
+                                            <h:outputLabel value="#{bundle.TotaleNet}: " styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:outputLabel id="montantNet" value="#{bonLivraisonController.selected.montantNet}" title="#{bundle.TotaleNet}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
                                             </div>
                                         </div>
 
@@ -85,7 +156,7 @@
 
                                             </p:column>
 
-                                            <p:column style="width: 8%" >
+                                            <p:column style="width: 8%" rendered="#{bonLivraisonController.parametrageEntreprise.gestionParCodeArticle}">
                                                 <f:facet name="header">
                                                     <h:outputText value="#{bundle.Code}" />
                                                 </f:facet>
@@ -151,6 +222,13 @@
                                                 </p:commandButton>
                                             </p:column>
 
+                                             <p:columnGroup type="footer">
+                                                <p:row>
+                                                    <p:column colspan="#{bonLivraisonController.parametrageEntreprise.gestionParCodeArticle ? 8 : 7}" style="text-align:right" footerText="#{bundle.Total}" />
+                                                    <p:column  colspan="1" footerText="#{bonLivraisonController.selected.montantHT}" />
+                                                </p:row>
+   
+                                            </p:columnGroup>
 
                                         </p:dataTable>
 
@@ -263,7 +341,7 @@
 
 
 
-                                        <p:commandButton title="#{bundle.Valider}" update=":idTable, :montantTTC, :montantHT " id="addButton3" action="#{bonLivraisonController.validerDetailArticle()}" type="push" icon="fa fa-save" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" ajax="false" />
+                                        <p:commandButton title="#{bundle.Valider}" update=":idTable, :montantTTC, :montantHT, :montantNet, :pgRemisePourcentage, :pgRemiseMontant " id="addButton3" action="#{bonLivraisonController.validerDetailArticle()}" type="push" icon="fa fa-save" style="float: right; width: 50px; height: 50px; margin: 3px;" styleClass="btn btn-primary" ajax="false" />
 
                                     </p:dialog>
                                 </h:form>

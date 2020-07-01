@@ -11,7 +11,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
-import javax.inject.Named;
 import javax.faces.bean.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -21,7 +20,7 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 
-@ManagedBean(name= "categorieClientController")
+@ManagedBean(name = "categorieClientController")
 @SessionScoped
 public class CategorieClientController implements Serializable {
 
@@ -43,10 +42,10 @@ public class CategorieClientController implements Serializable {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
         /*if (categorieClient.getIdEntrepriseSuivi() != null && categorieClient.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = categorieClient.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = categorieClient.getEntreprise().getId();
-            }*/
+         idEntreprise = categorieClient.getIdEntrepriseSuivi();
+         } else {
+         idEntreprise = categorieClient.getEntreprise().getId();
+         }*/
     }
 
     public String initPage() {
@@ -55,14 +54,14 @@ public class CategorieClientController implements Serializable {
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
             utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
 
-            MenuTemplate.menuFonctionnalitesModules("GCategorieClient", "MClient", null,utilisateur);
+            MenuTemplate.menuFonctionnalitesModules("GCategorieClient", "MClient", null, utilisateur);
 
             //MenuTemplate.menuFonctionnalitesModules("GCategorieClient", utilisateur);
             /*if (categorieClient.getIdEntrepriseSuivi() != null && categorieClient.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = categorieClient.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = categorieClient.getEntreprise().getId();
-            }*/
+             idEntreprise = categorieClient.getIdEntrepriseSuivi();
+             } else {
+             idEntreprise = categorieClient.getEntreprise().getId();
+             }*/
             recreateModel();
             FacesContext.getCurrentInstance().getExternalContext().redirect("../categorieClient/List.xhtml");
         } catch (IOException ex) {
@@ -146,10 +145,10 @@ public class CategorieClientController implements Serializable {
 
             //errorMsg = getFacade().verifierUnique(selected.getLibelle().trim());
             errorMsg = getFacade().verifierUnique(clause);
-            
+
             if (errorMsg == false) {
-                
-                
+
+                creationInfo();
                 if (selected.getParent() != null) {
                     //  selected.setIdParent(selected.getParent().getId());
                     selected.setLibelleParent(selected.getParent().getLibelle());
@@ -170,7 +169,6 @@ public class CategorieClientController implements Serializable {
                     selected.setIdPremierParent(null);
                     // selected.setIdParent(null);
                 }
-                
 
                 getFacade().create(selected);
                 return prepareList();
@@ -214,8 +212,9 @@ public class CategorieClientController implements Serializable {
             } else {
                 clause = clause + " and o.CCl_Rang = " + selected.getRang() + "";
             }
-            
+
             if (errorMsg == false) {
+                editionInfo();
                 if (selected.getParent() != null) {
                     //  selected.setIdParent(selected.getParent().getId());
                     selected.setLibelleParent(selected.getParent().getLibelle());
@@ -258,8 +257,8 @@ public class CategorieClientController implements Serializable {
             //if (temps == null || temps.isEmpty()) {
             performDestroy();
             /*} else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SuppressionNonAutorisé")));
-            }*/
+             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SuppressionNonAutorisé")));
+             }*/
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SelectionnerObjet")));
         }
@@ -275,6 +274,16 @@ public class CategorieClientController implements Serializable {
         }
     }
 
+    private void creationInfo() {
+        selected.setIdUserCreate(utilisateur.getId());
+        selected.setLibelleUserCreate(utilisateur.getNomPrenom());
+    }
+
+    private void editionInfo() {
+        selected.setIdUserModif(utilisateur.getId());
+        selected.setLibelleUserModif(utilisateur.getNomPrenom());
+    }
+
     public boolean isErrorMsg() {
         return errorMsg;
     }
@@ -287,14 +296,13 @@ public class CategorieClientController implements Serializable {
         return JsfUtil.getSelectItems(ejbFacade.findAll(), false);
     }
 
-   /* public SelectItem[] getItemsAvailableSelectOne() {
-        return JsfUtil.getSelectItems(ejbFacade.findAll(), true);
-    }*/
-    
+    /* public SelectItem[] getItemsAvailableSelectOne() {
+     return JsfUtil.getSelectItems(ejbFacade.findAll(), true);
+     }*/
     public SelectItem[] getItemsAvailableSelectOneParents() {
         return JsfUtil.getSelectItems(getFacade().findAll(" where o.supprimer = 0 and  o.dernierRang = 0 order by o.libelle asc"), true);
     }
-    
+
     public SelectItem[] getItemsAvailableSelectOne() {
         return JsfUtil.getSelectItems(getFacade().findAll(" where o.supprimer = 0 and  o.dernierRang = 1 order by o.libelle asc"), true);
     }

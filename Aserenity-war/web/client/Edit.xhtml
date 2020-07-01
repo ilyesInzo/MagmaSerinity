@@ -82,20 +82,24 @@
                                                 <p:inputMask  id="gsm" value="#{clientController.selected.gsm}" required="false" title="#{bundle.Gsm}" style="width: 90%; min-width: 180px" styleClass="form-control"  mask="(999) 99999999"/>
                                             </div>
                                         </div>
-
-                                        <div class="form-group" >
-                                            <h:outputLabel value="#{bundle.Pays} : *" for="Pays" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
-                                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                                <p:selectOneMenu  id="Pays" value="#{clientController.selected.pays}" title="#{bundle.Pays}" required="true"  styleClass="form-control" filter="true" filterMatchMode="startsWith" effect="fade" var="l" style="width: 90%; min-width: 180px">
-                                                    <f:selectItems value="#{paysController.itemsAvailableSelectOne}" var="cl" itemLabel="#{cl.libelle}" itemValue="#{cl}"  />
-                                                    <p:ajax update="Gouvernorat" listener="#{clientController.changedGouvernorat()}" />
-                                                    <p:column>
-                                                        <h:outputText value="#{l.libelle}" />
-                                                    </p:column>
-                                                </p:selectOneMenu>
-                                            </div>
-                                        </div>
-
+                                        
+                                        <h:panelGroup id="pgPays" >
+                                            <h:panelGroup rendered="#{clientController.parametrageEntreprise.typePlanificationVisite == 1}">
+                                                <div class="form-group" >
+                                                    <h:outputLabel value="#{bundle.Pays} : *" for="Pays" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <p:selectOneMenu  id="Pays" value="#{clientController.selected.pays}" title="#{bundle.Pays}" required="true"  styleClass="form-control" filter="true" filterMatchMode="startsWith" effect="fade" var="l" style="width: 90%; min-width: 180px">
+                                                            <f:selectItems value="#{paysController.itemsAvailableSelectOne}" var="cl" itemLabel="#{cl.libelle}" itemValue="#{cl}"  />
+                                                            <p:ajax update="Gouvernorat" listener="#{clientController.changedGouvernorat()}" />
+                                                            <p:column>
+                                                                <h:outputText value="#{l.libelle}" />
+                                                            </p:column>
+                                                        </p:selectOneMenu>
+                                                    </div>
+                                                </div>
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+                                        
                                         <div class="form-group" >
                                             <h:outputLabel value="#{bundle.Gouvernorat} : *" for="Gouvernorat" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                             <div class="col-md-9 col-sm-9 col-xs-12">
@@ -132,9 +136,9 @@
                                             </h:panelGroup>
                                         </h:panelGroup>
                                         <div class="form-group" >
-                                            <h:outputLabel value="#{bundle.Classification} : *" for="ClassificationClient" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <h:outputLabel value="#{bundle.Classification} : " for="ClassificationClient" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                             <div class="col-md-9 col-sm-9 col-xs-12">                                       
-                                                <p:selectOneMenu id="ClassificationClient" value="#{clientController.selected.classificationClient}"   styleClass="form-control" style="width: 90%; min-width: 180px" required="true" filter="true" filterMatchMode="contains" effect="fade" var="l">                                                                                
+                                                <p:selectOneMenu id="ClassificationClient" value="#{clientController.selected.classificationClient}"   styleClass="form-control" style="width: 90%; min-width: 180px" filter="true" filterMatchMode="contains" effect="fade" var="l">                                                                                
                                                     <f:selectItems value="#{classificationClientController.itemsAvailableSelectOne}" var="cl"  itemValue="#{cl}" />                                                                                                                     
                                                     <p:column>
                                                         <h:outputText value="#{l.libelle}" />

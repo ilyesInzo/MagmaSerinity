@@ -79,6 +79,12 @@ public class Entreprise implements Serializable {
     @Column(name = "Tab_dateSynch")
     private Long dateSynch;
     
+    @Column(name = "Ent_Header")
+    private String header;
+        
+    @Column(name = "Ent_Footer")
+    private String footer;
+    
     @Column(name = "Tab_DateCreation")
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date dateCreation;
@@ -340,6 +346,22 @@ public class Entreprise implements Serializable {
 
     public void setParametrageEntreprise(ParametrageEntreprise parametrageEntreprise) {
         this.parametrageEntreprise = parametrageEntreprise;
+    }
+
+    public String getHeader() {
+        return header;
+    }
+
+    public void setHeader(String header) {
+        this.header = header;
+    }
+
+    public String getFooter() {
+        return footer;
+    }
+
+    public void setFooter(String footer) {
+        this.footer = footer;
     }
     
     

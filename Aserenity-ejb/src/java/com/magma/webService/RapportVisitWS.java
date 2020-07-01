@@ -27,6 +27,8 @@ public class RapportVisitWS {
     
     private Long idPlanificationVisite;
     
+    private Long dateVisite;
+    
     private List<RapportVisitArticleWS> listRapportVisitArticles;
 
     public Long getId() {
@@ -91,6 +93,14 @@ public class RapportVisitWS {
 
     public void setListRapportVisitArticles(List<RapportVisitArticleWS> listRapportVisitArticles) {
         this.listRapportVisitArticles = listRapportVisitArticles;
+    }
+
+    public Long getDateVisite() {
+        return dateVisite;
+    }
+
+    public void setDateVisite(Long dateVisite) {
+        this.dateVisite = dateVisite;
     }
     
     

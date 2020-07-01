@@ -52,7 +52,7 @@
                                                 <p:outputLabel id="origine" value="#{retourController.selected.origineRetourtring}" title="#{bundle.Origine}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="form-group" >
                                             <h:outputLabel value="#{bundle.Numero}: " for="numero"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                             <div class="col-md-9 col-sm-9 col-xs-12">
@@ -84,47 +84,47 @@
                                     <div class="x_content" >
                                         <p:dataTable  value="#{retourController.selected.listeLigneRetours}"  var="item" liveResize="true" >
 
-                                                   <p:column style="width: 8%" >
-                                                        <f:facet name="header">
-                                                            <h:outputText value="#{bundle.Code}" />
-                                                        </f:facet>
-                                                        <h:outputText value="#{item.codeArticle}" />
-                                                    </p:column>
+                                            <p:column style="width: 8%" rendered="#{retourController.parametrageEntreprise.gestionParCodeArticle}">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Code}" />
+                                                </f:facet>
+                                                <h:outputText value="#{itemLF.codeArticle}" />
+                                            </p:column>
 
-                                                    <p:column style="width: 25%" >
-                                                        <f:facet name="header">
-                                                            <h:outputText value="#{bundle.Article}" />
-                                                        </f:facet>
-                                                        <h:outputText value="#{item.libelleArticle}" />
-                                                    </p:column>
+                                            <p:column style="width: 25%" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Article}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.libelleArticle}" />
+                                            </p:column>
 
-                                                    <p:column style="width: 7%" >
-                                                        <f:facet name="header">
-                                                            <h:outputText value="#{bundle.Quantite}" />
-                                                        </f:facet>
-                                                        <h:outputText value="#{item.quantite}" />
-                                                    </p:column>
-                                                    
-                                                    <p:column style="width: 7%" >
-                                                        <f:facet name="header">
-                                                            <h:outputText value="#{bundle.QuantiteCasse}" />
-                                                        </f:facet>
-                                                        <h:outputText value="#{item.quantiteCasse}" />
-                                                    </p:column>
+                                            <p:column style="width: 7%" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Quantite}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.quantite}" />
+                                            </p:column>
 
-                                                    <p:column style="width: 7%">
-                                                        <f:facet name="header">
-                                                            <h:outputText value="#{bundle.PrixRetour}" />
-                                                        </f:facet>
-                                                        <h:outputText value="#{item.prixUnitaireHT}" />
-                                                    </p:column>
+                                            <p:column style="width: 7%" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.QuantiteCasse}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.quantiteCasse}" />
+                                            </p:column>
 
-                                                    <p:column style="width: 7%">
-                                                        <f:facet name="header">
-                                                            <h:outputText value="#{bundle.Total}" />
-                                                        </f:facet>
-                                                        <h:outputText value="#{item.totalTTC} " /> 
-                                                    </p:column>
+                                            <p:column style="width: 7%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.PrixRetour}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.prixUnitaireHT}" />
+                                            </p:column>
+
+                                            <p:column style="width: 7%">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.Total}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.totalTTC} " /> 
+                                            </p:column>
 
                                         </p:dataTable>
 

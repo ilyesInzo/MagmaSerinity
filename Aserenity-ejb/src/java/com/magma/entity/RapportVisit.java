@@ -16,6 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -60,9 +61,9 @@ public class RapportVisit implements Serializable {
     @OneToMany(mappedBy = "rapportVisit", fetch = FetchType.LAZY)
     private List<RapportVisitArticle> listRapportVisitArticles;
     
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "PVi_Id", referencedColumnName = "PVi_Id", nullable = true)
-    private  PlanificationVisite planificationVisite;;
+    private  PlanificationVisite planificationVisite;
 
     public PlanificationVisite getPlanificationVisite() {
         return planificationVisite;

@@ -1,9 +1,7 @@
 package com.magma.controller;
 
-import com.magma.entity.Prospection;
 import com.magma.controller.util.JsfUtil;
 import com.magma.entity.CategorieClient;
-import com.magma.entity.ClassificationClient;
 import com.magma.entity.Client;
 import com.magma.entity.Prospection;
 import com.magma.entity.Utilisateur;
@@ -27,7 +25,7 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 
-@ManagedBean(name= "prospectionController")
+@ManagedBean(name = "prospectionController")
 @SessionScoped
 public class ProspectionController implements Serializable {
 
@@ -51,10 +49,10 @@ public class ProspectionController implements Serializable {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
         /*if (prospection.getIdEntrepriseSuivi() != null && prospection.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = prospection.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = prospection.getEntreprise().getId();
-            }*/
+         idEntreprise = prospection.getIdEntrepriseSuivi();
+         } else {
+         idEntreprise = prospection.getEntreprise().getId();
+         }*/
     }
 
     public String initPage() {
@@ -63,14 +61,14 @@ public class ProspectionController implements Serializable {
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
             utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
 
-            MenuTemplate.menuFonctionnalitesModules("GProspection", "MVeille", null,utilisateur);
+            MenuTemplate.menuFonctionnalitesModules("GProspection", "MVeille", null, utilisateur);
 
             //MenuTemplate.menuFonctionnalitesModules("GProspection", utilisateur);
             /*if (prospection.getIdEntrepriseSuivi() != null && prospection.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = prospection.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = prospection.getEntreprise().getId();
-            }*/
+             idEntreprise = prospection.getIdEntrepriseSuivi();
+             } else {
+             idEntreprise = prospection.getEntreprise().getId();
+             }*/
             recreateModel();
             FacesContext.getCurrentInstance().getExternalContext().redirect("../prospection/List.xhtml");
         } catch (IOException ex) {
@@ -143,24 +141,24 @@ public class ProspectionController implements Serializable {
     public String create() {
 
         try {
-           // errorMsg = getFacade().verifierUnique(selected.getLibelle().trim());
+            // errorMsg = getFacade().verifierUnique(selected.getLibelle().trim());
 
             if (errorMsg == false) {
                 //selected.setSupprimer(false);
-                
-            selected.setIdCommercial(selected.getCommercial().getId());
-            selected.setNomCommercial(selected.getCommercial().getNom());
-            selected.setPrenomCommercial(selected.getCommercial().getPrenom());
 
-            selected.setIdGouvernorat(selected.getGouvernorat().getId());
-            selected.setLibelleGouvernorat(selected.getGouvernorat().getLibelle());
+                selected.setIdCommercial(selected.getCommercial().getId());
+                selected.setNomCommercial(selected.getCommercial().getNom());
+                selected.setPrenomCommercial(selected.getCommercial().getPrenom());
 
-            selected.setIdDelegation(selected.getDelegation().getId());
-            selected.setLibelleDelegation(selected.getDelegation().getLibelle());
-            //selected.setSupression(false);
-            selected.setDateSynch(System.currentTimeMillis());
-            selected.setDateCreation(new Date());
-                
+                selected.setIdGouvernorat(selected.getGouvernorat().getId());
+                selected.setLibelleGouvernorat(selected.getGouvernorat().getLibelle());
+
+                selected.setIdDelegation(selected.getDelegation().getId());
+                selected.setLibelleDelegation(selected.getDelegation().getLibelle());
+                //selected.setSupression(false);
+                selected.setDateSynch(System.currentTimeMillis());
+                selected.setDateCreation(new Date());
+
                 getFacade().create(selected);
                 return prepareList();
 
@@ -201,33 +199,28 @@ public class ProspectionController implements Serializable {
             if (errorMsg == false) {
 
                 //selected.setSupprimer(false);
-                
-                
-                
                 // Transdorm To
-                if(selected.getEtatProspection()==1)
-                {
-                Client client = new Client();
-                client.setAdresse(selected.getAdresse());
-                client.setCodePostale(selected.getCodePostale());
-                client.setIdDelegation(selected.getIdDelegation());
-                client.setIdGouvernorat(selected.getIdGouvernorat());
-                client.setLibelle(selected.getLibelle());
-                //client.setEmail(selected.get);
-                client.setGsm(selected.getGsm());
-                
-                CategorieClient categorieClient = new CategorieClient();
-                categorieClient.setId(selected.getIdCategorieClient());
-                client.setCategorieClient(categorieClient);
-                
-                client.setDateCreation(new Date());
-                client.setAssujettiTVA(true);
-              
-                ejbFacadeClient.create(client);
-                
+                if (selected.getEtatProspection() == 1) {
+                    Client client = new Client();
+                    client.setAdresse(selected.getAdresse());
+                    client.setCodePostale(selected.getCodePostale());
+                    client.setIdDelegation(selected.getIdDelegation());
+                    client.setIdGouvernorat(selected.getIdGouvernorat());
+                    client.setLibelle(selected.getLibelle());
+                    //client.setEmail(selected.get);
+                    client.setGsm(selected.getGsm());
+
+                    CategorieClient categorieClient = new CategorieClient();
+                    categorieClient.setId(selected.getIdCategorieClient());
+                    client.setCategorieClient(categorieClient);
+
+                    client.setDateCreation(new Date());
+                    client.setAssujettiTVA(true);
+
+                    ejbFacadeClient.create(client);
+
                 }
-                
-                
+
                 getFacade().edit(selected);
                 return prepareList();
                 //}

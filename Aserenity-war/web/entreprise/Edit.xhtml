@@ -151,6 +151,22 @@
                                                     </p:inputTextarea>
                                                 </div>
                                             </div>
+                                            
+                                            <div class="form-group" >
+                                                <h:outputLabel value="#{bundle.DocumentHeader} : " for="header" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:inputTextarea id="header" value="#{entrepriseController.selected.header}" title="#{bundle.DocumentHeader}" maxlength="250" required="false" rows="2" cols="125"  style="width: 90%; min-width: 180px" styleClass="form-control">
+                                                    </p:inputTextarea>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="form-group" >
+                                                <h:outputLabel value="#{bundle.DocumentFooter} : " for="footer" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <p:inputTextarea id="footer" value="#{entrepriseController.selected.footer}" title="#{bundle.DocumentFooter}" maxlength="250"  required="false" rows="2" cols="125"  style="width: 90%; min-width: 180px" styleClass="form-control">
+                                                    </p:inputTextarea>
+                                                </div>
+                                            </div>
 
                                             <div class="form-group" >
                                                 <h:outputLabel value="#{bundle.Description} : " for="Description"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
@@ -158,228 +174,320 @@
                                                     <p:inputTextarea id="Description" value="#{entrepriseController.selected.description}" style="width: 90%; min-width: 180px" styleClass="form-control"/>
                                                 </div>
                                             </div> 
-                                            
-                                            
+
+
                                         </div>
                                     </div> 
-                                    
+
                                     <div class="x_title">
                                         <h2 style="color: #1a8ea5">#{bundle.Parametrage} #{bundle.Entreprise}</h2>                        
                                         <div class="clearfix"></div>
                                     </div>
 
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="x_panel">
-                                                    <div class="x_title">
-  
-                                                        <div class="ui-g">
-                                                            <div class="ui-g-9">
-                                                                <h:outputLabel value="#{bundle.MCommande} : "  />
-                                                            </div>
-                                                            <div class="ui-g-3">                                                       
-                                                                <p:toggleSwitch value="#{entrepriseController.selected.parametrageEntreprise.visibiliteMCommande}" />
-                                                            </div>
-                                                        </div> 
-                                                        
-                                                        <div class="clearfix"></div>
-                                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="x_panel">
+                                                <div class="x_title">
 
-                                                    <div class="x_content">
-                                                        <div id="pie1">RIEN</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-
-
-                                            <div class="col-md-4">
-                                                <div class="x_panel">
-                                                    <div class="x_title">
-
-                                                        <div class="ui-g">
-                                                            <div class="ui-g-9">
-                                                                <h:outputLabel value="#{bundle.MVente} : " />
-                                                            </div>
-                                                            <div class="ui-g-3">                                                       
-                                                                <p:toggleSwitch value="#{entrepriseController.selected.parametrageEntreprise.visibiliteMVentes}" />
-                                                            </div>
+                                                    <div class="ui-g">
+                                                        <div class="ui-g-8">
+                                                            <h:outputLabel value="#{bundle.MCommande} : "  />
                                                         </div>
-                                                        
-                                                        <div class="clearfix"></div>
-                                                    </div>
+                                                        <div class="ui-g-2">                                                       
+                                                            <p:toggleSwitch value="#{entrepriseController.selected.parametrageEntreprise.visibiliteMCommande}" />
 
-                                                    <div class="x_content">
+                                                       </div>
+                                                         <div class="ui-g-2">                                                       
 
-                                                        <div id="pie2"> RIEN</div>
-
-
-                                                    </div>
-
-                                                </div>
-                                            </div>
-
-
-                                            <div class="col-md-4">
-                                                <div class="x_panel">
-                                                    <div class="x_title">
-                                                  
-                                                        <div class="ui-g">
-                                                            <div class="ui-g-9">
-                                                                <h:outputLabel value="#{bundle.MProduit} : " />
-                                                            </div>
-                                                            <div class="ui-g-3">                                                       
-                                                                <p:toggleSwitch value="#{entrepriseController.selected.parametrageEntreprise.visibiliteMProduit}"/>
-                                                            </div>
-                                                        </div>                                                       
-                                                        
-                                                        <div class="clearfix"></div>
-
-                                                    </div>
-
-                                                    <div class="x_content">
-
-                                                        <div id="pie3"> RIEN</div>
-
-                                                    </div>
-
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <div class="x_panel">
-                                                    <div class="x_title">
-
-                                                        <div class="ui-g">
-                                                            <div class="ui-g-9">
-                                                                <h:outputLabel value="#{bundle.MClient} : " />
-                                                            </div>
-                                                            <div class="ui-g-3">                                                       
-                                                                <p:toggleSwitch value="#{entrepriseController.selected.parametrageEntreprise.visibiliteMClient}" />
-                                                            </div>
-                                                        </div> 
-                                                        
-                                                        <div class="clearfix"></div>
-
-                                                    </div>
-
-                                                    <div class="x_content">
-
-                                                        <div id="pie3"> RIEN</div>
-
-                                                    </div>
-
-                                                </div>
-                                            </div>
-
-
-                                            <div class="col-md-4">
-                                                <div class="x_panel">
-                                                    <div class="x_title">
-
-                                                        <div class="ui-g">
-                                                            <div class="ui-g-9">
-                                                                <h:outputLabel value="#{bundle.MStock} : "  />
-                                                            </div>
-                                                            <div class="ui-g-3">                                                       
-                                                                <p:toggleSwitch value="#{entrepriseController.selected.parametrageEntreprise.visibiliteMStockArticle}" />
-                                                            </div>
-                                                        </div> 
-                                                        <div class="clearfix"></div>
-
-                                                    </div>
-
-                                                    <div class="x_content">
-
-                                                        <div id="pie3"> RIEN</div>
-
-                                                    </div>
-
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <div class="x_panel">
-                                                    <div class="x_title">
-   
-                                                        <div class="ui-g">
-                                                            <div class="ui-g-9">
-                                                                <h:outputLabel value="#{bundle.MCommercial} : "  />
-                                                            </div>
-                                                            <div class="ui-g-3">                                                       
-                                                                <p:toggleSwitch value="#{entrepriseController.selected.parametrageEntreprise.visibiliteMCommercial}" />
-                                                            </div>
-                                                        </div>     
-                                                        
-                                                        <div class="clearfix"></div>
-
-                                                    </div>
-
-                                                    <div class="x_content">
-
-                                                        <div id="pie3"> RIEN</div>
-
-                                                    </div>
-
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <div class="x_panel">
-                                                    <div class="x_title">
- 
-                                                        <div class="ui-g">
-                                                            <div class="ui-g-9">
-                                                                <h:outputLabel value="#{bundle.MParametrage} : "  />
-                                                            </div>
-                                                            <div class="ui-g-3">                                                       
-                                                                <p:toggleSwitch value="#{entrepriseController.selected.parametrageEntreprise.visibiliteMParametrage}" />
-                                                            </div>
+                                                            <p:commandButton title="#{bundle.MCommande}" id="configMCommande"   oncomplete="PF('configMCommande').show()" icon="fa fa-pencil" style=" top: -6px; margin: 3px;" styleClass="btn btn-primary"/>
                                                         </div>
-                                                        
-                                                        <div class="clearfix"></div>
+                                                    </div> 
 
-                                                    </div>
+                                                    <div class="clearfix"></div>
+                                                </div>
 
-                                                    <div class="x_content">
-
-                                                        <div id="pie3"> RIEN</div>
-
-                                                    </div>
-
+                                                <div class="x_content">
+                                                    <div id="pie1">RIEN</div>
                                                 </div>
                                             </div>
-                                            
-                                            <div class="col-md-4">
-                                                <div class="x_panel">
-                                                    <div class="x_title">
+                                        </div>
 
-                                                        <div class="ui-g">
-                                                            <div class="ui-g-9">
-                                                                <h:outputLabel value="#{bundle.MJourneaux} : "  />
-                                                            </div>
-                                                            <div class="ui-g-3">                                                       
-                                                                <p:toggleSwitch value="#{entrepriseController.selected.parametrageEntreprise.visibiliteMJourneaux}" />
-                                                            </div>
+
+
+                                        <div class="col-md-4">
+                                            <div class="x_panel">
+                                                <div class="x_title">
+
+                                                    <div class="ui-g">
+                                                        <div class="ui-g-8">
+                                                            <h:outputLabel value="#{bundle.MVente} : " />
                                                         </div>
-                                                        
-                                                        <div class="clearfix"></div>
-
+                                                        <div class="ui-g-2">                                                       
+                                                            <p:toggleSwitch value="#{entrepriseController.selected.parametrageEntreprise.visibiliteMVentes}" />
+                                                        </div>
+                                                        <div class="ui-g-2">                                                       
+                                                            <p:commandButton title="#{bundle.MVente}" id="configMVente"   oncomplete="PF('configMVente').show()" icon="fa fa-pencil" style=" top: -6px; margin: 3px;" styleClass="btn btn-primary"/>
+                                                        </div>
                                                     </div>
 
-                                                    <div class="x_content">
+                                                    <div class="clearfix"></div>
+                                                </div>
 
-                                                        <div id="pie3"> RIEN</div>
+                                                <div class="x_content">
 
-                                                    </div>
+                                                    <div id="pie2"> RIEN</div>
+
 
                                                 </div>
+
                                             </div>
+                                        </div>
 
 
-                                        </div>    
+                                        <div class="col-md-4">
+                                            <div class="x_panel">
+                                                <div class="x_title">
 
+                                                    <div class="ui-g">
+                                                        <div class="ui-g-8">
+                                                            <h:outputLabel value="#{bundle.MProduit} : " />
+                                                        </div>
+                                                        <div class="ui-g-2">                                                       
+                                                            <p:toggleSwitch value="#{entrepriseController.selected.parametrageEntreprise.visibiliteMProduit}"/>
+                                                        </div>
+                                                        <div class="ui-g-2">                                                       
+                                                            <p:commandButton title="#{bundle.MProduit}" id="configMProduit"   oncomplete="PF('configMProduit').show()" icon="fa fa-pencil" style=" top: -6px; margin: 3px;" styleClass="btn btn-primary"/>
+                                                        </div>
+                                                    </div>                                                       
+
+                                                    <div class="clearfix"></div>
+
+                                                </div>
+
+                                                <div class="x_content">
+
+                                                    <div id="pie3"> RIEN</div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="x_panel">
+                                                <div class="x_title">
+
+                                                    <div class="ui-g">
+                                                        <div class="ui-g-9">
+                                                            <h:outputLabel value="#{bundle.MClient} : " />
+                                                        </div>
+                                                        <div class="ui-g-3">                                                       
+                                                            <p:toggleSwitch value="#{entrepriseController.selected.parametrageEntreprise.visibiliteMClient}" />
+                                                        </div>
+                                                    </div> 
+
+                                                    <div class="clearfix"></div>
+
+                                                </div>
+
+                                                <div class="x_content">
+
+                                                    <div id="pie3"> RIEN</div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-md-4">
+                                            <div class="x_panel">
+                                                <div class="x_title">
+
+                                                    <div class="ui-g">
+                                                        <div class="ui-g-9">
+                                                            <h:outputLabel value="#{bundle.MStock} : "  />
+                                                        </div>
+                                                        <div class="ui-g-3">                                                       
+                                                            <p:toggleSwitch value="#{entrepriseController.selected.parametrageEntreprise.visibiliteMStockArticle}" />
+                                                        </div>
+                                                    </div> 
+                                                    <div class="clearfix"></div>
+
+                                                </div>
+
+                                                <div class="x_content">
+
+                                                    <div id="pie3"> RIEN</div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="x_panel">
+                                                <div class="x_title">
+
+                                                    <div class="ui-g">
+                                                        <div class="ui-g-9">
+                                                            <h:outputLabel value="#{bundle.MCommercial} : "  />
+                                                        </div>
+                                                        <div class="ui-g-3">                                                       
+                                                            <p:toggleSwitch value="#{entrepriseController.selected.parametrageEntreprise.visibiliteMCommercial}" />
+                                                        </div>
+                                                    </div>     
+
+                                                    <div class="clearfix"></div>
+
+                                                </div>
+
+                                                <div class="x_content">
+
+                                                    <div id="pie3"> RIEN</div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="x_panel">
+                                                <div class="x_title">
+
+                                                    <div class="ui-g">
+                                                        <div class="ui-g-9">
+                                                            <h:outputLabel value="#{bundle.MVeille} : "  />
+                                                        </div>
+                                                        <div class="ui-g-3">                                                       
+                                                            <p:toggleSwitch value="#{entrepriseController.selected.parametrageEntreprise.visibiliteMVeille}" />
+                                                        </div>
+                                                    </div>     
+
+                                                    <div class="clearfix"></div>
+
+                                                </div>
+
+                                                <div class="x_content">
+
+                                                    <div id="pie3"> RIEN</div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="x_panel">
+                                                <div class="x_title">
+
+                                                    <div class="ui-g">
+                                                        <div class="ui-g-9">
+                                                            <h:outputLabel value="#{bundle.MParametrage} : "  />
+                                                        </div>
+                                                        <div class="ui-g-3">                                                       
+                                                            <p:toggleSwitch value="#{entrepriseController.selected.parametrageEntreprise.visibiliteMParametrage}" />
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="clearfix"></div>
+
+                                                </div>
+
+                                                <div class="x_content">
+
+                                                    <div id="pie3"> RIEN</div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="x_panel">
+                                                <div class="x_title">
+
+                                                    <div class="ui-g">
+                                                        <div class="ui-g-9">
+                                                            <h:outputLabel value="#{bundle.MJourneaux} : "  />
+                                                        </div>
+                                                        <div class="ui-g-3">                                                       
+                                                            <p:toggleSwitch value="#{entrepriseController.selected.parametrageEntreprise.visibiliteMJourneaux}" />
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="clearfix"></div>
+
+                                                </div>
+
+                                                <div class="x_content">
+
+                                                    <div id="pie3"> RIEN</div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+
+                                    </div>    
+
+
+                                    <p:dialog id="configDialogMCommande"  header="#{bundle.TitreDialogRecherche}"   widgetVar="configMCommande" height="50%" width="40%" modal="true" resizable="false">
+
+                                        <div class="form-group" >
+                                            <h:outputLabel  value="#{bundle.TypePlanificationVisite}: " styleClass="control-label col-md-3 col-sm-3 col-xs-12"/> 
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectOneMenu id="Nature" value="#{entrepriseController.selected.parametrageEntreprise.typePlanificationVisite}" title="#{bundle.Nature}" required="true"  filter="true" filterMatchMode="contains" style="width: 90%; min-width: 180px" styleClass="form-control">
+                                                    <f:selectItem itemLabel="#{bundle.ParClient}" itemValue="0" />
+                                                    <f:selectItem itemLabel="#{bundle.ParPays}" itemValue="1" />
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+
+                                    </p:dialog> 
                                     
+                                    <p:dialog id="configDialogMProduit"  header="#{bundle.TitreDialogRecherche}"   widgetVar="configMProduit" height="50%" width="40%" modal="true" resizable="false">
+
+                                        <div class="form-group" > 
+                                            <h:outputLabel value="#{bundle.CodeArticle} :" for="gestionParCodeArticle" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectBooleanButton id="gestionParCodeArticle" value="#{entrepriseController.selected.parametrageEntreprise.gestionParCodeArticle}" onLabel="#{bundle.Oui}" offLabel="#{bundle.Non}" style="width: 90%; min-width: 180px" styleClass="form-control" />
+
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group" > 
+                                            <h:outputLabel value="#{bundle.PrixRetour} :" for="prixRetour" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectBooleanButton id="prixRetour" value="#{entrepriseController.selected.parametrageEntreprise.prixRetour}" onLabel="#{bundle.Oui}" offLabel="#{bundle.Non}" style="width: 90%; min-width: 180px" styleClass="form-control" />
+
+                                            </div>
+                                        </div>
+
+                                    </p:dialog> 
+                                    
+                                    <p:dialog id="configDialogMVente"  header="#{bundle.TitreDialogRecherche}"   widgetVar="configMVente" height="50%" width="40%" modal="true" resizable="false">
+     
+                                        <div class="form-group" > 
+                                            <h:outputLabel value="#{bundle.RemiseGlobale} :" for="RemiseGlobale" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectBooleanButton id="RemiseGlobale" value="#{entrepriseController.selected.parametrageEntreprise.appliquerRemiseGlobale}" onLabel="#{bundle.Oui}" offLabel="#{bundle.Non}" style="width: 90%; min-width: 180px" styleClass="form-control" />
+
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group" > 
+                                            <h:outputLabel value="#{bundle.VenteParJour} :" for="venteParJour" styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
+                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                <p:selectBooleanButton id="venteParJour" value="#{entrepriseController.selected.parametrageEntreprise.venteParJour}" onLabel="#{bundle.Oui}" offLabel="#{bundle.Non}" style="width: 90%; min-width: 180px" styleClass="form-control" />
+
+                                            </div>
+                                        </div>
+
+                                    </p:dialog> 
+
+
                                 </h:form>
                             </div>
                         </div>

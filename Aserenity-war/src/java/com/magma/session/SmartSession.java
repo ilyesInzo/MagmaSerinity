@@ -62,9 +62,11 @@ public class SmartSession implements PhaseListener {
                                 load = utilisateur.getProfile().toPrivilege(repository).isModification();
                                 break;
                             case "List":
+                            case "ListVisiteSecteur":
                                 load = utilisateur.getProfile().toPrivilege(repository).isLecture();
                                 break;
                             case "View":
+                            case "ViewVisiteSecteur":
                                 load = utilisateur.getProfile().toPrivilege(repository).isLecture();
                                 break;
                             default: load = true;

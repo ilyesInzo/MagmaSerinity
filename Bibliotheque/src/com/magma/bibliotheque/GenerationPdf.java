@@ -44,12 +44,12 @@ public class GenerationPdf {
 
     private static BaseColor enteteBackgroundColor = new BaseColor(229, 229, 229);
 
-    public static void generationPdf(String image, String path, String docType, String numero, String date, ArrayList<String> entrepriseInfos, ArrayList<String> clientInfos, ArrayList<String> docEntete, ArrayList<ArrayList<String>> docMatrice, ArrayList<String> docSummerize) {
+    public static void generationPdf(String image, String path, String docType, String numero, String date, ArrayList<String> entrepriseInfos, ArrayList<String> clientInfos, ArrayList<String> docEntete, ArrayList<ArrayList<String>> docMatrice, ArrayList<String> docSummerize, boolean codeArticle, String Header, String Footer) {
 
         try {
             Document document = new Document(PageSize.A4_LANDSCAPE);
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
-            HeaderFooterPageEvent event = new HeaderFooterPageEvent();
+            HeaderFooterPageEvent event = new HeaderFooterPageEvent(Header, Footer);
             writer.setPageEvent(event);
             document.setMargins(50, 45, 50, 80);
             document.setMarginMirroring(false);
@@ -67,7 +67,7 @@ public class GenerationPdf {
             addEmptyLine(paragraph, 1);
             document.add(paragraph);
 
-            addInvoiceInfo(document, docEntete, docMatrice);
+            addInvoiceInfo(document, docEntete, docMatrice, codeArticle);
 
             paragraph = new Paragraph();
             addEmptyLine(paragraph, 1);
@@ -213,7 +213,7 @@ public class GenerationPdf {
 
     }
 
-    private static void addInvoiceInfo(Document document, ArrayList<String> docEntetes, ArrayList<ArrayList<String>> docMatrice) throws DocumentException {
+    private static void addInvoiceInfo(Document document, ArrayList<String> docEntetes, ArrayList<ArrayList<String>> docMatrice, boolean codeArticle) throws DocumentException {
 
         
         
@@ -223,16 +223,16 @@ public class GenerationPdf {
         
         switch (docEntetes.size()) {
             case 7:
-                tableInvoice = new PdfPTable(new float[]{3, 6, 2, 2, 2, 2,2});
+                tableInvoice = codeArticle ? new PdfPTable(new float[]{3, 6, 2, 2, 2, 2, 2}) : new PdfPTable(new float[]{6, 2, 2, 2, 2, 2, 2});
                 break;
             case 6:
-                tableInvoice = new PdfPTable(new float[]{3, 6, 2, 2, 2, 2});
+                tableInvoice = codeArticle ? new PdfPTable(new float[]{3, 6, 2, 2, 2, 2}) : new PdfPTable(new float[]{6, 2, 2, 2, 2, 2});
                 break;
             case 5:
-                tableInvoice = new PdfPTable(new float[]{3, 6, 2, 2, 2});
+                tableInvoice = codeArticle ? new PdfPTable(new float[]{3, 6, 2, 2, 2}) : new PdfPTable(new float[]{6, 2, 2, 2, 2});
                 break;
             default:
-                tableInvoice = new PdfPTable(new float[]{3, 6, 2, 2});
+                tableInvoice = codeArticle ? new PdfPTable(new float[]{3, 6, 2, 2}) : new PdfPTable(new float[]{6, 2, 2, 2});
                 break;
         }
         

@@ -140,6 +140,7 @@ public class PosteController implements Serializable {
         try {
             errorMsg = getFacade().verifierUnique(selected.getLibelle().trim(), selected.getDepartement().getId());
             if (errorMsg == false) {
+                creationInfo();
                 if (selected.getParent() != null) {
                     selected.setLibelleParent(selected.getParent().getLibelle());
                     selected.setRang(selected.getParent().getRang() + 1);
@@ -195,7 +196,7 @@ public class PosteController implements Serializable {
         try {
             errorMsg = getFacade().verifierUnique(selected.getLibelle().trim(), selected.getId(), selected.getDepartement().getId());
             if (errorMsg == false) {
-
+                editionInfo();
                 if (selected.getParent() != null) {
 
                     selected.setLibelleParent(selected.getParent().getLibelle());
@@ -254,6 +255,16 @@ public class PosteController implements Serializable {
         listePostes = selected.getDepartement().getPostes().stream()
                 .filter(x -> !x.isDernierRang())
                 .collect(Collectors.toList());
+    }
+    
+    private void creationInfo() {
+        selected.setIdUserCreate(utilisateur.getId());
+        selected.setLibelleUserCreate(utilisateur.getNomPrenom());
+    }
+
+    private void editionInfo() {
+        selected.setIdUserModif(utilisateur.getId());
+        selected.setLibelleUserModif(utilisateur.getNomPrenom());
     }
 
     public SelectItem[] getItemsAvailableSelectOnePoste() {

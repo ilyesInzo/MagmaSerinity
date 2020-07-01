@@ -39,7 +39,7 @@ import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
-@ManagedBean(name= "entrepriseController")
+@ManagedBean(name = "entrepriseController")
 @SessionScoped
 public class EntrepriseController implements Serializable {
 
@@ -69,10 +69,10 @@ public class EntrepriseController implements Serializable {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
         /*if (entreprise.getIdEntrepriseSuivi() != null && entreprise.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = entreprise.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = entreprise.getEntreprise().getId();
-            }*/
+         idEntreprise = entreprise.getIdEntrepriseSuivi();
+         } else {
+         idEntreprise = entreprise.getEntreprise().getId();
+         }*/
     }
 
     public String initPage() {
@@ -81,7 +81,7 @@ public class EntrepriseController implements Serializable {
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
             utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
 
-            MenuTemplate.menuFonctionnalitesModules("GEntreprise", "MParametrage", null,utilisateur);
+            MenuTemplate.menuFonctionnalitesModules("GEntreprise", "MParametrage", null, utilisateur);
 
             System.out.println("Path : " + System.getProperty("com.sun.aas.installRoot"));
             System.out.println("Path : " + System.getProperty("com.sun.aas.domainsRoot"));
@@ -90,10 +90,10 @@ public class EntrepriseController implements Serializable {
 
             //MenuTemplate.menuFonctionnalitesModules("GEntreprise", utilisateur);
             /*if (entreprise.getIdEntrepriseSuivi() != null && entreprise.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = entreprise.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = entreprise.getEntreprise().getId();
-            }*/
+             idEntreprise = entreprise.getIdEntrepriseSuivi();
+             } else {
+             idEntreprise = entreprise.getEntreprise().getId();
+             }*/
             recreateModel();
             FacesContext.getCurrentInstance().getExternalContext().redirect("../entreprise/List.xhtml");
         } catch (IOException ex) {
@@ -183,7 +183,7 @@ public class EntrepriseController implements Serializable {
                 }
 
                 if (fileRegistre != null) {
-                    selected.setLogo(FonctionsString.supprimerCaracteresSpeciaux(selected.getLibelle().trim() + "_" + System.currentTimeMillis()+fileRegistre.getFileName().substring(fileRegistre.getFileName().lastIndexOf("."))));
+                    selected.setLogo(FonctionsString.supprimerCaracteresSpeciaux(selected.getLibelle().trim() + "_" + System.currentTimeMillis() + fileRegistre.getFileName().substring(fileRegistre.getFileName().lastIndexOf("."))));
                     try {
                         InputStream img = fileRegistre.getInputstream();
                         InputStream is = TraitementImage.resizeImageMaxHeight(img, 300, selected.getLogo());
@@ -267,8 +267,6 @@ public class EntrepriseController implements Serializable {
                     selected.setLibelleDelegation(selected.getDelegation().getLibelle());
                 }
 
-                
-
                 if (fileRegistre != null) {
 
                     if (selected.getLogo() != null && selected.getLogo().contains("/resources/images/") == false) {
@@ -276,7 +274,7 @@ public class EntrepriseController implements Serializable {
                         file.delete();
                     }
 
-                    selected.setLogo(FonctionsString.supprimerCaracteresSpeciaux(selected.getLibelle().trim() + "_" + selected.getDateCreation().getTime() +fileRegistre.getFileName().substring(fileRegistre.getFileName().lastIndexOf("."))));
+                    selected.setLogo(FonctionsString.supprimerCaracteresSpeciaux(selected.getLibelle().trim() + "_" + selected.getDateCreation().getTime() + fileRegistre.getFileName().substring(fileRegistre.getFileName().lastIndexOf("."))));
 
                     try {
                         InputStream img = fileRegistre.getInputstream();
@@ -298,14 +296,13 @@ public class EntrepriseController implements Serializable {
                 }
 
                 getFacade().edit(selected);
-                
+
                 ejbFacadeParametrageEntreprise.edit(selected.getParametrageEntreprise());
-                
-               /* if (selected.getParametrageEntreprise() != null) {
-                    selected.setIdDelegation(selected.getDelegation().getId());
-                    selected.setLibelleDelegation(selected.getDelegation().getLibelle());
-                }*/
-                
+
+                /* if (selected.getParametrageEntreprise() != null) {
+                 selected.setIdDelegation(selected.getDelegation().getId());
+                 selected.setLibelleDelegation(selected.getDelegation().getLibelle());
+                 }*/
                 return prepareList();
                 //}
             } else {

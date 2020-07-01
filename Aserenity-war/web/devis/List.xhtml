@@ -63,7 +63,7 @@
                                             <p:column selectionMode="single" style="width:35px;text-align:center;">
                                             </p:column>   
 
-                                            <p:column filterBy="#{item.numero}" sortBy="#{item.numero}" style="width: 15%" filterMatchMode="contains" filterStyle="width:98%">
+                                            <p:column filterBy="#{item.numero}" sortBy="#{item.numero}" style="width: 10%" filterMatchMode="contains" filterStyle="width:98%">
                                                 <f:facet name="header">
                                                     <h:outputText value="#{bundle.Numero}"/>
                                                 </f:facet>
@@ -77,18 +77,25 @@
                                                 <h:outputText value="#{item.libelleClient}"/>
                                             </p:column>
 
-                                            <p:column filterBy="#{item.dateCreationStringFr}" sortBy="#{item.dateCreationStringFr}" style="width: 20%" filterMatchMode="contains" filterStyle="width:98%">
+                                            <p:column filterBy="#{item.dateCreationStringFr}" sortBy="#{item.dateCreationStringFr}" style="width: 17%" filterMatchMode="contains" filterStyle="width:98%">
                                                 <f:facet name="header">
                                                     <h:outputText value="#{bundle.Date}"/>
                                                 </f:facet>
                                                 <h:outputText value="#{item.dateCreationStringFr}"/>
                                             </p:column>
 
-                                            <p:column filterBy="#{item.montantHT}" sortBy="#{item.montantTTC}" filterMatchMode="contains" filterStyle="width:98%" style="width: 10%; text-align:right">
+                                            <p:column filterBy="#{item.totalHT}" sortBy="#{item.totalHT}" filterMatchMode="contains" filterStyle="width:98%" style="width: 10%; text-align:right">
                                                 <f:facet name="header">
                                                     <h:outputText value="#{bundle.TotaleHT}"/>
                                                 </f:facet>
-                                                <h:outputText value="#{item.montantHT}"/>
+                                                <h:outputText value="#{item.totalHT}"/>
+                                            </p:column>
+                                            
+                                            <p:column filterBy="#{item.montantNet}" sortBy="#{item.montantNet}" filterMatchMode="contains" filterStyle="width:98%" style="width: 10%; text-align:right">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{bundle.TotaleNet}"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.montantNet}"/>
                                             </p:column>
                                             
                                             <p:column filterBy="#{item.totalTTC}" filterMatchMode="contains" filterStyle="width:98%" sortBy="#{item.totalTTC}" style="width: 10%; text-align:center">
@@ -112,7 +119,7 @@
                                                 <p:dataTable     liveResize="true"       var="itemLF" paginatorPosition="bottom" value="#{item.listeLigneDeviss}" rows="15" id="tblCalculateur" 
                                                                  emptyMessage="#{bundle.TableauVide}" >
 
-                                                    <p:column style="width: 8%" >
+                                                    <p:column style="width: 8%" rendered="#{devisController.parametrageEntreprise.gestionParCodeArticle}">
                                                         <f:facet name="header">
                                                             <h:outputText value="#{bundle.Code}" />
                                                         </f:facet>

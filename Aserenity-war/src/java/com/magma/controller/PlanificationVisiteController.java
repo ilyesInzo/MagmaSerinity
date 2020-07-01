@@ -6,10 +6,11 @@ import com.magma.controller.util.JsfUtil;
 import com.magma.entity.CategorieClient;
 import com.magma.entity.Client;
 import com.magma.entity.Commercial;
+import com.magma.entity.ParametrageEntreprise;
+import com.magma.entity.Pays;
 import com.magma.entity.Utilisateur;
 import com.magma.session.ClientFacadeLocal;
 import com.magma.session.CommercialFacadeLocal;
-import com.magma.session.PlanificationVisiteFacade;
 import com.magma.session.PlanificationVisiteFacadeLocal;
 import com.magma.util.MenuTemplate;
 import java.io.IOException;
@@ -81,8 +82,10 @@ public class PlanificationVisiteController implements Serializable {
     private String conditionAffichageEventDialog = "hidden";
     private int typeClient;
     private Client client = new Client();
+    private Pays pays = new Pays();
     private CategorieClient categorieClient;
     private List<Client> listClient = null;
+    private ParametrageEntreprise parametrageEntreprise = null;
 
     public PlanificationVisiteController() {
         items = null;
@@ -103,6 +106,8 @@ public class PlanificationVisiteController implements Serializable {
             utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
 
             MenuTemplate.menuFonctionnalitesModules("GPlanificationVisite", "MCommercial", null, utilisateur);
+
+            parametrageEntreprise = utilisateur.getEntreprise().getParametrageEntreprise();
 
             recreateModel();
             dateCalender = new Date();
@@ -157,7 +162,8 @@ public class PlanificationVisiteController implements Serializable {
     public void addEvent(ActionEvent actionEvent) {
         if (commercial != null && commercial.getId() != null) {
             if (getFacade().chefDeZoneNonDisponible(commercial.getId(), selected.getDateDebut(), selected.getDateFin()) == false) {
-                if (client != null && client.getId() != null) {
+                boolean condition = parametrageEntreprise.getTypePlanificationVisite() == 0 ? client != null && client.getId() != null : pays != null && pays.getId() != null;
+                if (condition) {
                     if (selected.getDateDebut() != null && selected.getDateFin() != null && selected.getDateDebut().getTime() < selected.getDateFin().getTime()) {
                         // selected.setUtilisateur(commercial);
 
@@ -166,6 +172,8 @@ public class PlanificationVisiteController implements Serializable {
                         selected.setPrenom(commercial.getPrenom());
                         selected.setIdClient(client.getId());
                         selected.setLibelleClient(client.getLibelle());
+                        selected.setIdPays(pays.getId());
+                        selected.setLibellePays(pays.getLibelle());
                         selected.setEtat(0);
                         selected.setDateSynch(new Date().getTime());
                         selected.setSupprimer(false);
@@ -202,13 +210,14 @@ public class PlanificationVisiteController implements Serializable {
 
                         selected = new PlanificationVisite();
                         client = new Client();
+                        pays = new Pays();
                     } else {
                         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), ResourceBundle.getBundle("/Bundle").getString("ErreurDuree")));
                         FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
                     }
 
                 } else {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), ResourceBundle.getBundle("/Bundle").getString("SelectionnerClient")));
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), ResourceBundle.getBundle("/Bundle").getString(parametrageEntreprise.getTypePlanificationVisite() == 0 ? "SelectionnerClient" : "SelectionnerPays")));
                     FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
                 }
 
@@ -223,6 +232,7 @@ public class PlanificationVisiteController implements Serializable {
         }
 
         client = null;
+        pays = null;
         typeClient = -1;
     }
 
@@ -259,6 +269,7 @@ public class PlanificationVisiteController implements Serializable {
         };
         selected = new PlanificationVisite();
         client = new Client();
+        pays = new Pays();
     }
 
     public void onEventSelect(SelectEvent selectEvent) {
@@ -284,6 +295,7 @@ public class PlanificationVisiteController implements Serializable {
             selected.setDateDebut(TraitementDate.moinsPlusHeurs(date, -1));
             selected.setDateFin(date);
             client = new Client();
+            pays = new Pays();
             conditionAffichageEventDialog = "visible";
         } else {
             conditionAffichageEventDialog = "hidden";
@@ -379,6 +391,7 @@ public class PlanificationVisiteController implements Serializable {
         };
         selected = new PlanificationVisite();
         client = new Client();
+        pays = new Pays();
     }
 
     public void onEventResize(ScheduleEntryResizeEvent event) {
@@ -397,6 +410,7 @@ public class PlanificationVisiteController implements Serializable {
         endDate = endAujourdhui;
         selected = new PlanificationVisite();
         client = new Client();
+        pays = new Pays();
         lazyEventModel = new LazyScheduleModel() {
 
             @Override
@@ -455,6 +469,7 @@ public class PlanificationVisiteController implements Serializable {
 
         selected = new PlanificationVisite();
         client = new Client();
+        pays = new Pays();
         lazyEventModel = new LazyScheduleModel() {
 
             @Override
@@ -513,6 +528,7 @@ public class PlanificationVisiteController implements Serializable {
 
         selected = new PlanificationVisite();
         client = new Client();
+        pays = new Pays();
         lazyEventModel = new LazyScheduleModel() {
 
             @Override
@@ -611,7 +627,8 @@ public class PlanificationVisiteController implements Serializable {
 //                if (categorieClient != null) {
 //                    listClient = ejbFacadeClient.findAllNative(" where o.Com_Id = " + commercial.getId() + " and o.CCl_Id = " + categorieClient.getId());
 //                } else {
-                listClient = ejbFacadeClient.findAllNative("where o.Com_Id = " + commercial.getId());
+
+                listClient = ejbFacadeClient.findAllNative("where o.Cli_Id in (" + commercial.getSequenceClientID() + ")");
 //                }
 
             } else {
@@ -808,7 +825,24 @@ public class PlanificationVisiteController implements Serializable {
         errorMsg = false;
         commercial = null;
         client = null;
+        pays = null;
         typeClient = -1;
+    }
+
+    public Pays getPays() {
+        return pays;
+    }
+
+    public void setPays(Pays pays) {
+        this.pays = pays;
+    }
+
+    public ParametrageEntreprise getParametrageEntreprise() {
+        return parametrageEntreprise;
+    }
+
+    public void setParametrageEntreprise(ParametrageEntreprise parametrageEntreprise) {
+        this.parametrageEntreprise = parametrageEntreprise;
     }
 
     public SelectItem[] getItemsAvailableSelectMany() {

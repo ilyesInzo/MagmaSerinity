@@ -23,7 +23,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
-import javax.inject.Named;
 import javax.faces.bean.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -33,7 +32,7 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 
-@ManagedBean(name= "encaissementController")
+@ManagedBean(name = "encaissementController")
 @SessionScoped
 public class EncaissementController implements Serializable {
 
@@ -72,10 +71,10 @@ public class EncaissementController implements Serializable {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
         /*if (encaissement.getIdEntrepriseSuivi() != null && encaissement.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = encaissement.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = encaissement.getEntreprise().getId();
-            }*/
+         idEntreprise = encaissement.getIdEntrepriseSuivi();
+         } else {
+         idEntreprise = encaissement.getEntreprise().getId();
+         }*/
     }
 
     public String initPage() {
@@ -84,14 +83,14 @@ public class EncaissementController implements Serializable {
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
             utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
 
-            MenuTemplate.menuFonctionnalitesModules("GEncaissement", "MVente", null,utilisateur);
+            MenuTemplate.menuFonctionnalitesModules("GEncaissement", "MVente", null, utilisateur);
 
             //MenuTemplate.menuFonctionnalitesModules("GEncaissement", utilisateur);
             /*if (encaissement.getIdEntrepriseSuivi() != null && encaissement.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = encaissement.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = encaissement.getEntreprise().getId();
-            }*/
+             idEntreprise = encaissement.getIdEntrepriseSuivi();
+             } else {
+             idEntreprise = encaissement.getEntreprise().getId();
+             }*/
             recreateModel();
             FacesContext.getCurrentInstance().getExternalContext().redirect("../encaissement/List.xhtml");
         } catch (IOException ex) {
@@ -179,6 +178,7 @@ public class EncaissementController implements Serializable {
             if (selected.getMontant().compareTo(BigDecimal.ZERO) == 1 && selected.getMontant().compareTo(selected.getFacture().getReste()) != 1) {
 
                 if ((!selected.getTypeEncaissementVente().isAvoir() || (selected.getTypeEncaissementVente().isAvoir() && selected.getMontant().compareTo(selected.getAvoir().getReste()) != 1))) {
+                    creationInfo();
                     selected.setDateEncaissement(new Date());
                     selected.setNumero(selected.getFacture().getNumero());
                     if (client != null) {
@@ -198,45 +198,45 @@ public class EncaissementController implements Serializable {
                     }
 
                     /*if (vendeur != null) {
-                    selected.setIdVendeur(vendeur.getId());
-                    selected.setCodeVendeur(vendeur.getCode());
-                    selected.setCodeCommercialVendeur(vendeur.getCodeCommercial());
-                    selected.setVendeur(vendeur.getNomPrenom());
-                } else {
-                    selected.setIdVendeur(utilisateur.getId());
-                    selected.setCodeVendeur(utilisateur.getCode());
-                    selected.setVendeur(utilisateur.getNomPrenom());
-                }*/
+                     selected.setIdVendeur(vendeur.getId());
+                     selected.setCodeVendeur(vendeur.getCode());
+                     selected.setCodeCommercialVendeur(vendeur.getCodeCommercial());
+                     selected.setVendeur(vendeur.getNomPrenom());
+                     } else {
+                     selected.setIdVendeur(utilisateur.getId());
+                     selected.setCodeVendeur(utilisateur.getCode());
+                     selected.setVendeur(utilisateur.getNomPrenom());
+                     }*/
                     selected.setSupprimer(false);
 
                     /*if (selected.getTypeEncaissementVente().isTauxRetenu()) {
-                    RetenuSourceVente retenuSourceVente = new RetenuSourceVente();
-                    retenuSourceVente.setDateCreation(new Date());
-                    retenuSourceVente.setCodeClient(selected.getCodeClient());
-                    retenuSourceVente.setIdClient(selected.getIdClient());
-                    retenuSourceVente.setLibelleClient(selected.getLibelleClient());
-                    retenuSourceVente.setDateFacture(new Date());
-                    retenuSourceVente.setIdEntreprise(selected.getIdEntreprise());
-                    retenuSourceVente.setMontant(selected.getMontant());
-                    retenuSourceVente.setNumeroFacture(selected.getFacture().getNumero());
-                    retenuSourceVente.setOrigine(0);
-                    ejbFacadeRetenuSourceVente.create(retenuSourceVente);
+                     RetenuSourceVente retenuSourceVente = new RetenuSourceVente();
+                     retenuSourceVente.setDateCreation(new Date());
+                     retenuSourceVente.setCodeClient(selected.getCodeClient());
+                     retenuSourceVente.setIdClient(selected.getIdClient());
+                     retenuSourceVente.setLibelleClient(selected.getLibelleClient());
+                     retenuSourceVente.setDateFacture(new Date());
+                     retenuSourceVente.setIdEntreprise(selected.getIdEntreprise());
+                     retenuSourceVente.setMontant(selected.getMontant());
+                     retenuSourceVente.setNumeroFacture(selected.getFacture().getNumero());
+                     retenuSourceVente.setOrigine(0);
+                     ejbFacadeRetenuSourceVente.create(retenuSourceVente);
 
-                }*/
+                     }*/
 
- /*selected.setIdDomaine(selected.getDomaine().getId());
-                selected.setLibelleDomaine(selected.getDomaine().getLibelle());
-                selected.setCodeDomaine(selected.getDomaine().getCode());
-                selected.setIdEntreprise(idEntreprise);*/
+                    /*selected.setIdDomaine(selected.getDomaine().getId());
+                     selected.setLibelleDomaine(selected.getDomaine().getLibelle());
+                     selected.setCodeDomaine(selected.getDomaine().getCode());
+                     selected.setIdEntreprise(idEntreprise);*/
                     getFacade().create(selected);
 
                     if (selected.getFacture() != null) {
 
                         /* for (Encaissement item : selected.getFacture().getListeEncaissements()) {
-                     if (item.isSupprimer() == false) {
-                     montantPaye = montantPaye.add(item.getMontant());
-                     }
-                     }*/
+                         if (item.isSupprimer() == false) {
+                         montantPaye = montantPaye.add(item.getMontant());
+                         }
+                         }*/
                         if (selected.getTypeEncaissementVente().isAvoir()) {
 
                             selected.getAvoir().setReste(selected.getAvoir().getReste().subtract(selected.getMontant()));
@@ -296,6 +296,7 @@ public class EncaissementController implements Serializable {
     public String update() {
         BigDecimal montantPaye = BigDecimal.ZERO;
         try {
+            editionInfo();
             selected.setDateEncaissement(new Date());
             getFacade().edit(selected);
 
@@ -306,15 +307,15 @@ public class EncaissementController implements Serializable {
                         montantPaye = montantPaye.add(item.getMontant());
                     }
                 }
-                resteaPayer = selected.getFacture().getMontantHT().subtract(montantPaye);
+                resteaPayer = selected.getFacture().getTotalTTC().subtract(montantPaye);
                 selected.getFacture().setReste(resteaPayer);
 
                 /*selected.setIdDomaine(selected.getDomaine().getId());
-                selected.setLibelleDomaine(selected.getDomaine().getLibelle());
-                selected.setCodeDomaine(selected.getDomaine().getCode());
-                selected.setIdEntreprise(idEntreprise);
-                selected.setLibelleEntreprise(selected.getDomaine().getEntreprise().getLibelle());
-                selected.setCodeEntreprise(selected.getDomaine().getEntreprise().getCode());*/
+                 selected.setLibelleDomaine(selected.getDomaine().getLibelle());
+                 selected.setCodeDomaine(selected.getDomaine().getCode());
+                 selected.setIdEntreprise(idEntreprise);
+                 selected.setLibelleEntreprise(selected.getDomaine().getEntreprise().getLibelle());
+                 selected.setCodeEntreprise(selected.getDomaine().getEntreprise().getCode());*/
                 selected.getFacture().setEtat(3);
                 ejbFacadeFacture.edit(selected.getFacture());
             }
@@ -332,8 +333,8 @@ public class EncaissementController implements Serializable {
             //if (temps == null || temps.isEmpty()) {
             performDestroy();
             /*} else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SuppressionNonAutorisé")));
-            }*/
+             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SuppressionNonAutorisé")));
+             }*/
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SelectionnerObjet")));
         }
@@ -346,7 +347,7 @@ public class EncaissementController implements Serializable {
 
         resteaPayer = selectedSingle.getFacture().getReste().add(selectedSingle.getMontant());
 
-        if (resteaPayer.compareTo(selectedSingle.getFacture().getMontantHT()) == 0) {
+        if (resteaPayer.compareTo(selectedSingle.getFacture().getTotalTTC()) == 0) {
 
             selectedSingle.getFacture().setEtat(0);
 
@@ -356,7 +357,7 @@ public class EncaissementController implements Serializable {
 
         if (selectedSingle.getTypeEncaissementVente().isAvoir()) {
             //selectedSingle.getAvoir().setReste(selectedSingle.getAvoir().getReste().add(selectedSingle.getMontant()));
-            ejbFacadeAvoirVente.editRestAvoir(selectedSingle.getIdAvoir(),selectedSingle.getMontant());
+            ejbFacadeAvoirVente.editRestAvoir(selectedSingle.getIdAvoir(), selectedSingle.getMontant());
         }
         getFacade().edit(selectedSingle);
 
@@ -434,6 +435,16 @@ public class EncaissementController implements Serializable {
         } catch (Exception e) {
 
         }
+    }
+
+    private void creationInfo() {
+        selected.setIdUserCreate(utilisateur.getId());
+        selected.setLibelleUserCreate(utilisateur.getNomPrenom());
+    }
+
+    private void editionInfo() {
+        selected.setIdUserModif(utilisateur.getId());
+        selected.setLibelleUserModif(utilisateur.getNomPrenom());
     }
 
     public boolean isErrorMsg() {

@@ -51,7 +51,7 @@
                                                     <f:selectItems value="#{categorieClientController.itemsAvailableSelectOne}"  />
                                                     <p:ajax update="client" event="change" />
                                                     <p:column>
-                                                        <h:outputText value="#{l.toString()}" />
+                                                        <h:outputText value="#{l.libelleSuiteParentString}" />
                                                     </p:column>
                                                 </p:selectOneMenu>
                                             </div>
@@ -87,7 +87,7 @@
                                         <div class="form-group" >
                                             <h:outputLabel value="#{bundle.MontantTotal} :"  styleClass="control-label col-md-3 col-sm-3 col-xs-12"/>
                                             <div class="col-md-9 col-sm-9 col-xs-12">
-                                                <p:inputText id="montant" value="#{encaissementBonLivraisonController.selected.bonLivraison.montantHT}" title="#{bundle.Montant}" disabled="true"  styleClass="form-control" style="width: 90%; min-width: 180px"/>
+                                                <p:inputText id="montant" value="#{encaissementBonLivraisonController.selected.bonLivraison.montantNet}" title="#{bundle.MontantTotal}" disabled="true"  styleClass="form-control" style="width: 90%; min-width: 180px"/>
                                             </div>
                                         </div>
 

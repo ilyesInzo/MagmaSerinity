@@ -19,6 +19,10 @@ public class ClientWS {
 
     private String email;
     
+    private Long idPays;
+
+    private String libellePays;
+    
     private Long idGouvernorat;
 
     private String libelleGouvernorat;
@@ -207,6 +211,22 @@ public class ClientWS {
 
     public void setPrenomCommercial(String prenomCommercial) {
         this.prenomCommercial = prenomCommercial;
+    }
+
+    public Long getIdPays() {
+        return idPays;
+    }
+
+    public void setIdPays(Long idPays) {
+        this.idPays = idPays;
+    }
+
+    public String getLibellePays() {
+        return libellePays;
+    }
+
+    public void setLibellePays(String libellePays) {
+        this.libellePays = libellePays;
     }
     
     

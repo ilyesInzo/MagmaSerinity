@@ -60,7 +60,28 @@ public class ParametrageEntreprise implements Serializable {
     @Column(name = "PEnt_VisibiliteMVeille")
     private boolean visibiliteMVeille;
     
+
+    /** visibiliteMCommercial **/
     
+    // 0: client , 1 secteur = pays
+    @Column(name = "PEnt_TypePlanificationVisite")
+    private int typePlanificationVisite;
+    
+    /** visibiliteMProduit **/
+    //code Article
+    @Column(name = "PEnt_GestionParCodeArticle")
+    private boolean gestionParCodeArticle;
+    
+    @Column(name = "PEnt_PrixRetour")
+    private boolean prixRetour;
+    
+    /** visibiliteMVentes **/
+    
+    @Column(name = "PEnt_AppliquerRemiseGlobale")
+    private boolean appliquerRemiseGlobale;
+    
+    @Column(name = "PEnt_VenteParJour")
+    private boolean venteParJour;
     
     public Long getId() {
         return id;
@@ -149,9 +170,49 @@ public class ParametrageEntreprise implements Serializable {
     public void setVisibiliteMVeille(boolean visibiliteMVeille) {
         this.visibiliteMVeille = visibiliteMVeille;
     }
-    
-    
 
+    public int getTypePlanificationVisite() {
+        return typePlanificationVisite;
+    }
+
+    public void setTypePlanificationVisite(int typePlanificationVisite) {
+        this.typePlanificationVisite = typePlanificationVisite;
+    }
+
+    public boolean isAppliquerRemiseGlobale() {
+        return appliquerRemiseGlobale;
+    }
+
+    public void setAppliquerRemiseGlobale(boolean appliquerRemiseGlobale) {
+        this.appliquerRemiseGlobale = appliquerRemiseGlobale;
+    }
+
+    public boolean isVenteParJour() {
+        return venteParJour;
+    }
+
+    public void setVenteParJour(boolean venteParJour) {
+        this.venteParJour = venteParJour;
+    }
+
+    public boolean isGestionParCodeArticle() {
+        return gestionParCodeArticle;
+    }
+
+    public void setGestionParCodeArticle(boolean gestionParCodeArticle) {
+        this.gestionParCodeArticle = gestionParCodeArticle;
+    }
+
+    public boolean isPrixRetour() {
+        return prixRetour;
+    }
+
+    public void setPrixRetour(boolean prixRetour) {
+        this.prixRetour = prixRetour;
+    }
+
+
+ 
     @Override
     public int hashCode() {
         int hash = 0;

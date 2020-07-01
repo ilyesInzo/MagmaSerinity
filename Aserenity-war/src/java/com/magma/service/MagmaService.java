@@ -47,7 +47,7 @@ import javax.ws.rs.core.Response;
 @Path("/MagmaService")
 @RequestScoped
 public class MagmaService {
-
+    
     @EJB
     private CommercialFacadeLocal ejbFacadeCommercial;
     @EJB
@@ -64,15 +64,15 @@ public class MagmaService {
     private ArticleFacadeLocal ejbFacadeArticle;
     @EJB
     private EtatCommandeFacadeLocal ejbFacadeEtatCommande;
-
+    
     @EJB
     private CategorieClientFacadeLocal ejbFacadeCategorieClient;
     @EJB
     private ClientFacadeLocal ejbFacadeClient;
-
+    
     @EJB
     private PlanificationVisiteFacadeLocal ejbPlanificationVisite;
-
+    
     @EJB
     private ProspectionFacadeLocal ejbProspection;
     
@@ -81,14 +81,14 @@ public class MagmaService {
     
     @EJB
     private RapportVisitArticleFacadeLocal ejbRapportVisitArticle;
-
+    
     @GET
     @Path("/synchroniser")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public String hallo() {
         return "cc";
     }
-
+    
     private UtilisateurWS initUtilisateurWS(String login, int typeUtilisateur) {
         UtilisateurWS utilisateurWS = new UtilisateurWS();
         utilisateurWS.setId(0l);
@@ -115,16 +115,16 @@ public class MagmaService {
         utilisateurWS.setModuleVente(false);
         return utilisateurWS;
     }
-
+    
     @GET
     @Path("/autentification/{login}/{pwd}/{typeUtilisateur}/{dateSynch}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public UtilisateurWS authentification(@PathParam("login") String login, @PathParam("pwd") String pwd, @PathParam("typeUtilisateur") int typeUtilisateur, @PathParam("dateSynch") long dateSynch) {
-
+        
         UtilisateurWS utilisateurWS = initUtilisateurWS(login, typeUtilisateur);
         try {
             System.err.println(" ==> autentification smartProspect");
-
+            
             List<Commercial> utilisateurs = ejbFacadeCommercial.findAllNative(" where o.Usr_Email like '" + login + "'  ");
             if (utilisateurs != null && !utilisateurs.isEmpty()) {
                 if (utilisateurs.get(0).getPasswd() != null && utilisateurs.get(0).getPasswd().equals(pwd)) {
@@ -153,25 +153,25 @@ public class MagmaService {
                 utilisateurWS.setEtatCompte(3);
                 return utilisateurWS;
             }
-
+            
         } catch (Exception e) {
             System.out.println("MagmaService autentification ERREUR : " + e.getMessage());
             utilisateurWS.setEtatCompte(4);
             return utilisateurWS;
         }
-
+        
     }
-
+    
     @POST
     @Path("/Authentification")
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response postAuthentification(String authentificationJson) {
-
+        
         Gson gson = new Gson();
         UtilisateurWS utilisateurWS = gson.fromJson(authentificationJson, UtilisateurWS.class);
-
+        
         try {
-
+            
             List<Commercial> utilisateurs = ejbFacadeCommercial.findAllNative(" where o.Usr_Email like '" + utilisateurWS.getLogin() + "'  ");
             if (utilisateurs != null && !utilisateurs.isEmpty()) {
                 if (utilisateurs.get(0).getPasswd() != null && utilisateurs.get(0).getPasswd().equals(utilisateurWS.getPasswd())) {
@@ -198,13 +198,13 @@ public class MagmaService {
                 utilisateurWS.setEtatCompte(3);
                 return Response.status(Response.Status.OK).entity(utilisateurWS).build();
             }
-
+            
         } catch (Exception e) {
             System.out.println("MagmaService autentification ERREUR : " + e.getMessage());
             utilisateurWS.setEtatCompte(4);
             return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
         }
-
+        
     }
     
     @GET
@@ -220,7 +220,7 @@ public class MagmaService {
             } else {
                 listePayss = ejbFacadePays.findAll();
             }
-
+            
             if (listePayss != null && !listePayss.isEmpty()) {
                 for (Pays categorieClient : listePayss) {
                     PaysWS PaysWS = new PaysWS();
@@ -238,7 +238,7 @@ public class MagmaService {
             return listePaystWS;
         }
     }
-
+    
     @GET
     @Path("/synchroniserGouvernerats/{dateSynch}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -259,8 +259,8 @@ public class MagmaService {
                 gouverneratWS.setLibelle(gouvernorat.getLibelle());
                 gouverneratWS.setDescription(gouvernorat.getDescription());
                 
-                if(gouvernorat.getPays()!= null){
-                gouverneratWS.setIdPays(gouvernorat.getPays().getId());
+                if (gouvernorat.getPays() != null) {
+                    gouverneratWS.setIdPays(gouvernorat.getPays().getId());
                 }
                 gouverneratWS.setDateSynch(gouvernorat.getDateSynch());
                 listeGouverneratWS.add(gouverneratWS);
@@ -288,7 +288,7 @@ public class MagmaService {
             } else {
                 listeDelegations = ejbFacadeDelegation.findAll();
             }
-
+            
             if (listeDelegations != null && !listeDelegations.isEmpty()) {
                 for (Delegation delegation : listeDelegations) {
                     DelegationWS delegationWS = new DelegationWS();
@@ -307,7 +307,7 @@ public class MagmaService {
             return listeDelegationtWS;
         }
     }
-
+    
     @GET
     @Path("/synchroniserCategorieArticles/{dateSynch}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -348,7 +348,7 @@ public class MagmaService {
             return listeCategorieWS;
         }
     }
-
+    
     @GET
     @Path("/synchroniserArticles/{dateSynch}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -367,17 +367,17 @@ public class MagmaService {
                     articleWS.setId(article.getId());
                     articleWS.setCode(article.getCode());
                     articleWS.setLibelle(article.getLibelle());
-
+                    
                     articleWS.setPrixRevendeur(article.getPrixRevendeur());
                     articleWS.setTva(BigDecimal.valueOf(article.getTva().getValeur()));
                     articleWS.setDescription(article.getDescription());
-
+                    
                     articleWS.setSupprimer(article.isSupprimer());
                     articleWS.setDateSynch(article.getDateSynch());
-
+                    
                     articleWS.setIdCategorie(article.getCategorie().getId());
                     articleWS.setLibelleCategorie(article.getCategorie().getLibelle());
-
+                    
                     try {
                         File image1 = new File(LireParametrage.returnValeurParametrage("urlUmploadPhoto") + article.getPhoto1());
                         if (image1.exists() == true) {
@@ -433,7 +433,7 @@ public class MagmaService {
                         articleWS.setPhoto5("../resources/images/article.jpg");
                         System.out.println("MagmaService synchroniserArticles ERREUR PHOTO 5: " + e.getMessage());
                     }
-
+                    
                     articlesWS.add(articleWS);
                 }
                 return articlesWS;
@@ -445,21 +445,21 @@ public class MagmaService {
             return articlesWS;
         }
     }
-
+    
     @GET
     @Path("/synchroniserEtatCommande/{dateSynch}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public List<EtatCommandeWS> synchroniserEtatCommande(@PathParam("dateSynch") long dateSynch) {
         List<EtatCommandeWS> listeEtatCommandeWS = new ArrayList<>();
         try {
-
+            
             List<EtatCommande> listeEtatCommande;
             if (dateSynch > 0) {
                 listeEtatCommande = ejbFacadeEtatCommande.findAll(" where  o.dateSynch > " + dateSynch + "");
             } else {
                 listeEtatCommande = ejbFacadeEtatCommande.findAll();
             }
-
+            
             if (listeEtatCommande != null && !listeEtatCommande.isEmpty()) {
                 for (EtatCommande etatCommande : listeEtatCommande) {
                     EtatCommandeWS etatCommandeWS = new EtatCommandeWS();
@@ -469,13 +469,13 @@ public class MagmaService {
                     etatCommandeWS.setCouleur(etatCommande.getCouleur());
                     etatCommandeWS.setSupprimer(etatCommande.isSupprimer());
                     etatCommandeWS.setDateSynch(etatCommande.getDateSynch());
-
+                    
                     etatCommandeWS.setDernierRang(etatCommande.isDernierRang());
-
+                    
                     if (etatCommande.getParent() != null) {
                         etatCommandeWS.setIdParent(etatCommande.getParent().getId());
                     }
-
+                    
                     listeEtatCommandeWS.add(etatCommandeWS);
                 }
                 return listeEtatCommandeWS;
@@ -486,9 +486,9 @@ public class MagmaService {
             System.out.println("MagmaService synchroniserEtatCommande ERREUR : " + e.getMessage());
             return listeEtatCommandeWS;
         }
-
+        
     }
-
+    
     @GET
     @Path("/synchroniserCategorieClients/{dateSynch}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -502,7 +502,7 @@ public class MagmaService {
             } else {
                 listeCategorieClients = ejbFacadeCategorieClient.findAll();
             }
-
+            
             if (listeCategorieClients != null && !listeCategorieClients.isEmpty()) {
                 for (CategorieClient categorieClient : listeCategorieClients) {
                     CategorieClientWS categorieWS = new CategorieClientWS();
@@ -520,7 +520,7 @@ public class MagmaService {
             return listeCategorieClientWS;
         }
     }
-
+    
     @GET
     @Path("/synchroniserClientsByCommercial/{idCom}/{dateSynch}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -529,10 +529,13 @@ public class MagmaService {
         try {
             System.err.println("==> synchroniserClientsByCommercial");
             List<Client> listClient = null;
+            
+            List<Commercial> commerciaux = ejbFacadeCommercial.findAllNative(" where o.Com_Id = " + idCom + "  ");
+            Commercial commercial = commerciaux.get(0);
             if (dateSynch > 0) {
-                listClient = ejbFacadeClient.findAllNative(" where o.Com_Id = " + idCom + "  and o.Cli_DateSynch > " + dateSynch + " ");
+                listClient = ejbFacadeClient.findAllNative(" where o.Cli_Id in ( " + commercial.getSequenceClientID() + ") and o.Cli_DateSynch > " + dateSynch + " ");
             } else {
-                listClient = ejbFacadeClient.findAllNative(" where o.Com_Id = " + idCom + " ");
+                listClient = ejbFacadeClient.findAllNative(" where o.Cli_Id in ( " + commercial.getSequenceClientID() + ") ");
             }
             if (listClient != null && !listClient.isEmpty()) {
                 for (Client client : listClient) {
@@ -544,16 +547,18 @@ public class MagmaService {
                     clientWS.setAdresse(client.getAdresse());
                     //clientWS.setSupprimer(listClient1.isSupprimer());
                     clientWS.setDateSynch(client.getDateSynch());
-
+                    
                     clientWS.setIdDelegation(client.getIdDelegation());
                     clientWS.setLibelleDelegation(client.getLibelleDelegation());
-
+                    
                     clientWS.setIdGouvernorat(client.getIdGouvernorat());
                     clientWS.setLibelleGouvernorat(client.getLibelleGouvernorat());
-
+                    
+                    clientWS.setIdPays(client.getIdPays());
+                    clientWS.setLibellePays(client.getLibellePays());
+                    
                     clientWS.setIdCategorieClient(client.getCategorieClient().getId());
-
-
+                    
                     listeClientWS.add(clientWS);
                 }
                 return listeClientWS;
@@ -565,7 +570,65 @@ public class MagmaService {
             return listeClientWS;
         }
     }
-
+    
+    @GET
+    @Path("/synchroniserClientsByCommercial/{idCom}/{idPays}/{idGouvernorat}/{idDelegation}/{dateSynch}")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public List<ClientWS> synchroniserClientsByCommercial(@PathParam("idCom") Long idCom, @PathParam("idPays") long idPays, @PathParam("idGouvernorat") long idGouvernorat, @PathParam("idDelegation") long idDelegation, @PathParam("dateSynch") long dateSynch) {
+        List<ClientWS> listeClientWS = new ArrayList<>();
+        
+        try {
+            
+            String clause = "";
+            
+            System.err.println("==> synchroniserClientsByCommercial");
+            List<Client> listClient = null;
+            
+            clause = clause + (idPays > 0 ? "and Pys_Id = " + idPays : " ");
+            clause = clause + (idGouvernorat > 0 ? "and Gov_Id = " + idGouvernorat : " ");
+            clause = clause + (idDelegation > 0 ? "and Del_Id = " + idDelegation : " ");
+            
+            List<Commercial> commerciaux = ejbFacadeCommercial.findAllNative(" where o.Com_Id = " + idCom + "  ");
+            Commercial commercial = commerciaux.get(0);
+            if (dateSynch > 0) {
+                listClient = ejbFacadeClient.findAllNative(" where o.Cli_Id in ( " + commercial.getSequenceClientID() + ") and o.Cli_DateSynch > " + dateSynch + " " + clause);
+            } else {
+                listClient = ejbFacadeClient.findAllNative(" where o.Cli_Id in ( " + commercial.getSequenceClientID() + ") " + clause);
+            }
+            if (listClient != null && !listClient.isEmpty()) {
+                for (Client client : listClient) {
+                    ClientWS clientWS = new ClientWS();
+                    clientWS.setId(client.getId());
+                    clientWS.setLibelle(client.getLibelle());
+                    clientWS.setGsm(client.getGsm());
+                    clientWS.setEmail(client.getEmail());
+                    clientWS.setAdresse(client.getAdresse());
+                    //clientWS.setSupprimer(listClient1.isSupprimer());
+                    clientWS.setDateSynch(client.getDateSynch());
+                    
+                    clientWS.setIdDelegation(client.getIdDelegation());
+                    clientWS.setLibelleDelegation(client.getLibelleDelegation());
+                    
+                    clientWS.setIdGouvernorat(client.getIdGouvernorat());
+                    clientWS.setLibelleGouvernorat(client.getLibelleGouvernorat());
+                    
+                    clientWS.setIdPays(client.getIdPays());
+                    clientWS.setLibellePays(client.getLibellePays());
+                    
+                    clientWS.setIdCategorieClient(client.getCategorieClient().getId());
+                    
+                    listeClientWS.add(clientWS);
+                }
+                return listeClientWS;
+            } else {
+                return listeClientWS;
+            }
+        } catch (Exception e) {
+            System.out.println("MagmaService synchroniserClientsByCommercial ERREUR : " + e.getMessage());
+            return listeClientWS;
+        }
+    }
+    
     @GET
     @Path("/synchroniserAllClients/{dateSynch}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -589,13 +652,16 @@ public class MagmaService {
                     clientWS.setAdresse(client.getAdresse());
                     //clientWS.setSupprimer(listClient1.isSupprimer());
                     clientWS.setDateSynch(client.getDateSynch());
-
+                    
                     clientWS.setIdDelegation(client.getIdDelegation());
                     clientWS.setLibelleDelegation(client.getLibelleDelegation());
-
+                    
                     clientWS.setIdGouvernorat(client.getIdGouvernorat());
                     clientWS.setLibelleGouvernorat(client.getLibelleGouvernorat());
-
+                    
+                    clientWS.setIdPays(client.getIdPays());
+                    clientWS.setLibellePays(client.getLibellePays());
+                    
                     clientWS.setIdCategorieClient(client.getCategorieClient().getId());
                     clientWS.setLibelleCategorieClient(client.getCategorieClient().getLibelle());
                     listeClientWS.add(clientWS);
@@ -609,7 +675,7 @@ public class MagmaService {
             return listeClientWS;
         }
     }
-
+    
     @GET
     @Path("/synchroniserPlanificationVisite/{idCom}/{dateSynch}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -627,23 +693,26 @@ public class MagmaService {
             }
             if (listPlanificationVisite != null && !listPlanificationVisite.isEmpty()) {
                 for (PlanificationVisite planification : listPlanificationVisite) {
-                    PlanificationVisiteWS planificationVisite = new PlanificationVisiteWS();
-                    planificationVisite.setId(planification.getId());
-
-                    planificationVisite.setDateDebut(planification.getDateDebut().getTime());
-                    planificationVisite.setDateFin(planification.getDateFin().getTime());
-                    planificationVisite.setDateSynch(planification.getDateSynch());
-                    planificationVisite.setDescription(planification.getDescription());
-                    planificationVisite.setEtat(planification.getEtat());
-
-                    planificationVisite.setIdClient(planification.getIdClient());
-                    planificationVisite.setLibelleClient(planification.getLibelleClient());
-
-                    planificationVisite.setIdCategorieClient(planification.getIdCategorieClient());
-
-                    planificationVisite.setSupprimer(planification.isSupprimer());
-
-                    listePlanificationVisiteWS.add(planificationVisite);
+                    PlanificationVisiteWS planificationVisiteWS = new PlanificationVisiteWS();
+                    planificationVisiteWS.setId(planification.getId());
+                    
+                    planificationVisiteWS.setDateDebut(planification.getDateDebut().getTime());
+                    planificationVisiteWS.setDateFin(planification.getDateFin().getTime());
+                    planificationVisiteWS.setDateSynch(planification.getDateSynch());
+                    planificationVisiteWS.setDescription(planification.getDescription());
+                    planificationVisiteWS.setEtat(planification.getEtat());
+                    
+                    planificationVisiteWS.setIdClient(planification.getIdClient());
+                    planificationVisiteWS.setLibelleClient(planification.getLibelleClient());
+                    
+                    planificationVisiteWS.setIdPays(planification.getIdPays());
+                    planificationVisiteWS.setLibellePays(planification.getLibellePays());
+                    
+                    planificationVisiteWS.setIdCategorieClient(planification.getIdCategorieClient());
+                    
+                    planificationVisiteWS.setSupprimer(planification.isSupprimer());
+                    
+                    listePlanificationVisiteWS.add(planificationVisiteWS);
                 }
                 return listePlanificationVisiteWS;
             } else {
@@ -654,7 +723,7 @@ public class MagmaService {
             return listePlanificationVisiteWS;
         }
     }
-
+    
     @POST
     @Path("/ajouterPlanificationVisite")
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -664,21 +733,24 @@ public class MagmaService {
             PlanificationVisiteWS planification = gson.fromJson(planificationVisiteJson, PlanificationVisiteWS.class);
             PlanificationVisite planificationVisite = new PlanificationVisite();
             planificationVisite.setId(planification.getId());
-
+            
             planificationVisite.setDateDebut(TraitementDate.dateDuString(planification.getDateDebut()));
             planificationVisite.setDateFin(TraitementDate.dateDuString(planification.getDateFin()));
-
+            
             planificationVisite.setDateSynch(planification.getDateSynch());
-
+            
             planificationVisite.setDescription(planification.getDescription());
-
+            
             planificationVisite.setEtat(planification.getEtat());
-
+            
             planificationVisite.setIdClient(planification.getIdClient());
             planificationVisite.setLibelleClient(planification.getLibelleClient());
-
+            
+            planificationVisite.setIdPays(planification.getIdPays());
+            planificationVisite.setLibellePays(planification.getLibellePays());
+            
             planificationVisite.setSupprimer(planification.isSupprimer());
-
+            
             ejbPlanificationVisite.createOrUpdate(planificationVisite);
             return Response.status(Response.Status.OK).build();
         } catch (Exception e) {
@@ -686,7 +758,7 @@ public class MagmaService {
             return Response.status(Response.Status.NOT_ACCEPTABLE).build();
         }
     }
-
+    
     @GET
     @Path("/synchroniserProspections/{dateSynch}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -709,13 +781,13 @@ public class MagmaService {
                     clientWS.setAdresse(client.getAdresse());
                     //clientWS.setSupprimer(listClient1.isSupprimer());
                     clientWS.setDateSynch(client.getDateSynch());
-
+                    
                     clientWS.setIdDelegation(client.getIdDelegation());
                     clientWS.setLibelleDelegation(client.getLibelleDelegation());
-
+                    
                     clientWS.setIdGouvernorat(client.getIdGouvernorat());
                     clientWS.setLibelleGouvernorat(client.getLibelleGouvernorat());
-
+                    
                     clientWS.setIdCategorieClient(client.getIdCategorieClient());
                     clientWS.setLibelleCategorieClient(client.getLibelleCategorieClient());
                     
@@ -725,7 +797,7 @@ public class MagmaService {
                     clientWS.setTypeCommercial(client.getType());
                     
                     clientWS.setEtatProspection(client.getEtatProspection());
-
+                    
                     listeClientWS.add(clientWS);
                 }
                 return listeClientWS;
@@ -737,7 +809,7 @@ public class MagmaService {
             return listeClientWS;
         }
     }
-
+    
     @POST
     @Path("/ajouterProspection")
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -747,20 +819,20 @@ public class MagmaService {
             ClientWS clientPotentiel = gson.fromJson(prospectionJson, ClientWS.class);
             Prospection prospection = new Prospection();
             prospection.setId(clientPotentiel.getId());
-
+            
             prospection.setDateSynch(clientPotentiel.getDateSynch());
-
+            
             prospection.setId(clientPotentiel.getId());
             prospection.setLibelle(clientPotentiel.getLibelle());
             prospection.setGsm(clientPotentiel.getGsm());
             prospection.setAdresse(clientPotentiel.getAdresse());
-
+            
             prospection.setIdDelegation(clientPotentiel.getIdDelegation());
             prospection.setLibelleDelegation(clientPotentiel.getLibelleDelegation());
-
+            
             prospection.setIdGouvernorat(clientPotentiel.getIdGouvernorat());
             prospection.setLibelleGouvernorat(clientPotentiel.getLibelleGouvernorat());
-
+            
             prospection.setIdCategorieClient(clientPotentiel.getIdCategorieClient());
             prospection.setLibelleCategorieClient(clientPotentiel.getLibelleCategorieClient());
             
@@ -773,9 +845,9 @@ public class MagmaService {
             prospection.setLatitude(clientPotentiel.getLatitude());
             
             prospection.setDateCreation(TraitementDate.dateDuString(clientPotentiel.getDateSynch()));
-
+            
             prospection.setEtatProspection(clientPotentiel.getEtatProspection());
-
+            
             ejbProspection.create(prospection);
             return Response.status(Response.Status.OK).build();
         } catch (Exception e) {
@@ -783,7 +855,6 @@ public class MagmaService {
             return Response.status(Response.Status.NOT_ACCEPTABLE).build();
         }
     }
-    
     
     @POST
     @Path("/ajouterRapportVisite")
@@ -793,14 +864,14 @@ public class MagmaService {
             Gson gson = new Gson();
             RapportVisitWS rapportVisitWS = gson.fromJson(rapportVisiteJson, RapportVisitWS.class);
             RapportVisit rapportVisit = new RapportVisit();
-
+            
             rapportVisit.setId(rapportVisitWS.getId());
             rapportVisit.setIdCommercial(rapportVisitWS.getIdCommercial());
             rapportVisit.setNomCommercial(rapportVisitWS.getNomCommercial());
             rapportVisit.setPrenomCommercial(rapportVisitWS.getPrenomCommercial());
             rapportVisit.setIdClient(rapportVisitWS.getIdClient());
             rapportVisit.setLibelleClient(rapportVisitWS.getLibelleClient());
-            
+            rapportVisit.setDateCreation(TraitementDate.dateDuString(rapportVisitWS.getDateVisite()));
             PlanificationVisite planificationVisite = new PlanificationVisite();
             planificationVisite.setId(rapportVisitWS.getIdPlanificationVisite());
             rapportVisit.setPlanificationVisite(planificationVisite);
@@ -808,28 +879,25 @@ public class MagmaService {
             ejbRapportVisit.create(rapportVisit);
             
             List<RapportVisitArticle> listRapportVisitArticle = new ArrayList();
-            for(RapportVisitArticleWS rapportVisitArticleWS : rapportVisitWS.getListRapportVisitArticles())
-            {
-            RapportVisitArticle rapportVisitArticle = new RapportVisitArticle();
-            rapportVisitArticle.setCodeArticle(rapportVisitArticleWS.getCodeArticle());
-            rapportVisitArticle.setLibelleArticle(rapportVisitArticleWS.getLibelleArticle());
-            rapportVisitArticle.setIdArticle(rapportVisitArticleWS.getIdArticle());
-            
-            rapportVisitArticle.setNote(rapportVisitArticleWS.getNote());
-            rapportVisitArticle.setCommentaire(rapportVisitArticleWS.getCommentaire());
-            rapportVisitArticle.setRapportVisit(rapportVisit);
-            listRapportVisitArticle.add(rapportVisitArticle);
+            for (RapportVisitArticleWS rapportVisitArticleWS : rapportVisitWS.getListRapportVisitArticles()) {
+                RapportVisitArticle rapportVisitArticle = new RapportVisitArticle();
+                rapportVisitArticle.setCodeArticle(rapportVisitArticleWS.getCodeArticle());
+                rapportVisitArticle.setLibelleArticle(rapportVisitArticleWS.getLibelleArticle());
+                rapportVisitArticle.setIdArticle(rapportVisitArticleWS.getIdArticle());
+                
+                rapportVisitArticle.setNote(rapportVisitArticleWS.getNote());
+                rapportVisitArticle.setCommentaire(rapportVisitArticleWS.getCommentaire());
+                rapportVisitArticle.setRapportVisit(rapportVisit);
+                listRapportVisitArticle.add(rapportVisitArticle);
             }
             
             ejbRapportVisitArticle.create(listRapportVisitArticle);
             
-            
-
             return Response.status(Response.Status.OK).build();
         } catch (Exception e) {
             System.out.println("MagmaService ajouterRapportVisite ERREUR : " + e.getMessage());
             return Response.status(Response.Status.NOT_ACCEPTABLE).build();
         }
     }
-
+    
 }

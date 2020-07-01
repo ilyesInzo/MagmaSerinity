@@ -51,7 +51,7 @@ public class TemplateArticleVisiteController implements Serializable {
     private List<Article> listArticlesPhare = null;
     private List<TemplateArticleVisite> listeTemplateArticleVistes = null;
     private List<Categorie> listeCategories = null;
-    
+
     public TemplateArticleVisiteController() {
         items = null;
         errorMsg = false;
@@ -59,10 +59,10 @@ public class TemplateArticleVisiteController implements Serializable {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
         /*if (templateArticleVisite.getIdEntrepriseSuivi() != null && templateArticleVisite.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = templateArticleVisite.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = templateArticleVisite.getEntreprise().getId();
-            }*/
+         idEntreprise = templateArticleVisite.getIdEntrepriseSuivi();
+         } else {
+         idEntreprise = templateArticleVisite.getEntreprise().getId();
+         }*/
     }
 
     public String initPage() {
@@ -71,14 +71,14 @@ public class TemplateArticleVisiteController implements Serializable {
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
             utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
 
-            MenuTemplate.menuFonctionnalitesModules("GTemplateArticleVisite", "MCommercial", "MCommercial",utilisateur);
+            MenuTemplate.menuFonctionnalitesModules("GTemplateArticleVisite", "MCommercial", "MCommercial", utilisateur);
 
             //MenuTemplate.menuFonctionnalitesModules("GTemplateArticleVisite", utilisateur);
             /*if (templateArticleVisite.getIdEntrepriseSuivi() != null && templateArticleVisite.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = templateArticleVisite.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = templateArticleVisite.getEntreprise().getId();
-            }*/
+             idEntreprise = templateArticleVisite.getIdEntrepriseSuivi();
+             } else {
+             idEntreprise = templateArticleVisite.getEntreprise().getId();
+             }*/
             recreateModel();
             FacesContext.getCurrentInstance().getExternalContext().redirect("../templateArticleVisite/List.xhtml");
         } catch (IOException ex) {
@@ -144,7 +144,7 @@ public class TemplateArticleVisiteController implements Serializable {
         }
         return "List";
     }
-    
+
     public TreeNode viewCheckboxArborescence() {
         listeCategories = ejbCategorie.findAll();
         List<String> listId = new ArrayList<>();
@@ -195,14 +195,13 @@ public class TemplateArticleVisiteController implements Serializable {
         return root;
     }
 
-
     public String prepareCreate() {
         createCheckboxArborescence();
         selected = new TemplateArticleVisite();
         errorMsg = false;
         return "Create";
     }
-    
+
     public TreeNode createCheckboxArborescence() {
         listeCategories = ejbCategorie.findAll();
         List<String> listId = new ArrayList<>();
@@ -247,9 +246,9 @@ public class TemplateArticleVisiteController implements Serializable {
             errorMsg = getFacade().verifierUnique(selected.getLibelle().trim());
 
             if (errorMsg == false) {
+                creationInfo();
 
-                
-                    if (selectedNodes.length >= 1) {
+                if (selectedNodes.length >= 1) {
                     String selection = "", selectionLibelleArticle = "";
                     for (TreeNode selectedNode : selectedNodes) {
                         if (((Document) selectedNode.getData()).getType().equals("Article")) {
@@ -262,16 +261,12 @@ public class TemplateArticleVisiteController implements Serializable {
                     selected.setSupprimer(false);
                     selected.setDateSynchro(new Date().getTime());
 
-
                     getFacade().create(selected);
                     return prepareList();
                 } else {
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("ErreurListeArticle")));
                     return null;
-                }                
-                
-                
-                
+                }
 
             } else {
                 FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
@@ -308,7 +303,7 @@ public class TemplateArticleVisiteController implements Serializable {
             errorMsg = getFacade().verifierUnique(selected.getLibelle().trim(), selected.getId());
 
             if (errorMsg == false) {
-
+                editionInfo();
                 if (selectedNodes.length >= 1) {
                     String selection = "", selectionLibelleArticle = "";
                     for (TreeNode selectedNode : selectedNodes) {
@@ -356,11 +351,21 @@ public class TemplateArticleVisiteController implements Serializable {
             System.out.println("Erreur- TemplateArticleVisiteController - performDestroy: " + e.getMessage());
         }
     }
-    
+
+    private void creationInfo() {
+        selected.setIdUserCreate(utilisateur.getId());
+        selected.setLibelleUserCreate(utilisateur.getNomPrenom());
+    }
+
+    private void editionInfo() {
+        selected.setIdUserModif(utilisateur.getId());
+        selected.setLibelleUserModif(utilisateur.getNomPrenom());
+    }
+
     public TreeNode getRoot() {
         return root;
     }
-    
+
     public TreeNode[] getSelectedNodes() {
         return selectedNodes;
     }
@@ -368,7 +373,7 @@ public class TemplateArticleVisiteController implements Serializable {
     public void setSelectedNodes(TreeNode[] selectedNodes) {
         this.selectedNodes = selectedNodes;
     }
-    
+
     public List<String> getListeLibelleArticles() {
         return listeLibelleArticles;
     }

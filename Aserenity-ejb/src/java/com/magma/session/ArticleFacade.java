@@ -32,8 +32,8 @@ public class ArticleFacade extends AbstractFacade<Article> implements ArticleFac
     }
     
         @Override
-    public void editStockArticle(Long idArticle, BigDecimal quantite) {
-        Query q = (Query) getEntityManager().createNativeQuery("Update T_Article SET Art_QuantiteStock = Art_QuantiteStock + " + quantite + " where Art_Id = " + idArticle);
+    public void editStockArticle(Long idArticle, BigDecimal quantite, String Operateur) {
+        Query q = (Query) getEntityManager().createNativeQuery("Update T_Article SET Art_QuantiteStock = Art_QuantiteStock " + Operateur + " " + quantite + " where Art_Id = " + idArticle);
         q.executeUpdate();
     }
     

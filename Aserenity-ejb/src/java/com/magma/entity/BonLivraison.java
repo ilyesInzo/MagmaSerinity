@@ -70,14 +70,32 @@ public class BonLivraison implements Serializable {
     @Column(name = "BLiv_MontantHT", scale = 3, precision = 28)
     private BigDecimal montantHT;
     
+    @Column(name = "BLiv_AppliquerRemise")
+    private Integer appliquerRemise = -1;
+    
+    @Column(name = "BLiv_TauxRemiseGlobal", scale = 3, precision = 28)
+    private BigDecimal tauxRemiseGlobal= BigDecimal.ZERO;
+    
+    @Column(name = "BLiv_MontantRemiseGlobal", scale = 3, precision = 28)
+    private BigDecimal montantRemiseGlobal= BigDecimal.ZERO;
+    
+    @Column(name = "BLiv_MontantNet", scale = 3, precision = 28)
+    private BigDecimal montantNet;
+    
     @Column(name = "BLiv_MontantTVA", scale = 3, precision = 28)
     private BigDecimal montantTVA;
 
     @Column(name = "BLiv_MontantTTC", scale = 3, precision = 28)
     private BigDecimal montantTTC;
+    
+    @Column(name = "BLiv_TotalHT", scale = 3, precision = 28)
+    private BigDecimal totalHT;
 
     @Column(name = "BLiv_Reste", scale = 3, precision = 28)
     private BigDecimal reste;
+    
+    @Column(name = "BLiv_NbJourVente")
+    private int nbJourVente = 1;
 
     /* @Column(name = "Liv_Id", length = 30)
     private Long idVendeur;
@@ -108,7 +126,7 @@ public class BonLivraison implements Serializable {
     
     //   0 : vente Directe, 1 : Devis , 2 : bonCommande
     @Column(name = "BLiv_Origine")
-    private Integer origine;
+    private Integer origine = -1;
     
     @Column(name = "BLiv_IdDocumentOrigine")
     private Long idDocumentOrigine;
@@ -143,9 +161,6 @@ public class BonLivraison implements Serializable {
     // 0: Pas de Paiement // 1: Paiement Total // 2: Annulé  //3: Paiement Partiel
     @Column(name = "BLiv_Etat")
     private int etat;
-
-    @Column(name = "BLiv_Libelle")
-    private String libelleDevis;
 
     // 0: Facture 
     @Column(name = "BLiv_TransformTo")
@@ -264,11 +279,11 @@ public class BonLivraison implements Serializable {
         try {
 
             if (origine == 0) {
-                return "Bon commande";
+                return "Vente directe";
             } else if (origine == 1) {
                 return "Devis";
             } else if (origine == 2) {
-                return "Vente directe";
+                return "Bon commande";
             } else {
                 return "---";
             }
@@ -342,81 +357,14 @@ public class BonLivraison implements Serializable {
         this.montantTTC = montantTTC;
     }
 
-    /*public Long getIdVendeur() {
-        return idVendeur;
+    public BigDecimal getMontantNet() {
+        return FonctionsMathematiques.arrondiBigDecimal(montantNet, 3);
     }
 
-    public void setIdVendeur(Long idVendeur) {
-        this.idVendeur = idVendeur;
+    public void setMontantNet(BigDecimal montantNet) {
+        this.montantNet = montantNet;
     }
 
-    public String getCodeVendeur() {
-        if (codeVendeur != null) {
-            return codeVendeur;
-        } else {
-            return "---";
-        }
-    }
-
-    public void setCodeVendeur(String codeVendeur) {
-        this.codeVendeur = codeVendeur;
-    }
-
-    public String getCodeCommercialVendeur() {
-        return codeCommercialVendeur;
-    }
-
-    public void setCodeCommercialVendeur(String codeCommercialVendeur) {
-        this.codeCommercialVendeur = codeCommercialVendeur;
-    }
-
-    public String getVendeur() {
-        return vendeur;
-    }
-
-    public void setVendeur(String vendeur) {
-        this.vendeur = vendeur;
-    }
-
-    public boolean isAvImpot() {
-        return avImpot;
-    }
-
-    public void setAvImpot(boolean avImpot) {
-        this.avImpot = avImpot;
-    }
-
-    public String getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
-    }
-
-    public String getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
-    }
-
-    public String getPrecision() {
-        return precision;
-    }
-
-    public void setPrecision(String precision) {
-        this.precision = precision;
-    }
-
-    public String getAppVersion() {
-        return appVersion;
-    }
-
-    public void setAppVersion(String appVersion) {
-        this.appVersion = appVersion;
-    }*/
     public Client getClient() {
         return client;
     }
@@ -548,7 +496,7 @@ public class BonLivraison implements Serializable {
     public boolean isNePeutModifierBonLivraison() {
         switch (etat) {
             case 0:
-                return false || isNePeutApprouverBonLivraison();
+                return isNePeutApprouverBonLivraison();
 
             case 1:
                 return true;
@@ -564,22 +512,12 @@ public class BonLivraison implements Serializable {
     }
 
     public boolean isNePeutApprouverBonLivraison() {
-        if (idDocumentOrigine != null) {
+        if (idDocumentTransform != null || idRetour != null) {
             return true;
         } else {
             return false;
         }
     }
-
-    public String getLibelleDevis() {
-        return libelleDevis;
-    }
-
-    public void setLibelleDevis(String libelleDevis) {
-        this.libelleDevis = libelleDevis;
-    }
-
-
 
     public List<EncaissementBonLivraison> getListEncaissementBonLivraisons() {
         return listEncaissementBonLivraisons;
@@ -716,9 +654,47 @@ public class BonLivraison implements Serializable {
     public void setBonCommande(BonCommandeVente bonCommande) {
         this.bonCommande = bonCommande;
     }
-    
-    
 
+    public Integer getAppliquerRemise() {
+        return appliquerRemise;
+    }
+
+    public void setAppliquerRemise(Integer appliquerRemise) {
+        this.appliquerRemise = appliquerRemise;
+    }
+
+    public BigDecimal getTauxRemiseGlobal() {
+        return FonctionsMathematiques.arrondiBigDecimal(tauxRemiseGlobal, 3);
+    }
+
+    public void setTauxRemiseGlobal(BigDecimal tauxRemiseGlobal) {
+        this.tauxRemiseGlobal = tauxRemiseGlobal;
+    }
+
+    public BigDecimal getMontantRemiseGlobal() {
+        return FonctionsMathematiques.arrondiBigDecimal(montantRemiseGlobal, 3);
+    }
+
+    public void setMontantRemiseGlobal(BigDecimal montantRemiseGlobal) {
+        this.montantRemiseGlobal = montantRemiseGlobal;
+    }
+    
+     public BigDecimal getTotalHT() {
+        return FonctionsMathematiques.arrondiBigDecimal(totalHT, 3);
+    }
+
+    public void setTotalHT(BigDecimal totalHT) {
+        this.totalHT = totalHT;
+    }
+
+    public int getNbJourVente() {
+        return nbJourVente;
+    }
+
+    public void setNbJourVente(int nbJourVente) {
+        this.nbJourVente = nbJourVente;
+    }
+    
     @PrePersist
     void prepersist() {
         this.dateCreation = new Date();

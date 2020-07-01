@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
-import javax.inject.Named;
 import javax.faces.bean.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -24,7 +23,7 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 
-@ManagedBean(name= "delegationController")
+@ManagedBean(name = "delegationController")
 @SessionScoped
 public class DelegationController implements Serializable {
 
@@ -49,10 +48,10 @@ public class DelegationController implements Serializable {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
         /*if (delegation.getIdEntrepriseSuivi() != null && delegation.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = delegation.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = delegation.getEntreprise().getId();
-            }*/
+         idEntreprise = delegation.getIdEntrepriseSuivi();
+         } else {
+         idEntreprise = delegation.getEntreprise().getId();
+         }*/
     }
 
     public String initPage() {
@@ -61,14 +60,14 @@ public class DelegationController implements Serializable {
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
             utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
 
-            MenuTemplate.menuFonctionnalitesModules("GDelegation", "MParametrage", null,utilisateur);
+            MenuTemplate.menuFonctionnalitesModules("GDelegation", "MParametrage", null, utilisateur);
 
            // MenuTemplate.menuFonctionnalitesModules("GDelegation", utilisateur);
             /*if (delegation.getIdEntrepriseSuivi() != null && delegation.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = delegation.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = delegation.getEntreprise().getId();
-            }*/
+             idEntreprise = delegation.getIdEntrepriseSuivi();
+             } else {
+             idEntreprise = delegation.getEntreprise().getId();
+             }*/
             recreateModel();
             FacesContext.getCurrentInstance().getExternalContext().redirect("../delegation/List.xhtml");
         } catch (IOException ex) {
@@ -186,10 +185,10 @@ public class DelegationController implements Serializable {
 
             if (errorMsg == false) {
                 /* if (selected.getMontant().compareTo(BigDecimal.ZERO) == -1) {
-                    FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), " " + ResourceBundle.getBundle("/Bundle").getString("ValeurIncorrecte")));
-                    return null;
-                } else {*/
+                 FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), " " + ResourceBundle.getBundle("/Bundle").getString("ValeurIncorrecte")));
+                 return null;
+                 } else {*/
                 //selected.setIdEntreprise(idEntreprise);
                 getFacade().edit(selected);
                 return prepareList();

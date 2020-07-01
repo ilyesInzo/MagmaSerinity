@@ -11,7 +11,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
-import javax.inject.Named;
 import javax.faces.bean.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -21,7 +20,7 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 
-@ManagedBean(name= "departementController")
+@ManagedBean(name = "departementController")
 @SessionScoped
 public class DepartementController implements Serializable {
 
@@ -43,10 +42,10 @@ public class DepartementController implements Serializable {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
         /*if (departement.getIdEntrepriseSuivi() != null && departement.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = departement.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = departement.getEntreprise().getId();
-            }*/
+         idEntreprise = departement.getIdEntrepriseSuivi();
+         } else {
+         idEntreprise = departement.getEntreprise().getId();
+         }*/
     }
 
     public String initPage() {
@@ -55,14 +54,14 @@ public class DepartementController implements Serializable {
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
             utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
 
-            MenuTemplate.menuFonctionnalitesModules("GDepartement", "MParametrage", null,utilisateur);
+            MenuTemplate.menuFonctionnalitesModules("GDepartement", "MParametrage", null, utilisateur);
 
             //MenuTemplate.menuFonctionnalitesModules("GDepartement", utilisateur);
             /*if (departement.getIdEntrepriseSuivi() != null && departement.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = departement.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = departement.getEntreprise().getId();
-            }*/
+             idEntreprise = departement.getIdEntrepriseSuivi();
+             } else {
+             idEntreprise = departement.getEntreprise().getId();
+             }*/
             recreateModel();
             FacesContext.getCurrentInstance().getExternalContext().redirect("../departement/List.xhtml");
         } catch (IOException ex) {
@@ -138,7 +137,7 @@ public class DepartementController implements Serializable {
             errorMsg = getFacade().verifierUnique(selected.getLibelle().trim());
 
             if (errorMsg == false) {
-
+                creationInfo();
                 getFacade().create(selected);
                 return prepareList();
 
@@ -177,12 +176,7 @@ public class DepartementController implements Serializable {
             errorMsg = getFacade().verifierUnique(selected.getLibelle().trim(), selected.getId());
 
             if (errorMsg == false) {
-                /* if (selected.getMontant().compareTo(BigDecimal.ZERO) == -1) {
-                    FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), " " + ResourceBundle.getBundle("/Bundle").getString("ValeurIncorrecte")));
-                    return null;
-                } else {*/
-                //selected.setIdEntreprise(idEntreprise);
+                editionInfo();
                 getFacade().edit(selected);
                 return prepareList();
                 //}
@@ -204,8 +198,8 @@ public class DepartementController implements Serializable {
             //if (temps == null || temps.isEmpty()) {
             performDestroy();
             /*} else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SuppressionNonAutorisé")));
-            }*/
+             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SuppressionNonAutorisé")));
+             }*/
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SelectionnerObjet")));
         }
@@ -221,6 +215,16 @@ public class DepartementController implements Serializable {
         }
     }
 
+    private void creationInfo() {
+        selected.setIdUserCreate(utilisateur.getId());
+        selected.setLibelleUserCreate(utilisateur.getNomPrenom());
+    }
+
+    private void editionInfo() {
+        selected.setIdUserModif(utilisateur.getId());
+        selected.setLibelleUserModif(utilisateur.getNomPrenom());
+    }
+
     public boolean isErrorMsg() {
         return errorMsg;
     }
@@ -228,7 +232,6 @@ public class DepartementController implements Serializable {
     public void setErrorMsg(boolean errorMsg) {
         this.errorMsg = errorMsg;
     }
-
 
     public SelectItem[] getItemsAvailableSelectMany() {
         return JsfUtil.getSelectItems(ejbFacade.findAll(), false);

@@ -6,6 +6,7 @@ import com.magma.bibliotheque.LireParametrage;
 import com.magma.bibliotheque.TraitementImage;
 import com.magma.controller.util.JsfUtil;
 import com.magma.entity.Article;
+import com.magma.entity.ParametrageEntreprise;
 import com.magma.entity.Utilisateur;
 import com.magma.session.ArticleFacadeLocal;
 import com.magma.util.MenuTemplate;
@@ -20,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
-import javax.inject.Named;
 import javax.faces.bean.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -36,7 +36,7 @@ import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
-@ManagedBean(name= "articleController")
+@ManagedBean(name = "articleController")
 @SessionScoped
 public class ArticleController implements Serializable {
 
@@ -69,6 +69,7 @@ public class ArticleController implements Serializable {
 
     private boolean boolFichier = false;
     private boolean showFilmstrip = false;
+    private ParametrageEntreprise parametrageEntreprise = null;
 
     public ArticleController() {
         initItems = null;
@@ -78,10 +79,10 @@ public class ArticleController implements Serializable {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
         /*if (article.getIdEntrepriseSuivi() != null && article.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = article.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = article.getEntreprise().getId();
-            }*/
+         idEntreprise = article.getIdEntrepriseSuivi();
+         } else {
+         idEntreprise = article.getEntreprise().getId();
+         }*/
     }
 
     public String initPage() {
@@ -89,15 +90,15 @@ public class ArticleController implements Serializable {
             FacesContext context = FacesContext.getCurrentInstance();
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
             utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
-
-            MenuTemplate.menuFonctionnalitesModules("GArticle", "MProduit", null , utilisateur);
+            parametrageEntreprise = utilisateur.getEntreprise().getParametrageEntreprise();
+            MenuTemplate.menuFonctionnalitesModules("GArticle", "MProduit", null, utilisateur);
 
            // MenuTemplate.menuFonctionnalitesModules("GArticle", utilisateur);
            /* if (article.getIdEntrepriseSuivi() != null && article.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = article.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = article.getEntreprise().getId();
-            }*/
+             idEntreprise = article.getIdEntrepriseSuivi();
+             } else {
+             idEntreprise = article.getEntreprise().getId();
+             }*/
             recreateModel();
             FacesContext.getCurrentInstance().getExternalContext().redirect("../article/List.xhtml");
         } catch (IOException ex) {
@@ -164,12 +165,11 @@ public class ArticleController implements Serializable {
 
     public String prepareView() {
         if (selected != null) {
-            
+
             images = new ArrayList<>();
             showFilmstrip = false;
             imagesArticles();
-            
-            
+
             return "View";
         }
         return "List";
@@ -192,109 +192,106 @@ public class ArticleController implements Serializable {
             errorMsg = getFacade().verifierUnique(selected.getLibelle().trim());
 
             if (errorMsg == false) {
-                
-                
-                
-            if (fileRegistre != null) {
-                selected.setPhoto1(FonctionsString.supprimerCaracteresSpeciaux(selected.getLibelle()) + "1" + System.currentTimeMillis()+fileRegistre.getFileName().substring(fileRegistre.getFileName().lastIndexOf(".")));
-                try {
-                    InputStream img = fileRegistre.getInputstream();
-                    InputStream is = TraitementImage.resizeImageMaxHeight(img, 300, fileRegistre.getFileName());
-                    boolean res = FileUploadController.uploderFichier(selected.getPhoto1(), is, LireParametrage.returnValeurParametrage("urlUmploadPhoto"));
-                    if (res == false) {
-                        FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("ErreurUploadFile")));
-                        return null;
+
+                creationInfo();
+
+                if (fileRegistre != null) {
+                    selected.setPhoto1(FonctionsString.supprimerCaracteresSpeciaux(selected.getLibelle()) + "1" + System.currentTimeMillis() + fileRegistre.getFileName().substring(fileRegistre.getFileName().lastIndexOf(".")));
+                    try {
+                        InputStream img = fileRegistre.getInputstream();
+                        InputStream is = TraitementImage.resizeImageMaxHeight(img, 300, fileRegistre.getFileName());
+                        boolean res = FileUploadController.uploderFichier(selected.getPhoto1(), is, LireParametrage.returnValeurParametrage("urlUmploadPhoto"));
+                        if (res == false) {
+                            FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("ErreurUploadFile")));
+                            return null;
+                        }
+                    } catch (Exception e) {
+                        System.out.println("ArticleController - create:   " + e.getMessage());
+                        selected.setPhoto1("../resources/images/article.jpg");
                     }
-                } catch (Exception e) {
-                    System.out.println("ArticleController - create:   " + e.getMessage());
+                } else {
                     selected.setPhoto1("../resources/images/article.jpg");
                 }
-            } else {
-                selected.setPhoto1("../resources/images/article.jpg");
-            }
 
-            if (fileRegistre2 != null) {
-                selected.setPhoto2(FonctionsString.supprimerCaracteresSpeciaux(selected.getLibelle()) + "2" + System.currentTimeMillis()+fileRegistre2.getFileName().substring(fileRegistre2.getFileName().lastIndexOf(".")));
-                try {
-                    InputStream img = fileRegistre2.getInputstream();
-                    InputStream is = TraitementImage.resizeImageMaxHeight(img, 300, fileRegistre2.getFileName());
-                    boolean res = FileUploadController.uploderFichier(selected.getPhoto2(), is, LireParametrage.returnValeurParametrage("urlUmploadPhoto"));
-                    if (res == false) {
-                        FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("ErreurUploadFile")));
-                        return null;
+                if (fileRegistre2 != null) {
+                    selected.setPhoto2(FonctionsString.supprimerCaracteresSpeciaux(selected.getLibelle()) + "2" + System.currentTimeMillis() + fileRegistre2.getFileName().substring(fileRegistre2.getFileName().lastIndexOf(".")));
+                    try {
+                        InputStream img = fileRegistre2.getInputstream();
+                        InputStream is = TraitementImage.resizeImageMaxHeight(img, 300, fileRegistre2.getFileName());
+                        boolean res = FileUploadController.uploderFichier(selected.getPhoto2(), is, LireParametrage.returnValeurParametrage("urlUmploadPhoto"));
+                        if (res == false) {
+                            FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("ErreurUploadFile")));
+                            return null;
+                        }
+                    } catch (Exception e) {
+                        System.out.println("ArticleController - create:   " + e.getMessage());
+                        selected.setPhoto2("../resources/images/article.jpg");
                     }
-                } catch (Exception e) {
-                    System.out.println("ArticleController - create:   " + e.getMessage());
+                } else {
                     selected.setPhoto2("../resources/images/article.jpg");
                 }
-            } else {
-                selected.setPhoto2("../resources/images/article.jpg");
-            }
 
-            if (fileRegistre3 != null) {
-                selected.setPhoto3(FonctionsString.supprimerCaracteresSpeciaux(selected.getLibelle()) + "3" + System.currentTimeMillis()+fileRegistre3.getFileName().substring(fileRegistre3.getFileName().lastIndexOf(".")));
+                if (fileRegistre3 != null) {
+                    selected.setPhoto3(FonctionsString.supprimerCaracteresSpeciaux(selected.getLibelle()) + "3" + System.currentTimeMillis() + fileRegistre3.getFileName().substring(fileRegistre3.getFileName().lastIndexOf(".")));
 
-                try {
-                    InputStream img = fileRegistre3.getInputstream();
-                    InputStream is = TraitementImage.resizeImageMaxHeight(img, 300, fileRegistre3.getFileName());
-                    boolean res = FileUploadController.uploderFichier(selected.getPhoto3(), is, LireParametrage.returnValeurParametrage("urlUmploadPhoto"));
-                    if (res == false) {
-                        FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("ErreurUploadFile")));
-                        return null;
+                    try {
+                        InputStream img = fileRegistre3.getInputstream();
+                        InputStream is = TraitementImage.resizeImageMaxHeight(img, 300, fileRegistre3.getFileName());
+                        boolean res = FileUploadController.uploderFichier(selected.getPhoto3(), is, LireParametrage.returnValeurParametrage("urlUmploadPhoto"));
+                        if (res == false) {
+                            FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("ErreurUploadFile")));
+                            return null;
+                        }
+                    } catch (Exception e) {
+                        System.out.println("ArticleController - create:   " + e.getMessage());
+                        selected.setPhoto3("../resources/images/article.jpg");
                     }
-                } catch (Exception e) {
-                    System.out.println("ArticleController - create:   " + e.getMessage());
+                } else {
                     selected.setPhoto3("../resources/images/article.jpg");
                 }
-            } else {
-                selected.setPhoto3("../resources/images/article.jpg");
-            }
 
-            if (fileRegistre4 != null) {
-                selected.setPhoto4(FonctionsString.supprimerCaracteresSpeciaux(selected.getLibelle()) + "4" + System.currentTimeMillis()+fileRegistre4.getFileName().substring(fileRegistre4.getFileName().lastIndexOf(".")));
+                if (fileRegistre4 != null) {
+                    selected.setPhoto4(FonctionsString.supprimerCaracteresSpeciaux(selected.getLibelle()) + "4" + System.currentTimeMillis() + fileRegistre4.getFileName().substring(fileRegistre4.getFileName().lastIndexOf(".")));
 
-                try {
-                    InputStream img = fileRegistre4.getInputstream();
-                    InputStream is = TraitementImage.resizeImageMaxHeight(img, 300, fileRegistre4.getFileName());
-                    boolean res = FileUploadController.uploderFichier(selected.getPhoto4(), is, LireParametrage.returnValeurParametrage("urlUmploadPhoto"));
-                    if (res == false) {
-                        FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("ErreurUploadFile")));
-                        return null;
+                    try {
+                        InputStream img = fileRegistre4.getInputstream();
+                        InputStream is = TraitementImage.resizeImageMaxHeight(img, 300, fileRegistre4.getFileName());
+                        boolean res = FileUploadController.uploderFichier(selected.getPhoto4(), is, LireParametrage.returnValeurParametrage("urlUmploadPhoto"));
+                        if (res == false) {
+                            FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("ErreurUploadFile")));
+                            return null;
+                        }
+                    } catch (Exception e) {
+                        System.out.println("ArticleController - create:   " + e.getMessage());
+                        selected.setPhoto4("../resources/images/article.jpg");
                     }
-                } catch (Exception e) {
-                    System.out.println("ArticleController - create:   " + e.getMessage());
+                } else {
                     selected.setPhoto4("../resources/images/article.jpg");
                 }
-            } else {
-                selected.setPhoto4("../resources/images/article.jpg");
-            }
 
-            if (fileRegistre5 != null) {
-                selected.setPhoto5(FonctionsString.supprimerCaracteresSpeciaux(selected.getLibelle()) + "5" + System.currentTimeMillis()+fileRegistre5.getFileName().substring(fileRegistre5.getFileName().lastIndexOf(".")));
+                if (fileRegistre5 != null) {
+                    selected.setPhoto5(FonctionsString.supprimerCaracteresSpeciaux(selected.getLibelle()) + "5" + System.currentTimeMillis() + fileRegistre5.getFileName().substring(fileRegistre5.getFileName().lastIndexOf(".")));
 
-                try {
-                    InputStream img = fileRegistre5.getInputstream();
-                    InputStream is = TraitementImage.resizeImageMaxHeight(img, 300, fileRegistre5.getFileName());
-                    boolean res = FileUploadController.uploderFichier(selected.getPhoto5(), is, LireParametrage.returnValeurParametrage("urlUmploadPhoto"));
-                    if (res == false) {
-                        FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("ErreurUploadFile")));
-                        return null;
+                    try {
+                        InputStream img = fileRegistre5.getInputstream();
+                        InputStream is = TraitementImage.resizeImageMaxHeight(img, 300, fileRegistre5.getFileName());
+                        boolean res = FileUploadController.uploderFichier(selected.getPhoto5(), is, LireParametrage.returnValeurParametrage("urlUmploadPhoto"));
+                        if (res == false) {
+                            FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("ErreurUploadFile")));
+                            return null;
+                        }
+                    } catch (Exception e) {
+                        System.out.println("ArticleController - create:   " + e.getMessage());
+                        selected.setPhoto5("../resources/images/article.jpg");
                     }
-                } catch (Exception e) {
-                    System.out.println("ArticleController - create:   " + e.getMessage());
+                } else {
                     selected.setPhoto5("../resources/images/article.jpg");
                 }
-            } else {
-                selected.setPhoto5("../resources/images/article.jpg");
-            }
-                
-                
-                
 
                 getFacade().create(selected);
                 return prepareList();
@@ -334,151 +331,145 @@ public class ArticleController implements Serializable {
             errorMsg = getFacade().verifierUnique(selected.getLibelle().trim(), selected.getId());
 
             if (errorMsg == false) {
-                /* if (selected.getMontant().compareTo(BigDecimal.ZERO) == -1) {
-                    FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), " " + ResourceBundle.getBundle("/Bundle").getString("ValeurIncorrecte")));
-                    return null;
-                } else {*/
-                //selected.setIdEntreprise(idEntreprise);
-                
-                
-            if (fileRegistre != null) {
 
-                if (selected.getPhoto1() != null && selected.getPhoto1().contains("/resources/images/") == false) {
-                    File file = new File(LireParametrage.returnValeurParametrage("urlUmploadPhoto") + selected.getPhoto1());
-                    file.delete();
-                }
+                editionInfo();
 
-                selected.setPhoto1(FonctionsString.supprimerCaracteresSpeciaux(selected.getLibelle()) + "1" + selected.getDateCreation().getTime()+ fileRegistre.getFileName().substring(fileRegistre.getFileName().lastIndexOf(".")));
+                if (fileRegistre != null) {
 
-                try {
-                    InputStream img = fileRegistre.getInputstream();
-                    InputStream is = TraitementImage.resizeImageMaxHeight(img, 300, fileRegistre.getFileName());
-                    boolean res = FileUploadController.uploderFichier(selected.getPhoto1(), is, LireParametrage.returnValeurParametrage("urlUmploadPhoto"));
-                    if (res == false) {
-                        FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("ErreurUploadFile")));
-                        return null;
+                    if (selected.getPhoto1() != null && selected.getPhoto1().contains("/resources/images/") == false) {
+                        File file = new File(LireParametrage.returnValeurParametrage("urlUmploadPhoto") + selected.getPhoto1());
+                        file.delete();
                     }
 
-                } catch (Exception e) {
-                    System.out.println("ArticleController - update:   " + e.getMessage());
+                    selected.setPhoto1(FonctionsString.supprimerCaracteresSpeciaux(selected.getLibelle()) + "1" + selected.getDateCreation().getTime() + fileRegistre.getFileName().substring(fileRegistre.getFileName().lastIndexOf(".")));
+
+                    try {
+                        InputStream img = fileRegistre.getInputstream();
+                        InputStream is = TraitementImage.resizeImageMaxHeight(img, 300, fileRegistre.getFileName());
+                        boolean res = FileUploadController.uploderFichier(selected.getPhoto1(), is, LireParametrage.returnValeurParametrage("urlUmploadPhoto"));
+                        if (res == false) {
+                            FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("ErreurUploadFile")));
+                            return null;
+                        }
+
+                    } catch (Exception e) {
+                        System.out.println("ArticleController - update:   " + e.getMessage());
+                        selected.setPhoto1("../resources/images/article.jpg");
+                    }
+
+                } else if (selected.getPhoto1() == null || (selected.getPhoto1().contains("/resources/images/") == true)) {
                     selected.setPhoto1("../resources/images/article.jpg");
                 }
 
-            } else if (selected.getPhoto1() == null || (selected.getPhoto1().contains("/resources/images/") == true)) {
-                selected.setPhoto1("../resources/images/article.jpg");
-            }
+                if (fileRegistre2 != null) {
 
-            if (fileRegistre2 != null) {
-
-                if (selected.getPhoto2() != null && selected.getPhoto2().contains("/resources/images/") == false) {
-                    File file = new File(LireParametrage.returnValeurParametrage("urlUmploadPhoto") + selected.getPhoto2());
-                    file.delete();
-                }
-
-                selected.setPhoto2(FonctionsString.supprimerCaracteresSpeciaux(selected.getLibelle()) + "2"+ selected.getDateCreation().getTime() + fileRegistre2.getFileName().substring(fileRegistre2.getFileName().lastIndexOf(".")));
-
-                try {
-                    InputStream img = fileRegistre2.getInputstream();
-                    InputStream is = TraitementImage.resizeImageMaxHeight(img, 300, fileRegistre2.getFileName());
-                    boolean res = FileUploadController.uploderFichier(selected.getPhoto2(), is, LireParametrage.returnValeurParametrage("urlUmploadPhoto"));
-                    if (res == false) {
-                        FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("ErreurUploadFile")));
-                        return null;
+                    if (selected.getPhoto2() != null && selected.getPhoto2().contains("/resources/images/") == false) {
+                        File file = new File(LireParametrage.returnValeurParametrage("urlUmploadPhoto") + selected.getPhoto2());
+                        file.delete();
                     }
 
-                } catch (Exception e) {
-                    System.out.println("ArticleController - update:   " + e.getMessage());
+                    selected.setPhoto2(FonctionsString.supprimerCaracteresSpeciaux(selected.getLibelle()) + "2" + selected.getDateCreation().getTime() + fileRegistre2.getFileName().substring(fileRegistre2.getFileName().lastIndexOf(".")));
+
+                    try {
+                        InputStream img = fileRegistre2.getInputstream();
+                        InputStream is = TraitementImage.resizeImageMaxHeight(img, 300, fileRegistre2.getFileName());
+                        boolean res = FileUploadController.uploderFichier(selected.getPhoto2(), is, LireParametrage.returnValeurParametrage("urlUmploadPhoto"));
+                        if (res == false) {
+                            FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("ErreurUploadFile")));
+                            return null;
+                        }
+
+                    } catch (Exception e) {
+                        System.out.println("ArticleController - update:   " + e.getMessage());
+                        selected.setPhoto2("../resources/images/article.jpg");
+                    }
+                } else if (selected.getPhoto2() == null || (selected.getPhoto2().contains("/resources/images/") == true)) {
                     selected.setPhoto2("../resources/images/article.jpg");
                 }
-            } else if (selected.getPhoto2() == null || (selected.getPhoto2().contains("/resources/images/") == true)) {
-                selected.setPhoto2("../resources/images/article.jpg");
-            }
 
-            if (fileRegistre3 != null) {
+                if (fileRegistre3 != null) {
 
-                if (selected.getPhoto3() != null && selected.getPhoto3().contains("/resources/images/") == false) {
-                    File file = new File(LireParametrage.returnValeurParametrage("urlUmploadPhoto") + selected.getPhoto3());
-                    file.delete();
-                }
-
-                selected.setPhoto3(FonctionsString.supprimerCaracteresSpeciaux(selected.getLibelle()) + "3" + selected.getDateCreation().getTime()+ fileRegistre3.getFileName().substring(fileRegistre3.getFileName().lastIndexOf(".")));
-
-                try {
-                    InputStream img = fileRegistre3.getInputstream();
-                    InputStream is = TraitementImage.resizeImageMaxHeight(img, 300, fileRegistre3.getFileName());
-                    boolean res = FileUploadController.uploderFichier(selected.getPhoto3(), is, LireParametrage.returnValeurParametrage("urlUmploadPhoto"));
-                    if (res == false) {
-                        FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("ErreurUploadFile")));
-                        return null;
+                    if (selected.getPhoto3() != null && selected.getPhoto3().contains("/resources/images/") == false) {
+                        File file = new File(LireParametrage.returnValeurParametrage("urlUmploadPhoto") + selected.getPhoto3());
+                        file.delete();
                     }
 
-                } catch (Exception e) {
-                    System.out.println("ArticleController - update:   " + e.getMessage());
+                    selected.setPhoto3(FonctionsString.supprimerCaracteresSpeciaux(selected.getLibelle()) + "3" + selected.getDateCreation().getTime() + fileRegistre3.getFileName().substring(fileRegistre3.getFileName().lastIndexOf(".")));
+
+                    try {
+                        InputStream img = fileRegistre3.getInputstream();
+                        InputStream is = TraitementImage.resizeImageMaxHeight(img, 300, fileRegistre3.getFileName());
+                        boolean res = FileUploadController.uploderFichier(selected.getPhoto3(), is, LireParametrage.returnValeurParametrage("urlUmploadPhoto"));
+                        if (res == false) {
+                            FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("ErreurUploadFile")));
+                            return null;
+                        }
+
+                    } catch (Exception e) {
+                        System.out.println("ArticleController - update:   " + e.getMessage());
+                        selected.setPhoto3("../resources/images/article.jpg");
+                    }
+                } else if (selected.getPhoto3() == null || (selected.getPhoto3().contains("/resources/images/") == true)) {
                     selected.setPhoto3("../resources/images/article.jpg");
                 }
-            } else if (selected.getPhoto3() == null || (selected.getPhoto3().contains("/resources/images/") == true)) {
-                selected.setPhoto3("../resources/images/article.jpg");
-            }
 
-            if (fileRegistre4 != null) {
+                if (fileRegistre4 != null) {
 
-                if (selected.getPhoto4() != null && selected.getPhoto4().contains("/resources/images/") == false) {
-                    File file = new File(LireParametrage.returnValeurParametrage("urlUmploadPhoto") + selected.getPhoto4());
-                    file.delete();
-                }
-
-                selected.setPhoto4(FonctionsString.supprimerCaracteresSpeciaux(selected.getLibelle()) + "4" + selected.getDateCreation().getTime()+ fileRegistre4.getFileName().substring(fileRegistre4.getFileName().lastIndexOf(".")));
-
-                try {
-                    InputStream img = fileRegistre4.getInputstream();
-                    InputStream is = TraitementImage.resizeImageMaxHeight(img, 300, fileRegistre4.getFileName());
-                    boolean res = FileUploadController.uploderFichier(selected.getPhoto4(), is, LireParametrage.returnValeurParametrage("urlUmploadPhoto"));
-                    if (res == false) {
-                        FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("ErreurUploadFile")));
-                        return null;
+                    if (selected.getPhoto4() != null && selected.getPhoto4().contains("/resources/images/") == false) {
+                        File file = new File(LireParametrage.returnValeurParametrage("urlUmploadPhoto") + selected.getPhoto4());
+                        file.delete();
                     }
 
-                } catch (Exception e) {
-                    System.out.println("ArticleController - update:   " + e.getMessage());
+                    selected.setPhoto4(FonctionsString.supprimerCaracteresSpeciaux(selected.getLibelle()) + "4" + selected.getDateCreation().getTime() + fileRegistre4.getFileName().substring(fileRegistre4.getFileName().lastIndexOf(".")));
+
+                    try {
+                        InputStream img = fileRegistre4.getInputstream();
+                        InputStream is = TraitementImage.resizeImageMaxHeight(img, 300, fileRegistre4.getFileName());
+                        boolean res = FileUploadController.uploderFichier(selected.getPhoto4(), is, LireParametrage.returnValeurParametrage("urlUmploadPhoto"));
+                        if (res == false) {
+                            FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("ErreurUploadFile")));
+                            return null;
+                        }
+
+                    } catch (Exception e) {
+                        System.out.println("ArticleController - update:   " + e.getMessage());
+                        selected.setPhoto4("../resources/images/article.jpg");
+                    }
+                } else if (selected.getPhoto4() == null || (selected.getPhoto4().contains("/resources/images/") == true)) {
                     selected.setPhoto4("../resources/images/article.jpg");
                 }
-            } else if (selected.getPhoto4() == null || (selected.getPhoto4().contains("/resources/images/") == true)) {
-                selected.setPhoto4("../resources/images/article.jpg");
-            }
 
-            if (fileRegistre5 != null) {
+                if (fileRegistre5 != null) {
 
-                if (selected.getPhoto5() != null && selected.getPhoto5().contains("/resources/images/") == false) {
-                    File file = new File(LireParametrage.returnValeurParametrage("urlUmploadPhoto") + selected.getPhoto5());
-                    file.delete();
-                }
-
-                selected.setPhoto5(FonctionsString.supprimerCaracteresSpeciaux(selected.getLibelle()) + "5" + selected.getDateCreation().getTime()+ fileRegistre5.getFileName().substring(fileRegistre5.getFileName().lastIndexOf(".")));
-
-                try {
-                    InputStream img = fileRegistre5.getInputstream();
-                    InputStream is = TraitementImage.resizeImageMaxHeight(img, 300, fileRegistre5.getFileName());
-                    boolean res = FileUploadController.uploderFichier(selected.getPhoto5(), is, LireParametrage.returnValeurParametrage("urlUmploadPhoto"));
-                    if (res == false) {
-                        FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("ErreurUploadFile")));
-                        return null;
+                    if (selected.getPhoto5() != null && selected.getPhoto5().contains("/resources/images/") == false) {
+                        File file = new File(LireParametrage.returnValeurParametrage("urlUmploadPhoto") + selected.getPhoto5());
+                        file.delete();
                     }
 
-                } catch (Exception e) {
-                    System.out.println("ArticleController - update:   " + e.getMessage());
+                    selected.setPhoto5(FonctionsString.supprimerCaracteresSpeciaux(selected.getLibelle()) + "5" + selected.getDateCreation().getTime() + fileRegistre5.getFileName().substring(fileRegistre5.getFileName().lastIndexOf(".")));
+
+                    try {
+                        InputStream img = fileRegistre5.getInputstream();
+                        InputStream is = TraitementImage.resizeImageMaxHeight(img, 300, fileRegistre5.getFileName());
+                        boolean res = FileUploadController.uploderFichier(selected.getPhoto5(), is, LireParametrage.returnValeurParametrage("urlUmploadPhoto"));
+                        if (res == false) {
+                            FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("ErreurUploadFile")));
+                            return null;
+                        }
+
+                    } catch (Exception e) {
+                        System.out.println("ArticleController - update:   " + e.getMessage());
+                        selected.setPhoto5("../resources/images/article.jpg");
+                    }
+                } else if (selected.getPhoto5() == null || (selected.getPhoto5().contains("/resources/images/") == true)) {
                     selected.setPhoto5("../resources/images/article.jpg");
                 }
-            } else if (selected.getPhoto5() == null || (selected.getPhoto5().contains("/resources/images/") == true)) {
-                selected.setPhoto5("../resources/images/article.jpg");
-            }
-                
-                
+
                 getFacade().edit(selected);
                 return prepareList();
                 //}
@@ -500,8 +491,8 @@ public class ArticleController implements Serializable {
             //if (temps == null || temps.isEmpty()) {
             performDestroy();
             /*} else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SuppressionNonAutorisé")));
-            }*/
+             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SuppressionNonAutorisé")));
+             }*/
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SelectionnerObjet")));
         }
@@ -528,7 +519,7 @@ public class ArticleController implements Serializable {
             String img = context.getExternalContext().getRequestParameterMap().get("image");
             File file = new File(LireParametrage.returnValeurParametrage("urlUmploadPhoto") + img);
 
-            if (file.exists() == false || img==null || img.isEmpty()) {
+            if (file.exists() == false || img == null || img.isEmpty()) {
                 InputStream iStream = FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/resources/images/noimage.png");
                 return new DefaultStreamedContent(iStream);
             }
@@ -549,7 +540,7 @@ public class ArticleController implements Serializable {
             items = initItems;
         }
     }
-    
+
     public Object dynamicPhoto() throws FileNotFoundException, IOException {
         if (fileRegistre != null) {
             InputStream img = fileRegistre.getInputstream();
@@ -668,26 +659,26 @@ public class ArticleController implements Serializable {
         }
 
     }
-    
+
     public List<String> imagesArticles() {
         int i = 0;
-        if (selected.getPhoto1()!= null && !selected.getPhoto1().contains("resources")) {
+        if (selected.getPhoto1() != null && !selected.getPhoto1().contains("resources")) {
             images.add(selected.getPhoto1());
             i++;
         }
-        if (selected.getPhoto2()!= null && !selected.getPhoto2().contains("resources")) {
+        if (selected.getPhoto2() != null && !selected.getPhoto2().contains("resources")) {
             images.add(selected.getPhoto2());
             i++;
         }
-        if (selected.getPhoto3()!= null && !selected.getPhoto3().contains("resources")) {
+        if (selected.getPhoto3() != null && !selected.getPhoto3().contains("resources")) {
             images.add(selected.getPhoto3());
             i++;
         }
-        if (selected.getPhoto4()!= null && !selected.getPhoto4().contains("resources")) {
+        if (selected.getPhoto4() != null && !selected.getPhoto4().contains("resources")) {
             images.add(selected.getPhoto4());
             i++;
         }
-        if (selected.getPhoto5()!= null && !selected.getPhoto5().contains("resources")) {
+        if (selected.getPhoto5() != null && !selected.getPhoto5().contains("resources")) {
             images.add(selected.getPhoto5());
             i++;
         }
@@ -700,7 +691,17 @@ public class ArticleController implements Serializable {
 
         return images;
     }
-    
+
+    private void creationInfo() {
+        selected.setIdUserCreate(utilisateur.getId());
+        selected.setLibelleUserCreate(utilisateur.getNomPrenom());
+    }
+
+    private void editionInfo() {
+        selected.setIdUserModif(utilisateur.getId());
+        selected.setLibelleUserModif(utilisateur.getNomPrenom());
+    }
+
     public void uploadRegistre1(FileUploadEvent event) {
         fileRegistre = event.getFile();
     }
@@ -720,7 +721,7 @@ public class ArticleController implements Serializable {
     public void uploadRegistre5(FileUploadEvent event) {
         fileRegistre5 = event.getFile();
     }
-    
+
     public boolean isErrorMsg() {
         return errorMsg;
     }
@@ -792,9 +793,7 @@ public class ArticleController implements Serializable {
     public void setShowFilmstrip(boolean showFilmstrip) {
         this.showFilmstrip = showFilmstrip;
     }
-    
-    
-    
+
     public UploadedFile getFileRegistre2() {
         return fileRegistre2;
     }
@@ -834,6 +833,14 @@ public class ArticleController implements Serializable {
     public void setImages(List<String> images) {
         this.images = images;
 
+    }
+
+    public ParametrageEntreprise getParametrageEntreprise() {
+        return parametrageEntreprise;
+    }
+
+    public void setParametrageEntreprise(ParametrageEntreprise parametrageEntreprise) {
+        this.parametrageEntreprise = parametrageEntreprise;
     }
 
     public SelectItem[] getItemsAvailableSelectMany() {

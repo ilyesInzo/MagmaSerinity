@@ -11,7 +11,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
-import javax.inject.Named;
 import javax.faces.bean.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -21,7 +20,7 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 
-@ManagedBean(name= "prefixBonLivraisonController")
+@ManagedBean(name = "prefixBonLivraisonController")
 @SessionScoped
 public class PrefixBonLivraisonController implements Serializable {
 
@@ -35,6 +34,7 @@ public class PrefixBonLivraisonController implements Serializable {
     private PrefixBonLivraison prefixBonLivraison;
     private long idEntreprise = 0;
     private Utilisateur utilisateur;
+
     public PrefixBonLivraisonController() {
         items = null;
         errorMsg = false;
@@ -42,10 +42,10 @@ public class PrefixBonLivraisonController implements Serializable {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         utilisateur = (Utilisateur) context.getExternalContext().getSessionMap().get("user");
         /*if (prefixBonLivraison.getIdEntrepriseSuivi() != null && prefixBonLivraison.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = prefixBonLivraison.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = prefixBonLivraison.getEntreprise().getId();
-            }*/
+         idEntreprise = prefixBonLivraison.getIdEntrepriseSuivi();
+         } else {
+         idEntreprise = prefixBonLivraison.getEntreprise().getId();
+         }*/
     }
 
     public String initPage() {
@@ -58,10 +58,10 @@ public class PrefixBonLivraisonController implements Serializable {
 
             //MenuTemplate.menuFonctionnalitesModules("GPrefixBonLivraison", utilisateur);
             /*if (prefixBonLivraison.getIdEntrepriseSuivi() != null && prefixBonLivraison.getIdEntrepriseSuivi() != 0) {
-                idEntreprise = prefixBonLivraison.getIdEntrepriseSuivi();
-            } else {
-                idEntreprise = prefixBonLivraison.getEntreprise().getId();
-            }*/
+             idEntreprise = prefixBonLivraison.getIdEntrepriseSuivi();
+             } else {
+             idEntreprise = prefixBonLivraison.getEntreprise().getId();
+             }*/
             recreateModel();
             FacesContext.getCurrentInstance().getExternalContext().redirect("../prefixBonLivraison/List.xhtml");
         } catch (IOException ex) {
@@ -137,7 +137,7 @@ public class PrefixBonLivraisonController implements Serializable {
             errorMsg = getFacade().verifierUnique(selected.getLibellePrefixe().trim());
 
             if (errorMsg == false) {
-
+                creationInfo();
                 getFacade().create(selected);
                 return prepareList();
 
@@ -176,12 +176,7 @@ public class PrefixBonLivraisonController implements Serializable {
             errorMsg = getFacade().verifierUnique(selected.getLibellePrefixe().trim(), selected.getId());
 
             if (errorMsg == false) {
-                /* if (selected.getMontant().compareTo(BigDecimal.ZERO) == -1) {
-                    FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur"), " " + ResourceBundle.getBundle("/Bundle").getString("ValeurIncorrecte")));
-                    return null;
-                } else {*/
-                //selected.setIdEntreprise(idEntreprise);
+                editionInfo();
                 getFacade().edit(selected);
                 return prepareList();
                 //}
@@ -203,8 +198,8 @@ public class PrefixBonLivraisonController implements Serializable {
             //if (temps == null || temps.isEmpty()) {
             performDestroy();
             /*} else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SuppressionNonAutorisé")));
-            }*/
+             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SuppressionNonAutorisé")));
+             }*/
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("SelectionnerObjet")));
         }
@@ -218,6 +213,16 @@ public class PrefixBonLivraisonController implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("/Bundle").getString("Erreur") + ": ", ResourceBundle.getBundle("/Bundle").getString("EchecOperation")));
             System.out.println("Erreur- PrefixBonLivraisonController - performDestroy: " + e.getMessage());
         }
+    }
+
+    private void creationInfo() {
+        selected.setIdUserCreate(utilisateur.getId());
+        selected.setLibelleUserCreate(utilisateur.getNomPrenom());
+    }
+
+    private void editionInfo() {
+        selected.setIdUserModif(utilisateur.getId());
+        selected.setLibelleUserModif(utilisateur.getNomPrenom());
     }
 
     public boolean isErrorMsg() {
